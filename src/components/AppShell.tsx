@@ -591,11 +591,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-11 gap-2 md:h-8"
-                >
+                <Button variant="ghost" size="sm" className="h-11 gap-2 md:h-8">
                   {/* Sin `aria-label`: el nombre accesible se compone del texto
                       visible ("Cuenta de", las iniciales y el nombre), así que
                       también coincide con lo que se ve (WCAG 2.5.3). */}

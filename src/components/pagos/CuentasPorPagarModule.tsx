@@ -623,7 +623,7 @@ function ProveedorDetalleSheet({
           <SheetDescription>Detalle de órdenes de compra y saldo</SheetDescription>
         </SheetHeader>
 
-        <div className="grid grid-cols-3 gap-3 mt-4">
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
           <Card className="p-3">
             <p className="text-xs text-muted-foreground">Ordenado</p>
             <p className="font-semibold">{formatMXN(proveedor.total_ordenado)}</p>

@@ -384,12 +384,12 @@ export function ClienteFormDialog({
                 />
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div>
                 <Label>Banco</Label>
                 <Input value={f.banco ?? ""} onChange={(e) => set("banco", e.target.value)} />
               </div>
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <Label>CLABE (18 dígitos)</Label>
                 <Input
                   value={f.clabe ?? ""}

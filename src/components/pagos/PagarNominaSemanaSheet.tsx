@@ -365,7 +365,7 @@ export function PagarNominaSemanaSheet({
             <Textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={2} />
           </div>
 
-          <div className="grid grid-cols-3 gap-3 text-sm">
+          <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-3 sm:gap-3">
             <Card className="px-3 py-2">
               <p className="text-xs text-muted-foreground">Total nómina</p>
               <p className="font-semibold">{formatMXN(semana.total)}</p>

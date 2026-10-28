@@ -144,7 +144,7 @@ export function RevisarReembolsoSheet({ open, onOpenChange, reembolsoId, onChang
 
         {reemb && (
           <div className="mt-4 space-y-4">
-            <div className="grid grid-cols-3 gap-2 text-sm">
+            <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
               <div className="border rounded p-2">
                 <div className="text-muted-foreground text-xs">Solicitado</div>
                 <div className="font-semibold">{formatMXN(Number(reemb.monto_solicitado))}</div>

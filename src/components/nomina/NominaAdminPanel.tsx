@@ -232,82 +232,82 @@ export function NominaAdminPanel() {
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[560px] text-sm table-fixed">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="text-left py-2 px-2 whitespace-nowrap">Trabajador</th>
-                <th className="text-center py-2 px-2 w-20 whitespace-nowrap">$/día</th>
-                <th className="text-center py-2 px-2 w-12 whitespace-nowrap">Días</th>
-                <th className="text-center py-2 px-2 w-14 whitespace-nowrap">HE</th>
-                <th className="text-center py-2 px-2 whitespace-nowrap">Obras</th>
-                <th className="text-center py-2 px-2 w-24 whitespace-nowrap">Importe</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((t) => {
-                const ajustado = tieneAjustes(t);
-                return (
-                  <tr
-                    key={t.trabajador_id}
-                    className={cn(
-                      "border-t border-border hover:bg-muted/30 cursor-pointer",
-                      ajustado && "bg-edited hover:bg-edited",
-                      t.duplicados.length > 0 && "bg-destructive/5 hover:bg-destructive/5",
-                    )}
-                    onClick={() => setVerDetalleId(t.trabajador_id)}
-                  >
-                    <td className="py-2 px-2 text-left">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        {t.duplicados.length > 0 && (
-                          <AlertTriangle className="size-3.5 text-destructive shrink-0" />
-                        )}
-                        {ajustado && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Pencil className="size-3 text-edited-foreground shrink-0" />
-                            </TooltipTrigger>
-                            <TooltipContent className="text-xs">
-                              Ajustado desde el panel global
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                        <span className="font-medium truncate">{t.nombre}</span>
-                        {t.puesto && (
-                          <span className="text-xs text-muted-foreground truncate">
-                            · {t.puesto}
-                          </span>
-                        )}
-                      </div>
-                    </td>
+              <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+                <tr>
+                  <th className="text-left py-2 px-2 whitespace-nowrap">Trabajador</th>
+                  <th className="text-center py-2 px-2 w-20 whitespace-nowrap">$/día</th>
+                  <th className="text-center py-2 px-2 w-12 whitespace-nowrap">Días</th>
+                  <th className="text-center py-2 px-2 w-14 whitespace-nowrap">HE</th>
+                  <th className="text-center py-2 px-2 whitespace-nowrap">Obras</th>
+                  <th className="text-center py-2 px-2 w-24 whitespace-nowrap">Importe</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((t) => {
+                  const ajustado = tieneAjustes(t);
+                  return (
+                    <tr
+                      key={t.trabajador_id}
+                      className={cn(
+                        "border-t border-border hover:bg-muted/30 cursor-pointer",
+                        ajustado && "bg-edited hover:bg-edited",
+                        t.duplicados.length > 0 && "bg-destructive/5 hover:bg-destructive/5",
+                      )}
+                      onClick={() => setVerDetalleId(t.trabajador_id)}
+                    >
+                      <td className="py-2 px-2 text-left">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          {t.duplicados.length > 0 && (
+                            <AlertTriangle className="size-3.5 text-destructive shrink-0" />
+                          )}
+                          {ajustado && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Pencil className="size-3 text-edited-foreground shrink-0" />
+                              </TooltipTrigger>
+                              <TooltipContent className="text-xs">
+                                Ajustado desde el panel global
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                          <span className="font-medium truncate">{t.nombre}</span>
+                          {t.puesto && (
+                            <span className="text-xs text-muted-foreground truncate">
+                              · {t.puesto}
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
-                    <td className="py-2 px-2 text-center tabular-nums text-xs">
-                      {formatMXN(t.sueldo_diario)}
-                    </td>
-                    <td className="py-2 px-2 text-center tabular-nums">
-                      {t.dias_totales.toFixed(1)}
-                    </td>
-                    <td className="py-2 px-2 text-center tabular-nums">
-                      {t.horas_extras_totales.toFixed(1)}
-                    </td>
-                    <td className="py-2 px-2 text-center min-w-0">
-                      <div className="flex gap-1 overflow-hidden whitespace-nowrap justify-center">
-                        {t.obras.map((o) => (
-                          <Badge
-                            key={o.nomina_id}
-                            variant="secondary"
-                            className="text-[11px] shrink-0"
-                          >
-                            {o.nombre} ({o.dias.toFixed(1)})
-                          </Badge>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="py-2 px-2 text-center tabular-nums font-medium whitespace-nowrap">
-                      {formatMXN(t.importe_total)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+                      <td className="py-2 px-2 text-center tabular-nums text-xs">
+                        {formatMXN(t.sueldo_diario)}
+                      </td>
+                      <td className="py-2 px-2 text-center tabular-nums">
+                        {t.dias_totales.toFixed(1)}
+                      </td>
+                      <td className="py-2 px-2 text-center tabular-nums">
+                        {t.horas_extras_totales.toFixed(1)}
+                      </td>
+                      <td className="py-2 px-2 text-center min-w-0">
+                        <div className="flex gap-1 overflow-hidden whitespace-nowrap justify-center">
+                          {t.obras.map((o) => (
+                            <Badge
+                              key={o.nomina_id}
+                              variant="secondary"
+                              className="text-[11px] shrink-0"
+                            >
+                              {o.nombre} ({o.dias.toFixed(1)})
+                            </Badge>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="py-2 px-2 text-center tabular-nums font-medium whitespace-nowrap">
+                        {formatMXN(t.importe_total)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </div>
           <div className="flex flex-wrap items-center gap-4 border-t border-border px-3 py-2 text-[11px] text-muted-foreground">

@@ -127,83 +127,85 @@ export function RentasModule({ obraId }: { obraId: string }) {
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm table-fixed">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="text-left py-2 px-3 w-10">#</th>
-                <th className="text-left py-2 px-3">Equipo</th>
-                <th className="text-left py-2 px-3 w-32 hidden sm:table-cell">Proveedor</th>
-                <th className="text-left py-2 px-3 w-24">Estatus</th>
-                <th className="text-left py-2 px-3 w-24 hidden md:table-cell">Llegada</th>
-                <th className="text-left py-2 px-3 w-24">Vence</th>
-                <th className="text-right py-2 px-3 w-28">Acumulado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rentas.map((r) => {
-                const alerta =
-                  r.estatus === "activa" &&
-                  r.dias_restantes != null &&
-                  r.dias_restantes <= r.dias_aviso_vencimiento;
-                const handleOpen = () => setViewingId(r.id);
-                return (
-                  <tr
-                    key={r.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={handleOpen}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleOpen();
-                      }
-                    }}
-                    className="border-t border-border cursor-pointer hover:bg-muted/40 focus:bg-muted/40 focus:outline-none"
-                  >
-                    <td className="py-2 px-3 tabular-nums align-middle">{r.numero}</td>
-                    <td className="py-2 px-3 align-middle">
-                      <div className="truncate">
-                        <span className="font-medium">{r.equipo}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {" · "}
-                          {r.cantidad > 1 ? `${r.cantidad}u · ` : ""}
-                          {r.periodicidad ?? "sin periodicidad"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-2 px-3 align-middle truncate hidden sm:table-cell">
-                      {r.proveedor_nombre ?? "—"}
-                    </td>
-                    <td className="py-2 px-3 align-middle">
-                      <Badge variant={ESTATUS_VARIANT[r.estatus]}>{ESTATUS_LABEL[r.estatus]}</Badge>
-                    </td>
-                    <td className="py-2 px-3 align-middle hidden md:table-cell">
-                      {formatDate(r.fecha_llegada_real)}
-                    </td>
-                    <td className="py-2 px-3 align-middle">
-                      <span className={alerta ? "text-yellow-600 font-medium" : ""}>
-                        {formatDate(r.fecha_fin_programada)}
-                      </span>
-                      {alerta && r.dias_restantes != null && (
-                        <div className="text-[11px] text-yellow-600 leading-tight">
-                          {r.dias_restantes < 0
-                            ? `−${Math.abs(r.dias_restantes)}d`
-                            : `${r.dias_restantes}d`}
+              <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+                <tr>
+                  <th className="text-left py-2 px-3 w-10">#</th>
+                  <th className="text-left py-2 px-3">Equipo</th>
+                  <th className="text-left py-2 px-3 w-32 hidden sm:table-cell">Proveedor</th>
+                  <th className="text-left py-2 px-3 w-24">Estatus</th>
+                  <th className="text-left py-2 px-3 w-24 hidden md:table-cell">Llegada</th>
+                  <th className="text-left py-2 px-3 w-24">Vence</th>
+                  <th className="text-right py-2 px-3 w-28">Acumulado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rentas.map((r) => {
+                  const alerta =
+                    r.estatus === "activa" &&
+                    r.dias_restantes != null &&
+                    r.dias_restantes <= r.dias_aviso_vencimiento;
+                  const handleOpen = () => setViewingId(r.id);
+                  return (
+                    <tr
+                      key={r.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={handleOpen}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleOpen();
+                        }
+                      }}
+                      className="border-t border-border cursor-pointer hover:bg-muted/40 focus:bg-muted/40 focus:outline-none"
+                    >
+                      <td className="py-2 px-3 tabular-nums align-middle">{r.numero}</td>
+                      <td className="py-2 px-3 align-middle">
+                        <div className="truncate">
+                          <span className="font-medium">{r.equipo}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {" · "}
+                            {r.cantidad > 1 ? `${r.cantidad}u · ` : ""}
+                            {r.periodicidad ?? "sin periodicidad"}
+                          </span>
                         </div>
-                      )}
-                    </td>
-                    <td className="py-2 px-3 text-right tabular-nums align-middle">
-                      {formatMXN(r.monto_acumulado)}
-                      {r.dias_acumulados > 0 && (
-                        <span className="text-xs text-muted-foreground">
-                          {" "}
-                          ({r.dias_acumulados}d)
+                      </td>
+                      <td className="py-2 px-3 align-middle truncate hidden sm:table-cell">
+                        {r.proveedor_nombre ?? "—"}
+                      </td>
+                      <td className="py-2 px-3 align-middle">
+                        <Badge variant={ESTATUS_VARIANT[r.estatus]}>
+                          {ESTATUS_LABEL[r.estatus]}
+                        </Badge>
+                      </td>
+                      <td className="py-2 px-3 align-middle hidden md:table-cell">
+                        {formatDate(r.fecha_llegada_real)}
+                      </td>
+                      <td className="py-2 px-3 align-middle">
+                        <span className={alerta ? "text-yellow-600 font-medium" : ""}>
+                          {formatDate(r.fecha_fin_programada)}
                         </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+                        {alerta && r.dias_restantes != null && (
+                          <div className="text-[11px] text-yellow-600 leading-tight">
+                            {r.dias_restantes < 0
+                              ? `−${Math.abs(r.dias_restantes)}d`
+                              : `${r.dias_restantes}d`}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-2 px-3 text-right tabular-nums align-middle">
+                        {formatMXN(r.monto_acumulado)}
+                        {r.dias_acumulados > 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            {" "}
+                            ({r.dias_acumulados}d)
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </div>
         </Card>

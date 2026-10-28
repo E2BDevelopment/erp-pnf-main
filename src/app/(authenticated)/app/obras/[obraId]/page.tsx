@@ -217,22 +217,24 @@ function ObraHeader({
       {/* Línea 2: meta (ubicación + fechas) */}
       <div className="flex items-center gap-x-4 gap-y-1 flex-wrap text-sm text-muted-foreground">
         {obra.ubicacion ? (
-          <div className="flex items-center gap-1.5">
-            <MapPin className="size-3.5" />
-            <span className="truncate max-w-[260px]">{ubicacionTexto}</span>
+          <div className="flex min-w-0 max-w-full items-center gap-1.5">
+            <MapPin className="size-3.5 shrink-0" />
+            <span className="truncate max-w-[calc(100vw-6rem)] sm:max-w-[260px]">
+              {ubicacionTexto}
+            </span>
             <a
               href={mapsHref!}
               target="_blank"
               rel="noopener noreferrer"
               title="Abrir en Google Maps"
-              className="hover:text-foreground transition-colors"
+              className="shrink-0 hover:text-foreground transition-colors"
             >
               <ExternalLink className="size-3.5" />
             </a>
             <button
               onClick={copiarUbicacion}
               title="Copiar ubicación"
-              className="hover:text-foreground transition-colors"
+              className="shrink-0 hover:text-foreground transition-colors"
             >
               <Copy className="size-3.5" />
             </button>

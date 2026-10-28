@@ -202,17 +202,19 @@ export function DestajosModule({ obraId }: { obraId: string }) {
                           >
                             <Eye className="size-3.5" />
                           </Button>
-                          {director && d.estatus_base === "borrador" && d.pagado_acumulado === 0 && (
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-8 w-8 text-destructive"
-                              aria-label="Eliminar destajo"
-                              onClick={() => setToDelete(d)}
-                            >
-                              <Trash2 className="size-3.5" />
-                            </Button>
-                          )}
+                          {director &&
+                            d.estatus_base === "borrador" &&
+                            d.pagado_acumulado === 0 && (
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-8 w-8 text-destructive"
+                                aria-label="Eliminar destajo"
+                                onClick={() => setToDelete(d)}
+                              >
+                                <Trash2 className="size-3.5" />
+                              </Button>
+                            )}
                         </div>
                       </td>
                     </tr>
