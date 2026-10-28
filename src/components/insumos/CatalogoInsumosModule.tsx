@@ -1,0 +1,1226 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { useServerFn } from "@/lib/server-fn/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import {
+  AlertTriangle,
+  BarChart3,
+  Boxes,
+  Check,
+  FileSpreadsheet,
+  FolderTree,
+  Pencil,
+  Plus,
+  Ruler,
+  Search,
+  Tag,
+  Trash2,
+  TrendingUp,
+  X,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { TruncatedCell } from "@/components/pagos/TruncatedCell";
+import { useEffectiveRoles, isDirector as checkDirector } from "@/stores/auth";
+import {
+  listInsumos,
+  listCategorias,
+  getMetricasInsumos,
+  solicitarInsumo,
+  editarInsumo,
+  autorizarInsumo,
+  rechazarInsumo,
+  crearCategoria,
+  editarCategoria,
+  eliminarCategoria,
+  getHistorialPrecios,
+  listUnidades,
+  crearUnidad,
+  editarUnidad,
+  eliminarUnidad,
+} from "@/lib/api-client/insumos.functions";
+import { ImportarInsumosDialog } from "./ImportarInsumosDialog";
+
+type Unidad = string;
+
+const BADGE_TONES = [
+  "bg-blue-100 text-blue-800",
+  "bg-emerald-100 text-emerald-800",
+  "bg-amber-100 text-amber-800",
+  "bg-purple-100 text-purple-800",
+  "bg-rose-100 text-rose-800",
+  "bg-cyan-100 text-cyan-800",
+];
+function toneFor(id: string | null | undefined) {
+  if (!id) return "bg-muted text-muted-foreground";
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return BADGE_TONES[h % BADGE_TONES.length];
+}
+
+function fmtMoney(n: number) {
+  return new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(n);
+}
+
+export function CatalogoInsumosModule() {
+  const roles = useEffectiveRoles();
+  const director = checkDirector(roles);
+  const qc = useQueryClient();
+
+  const [tab, setTab] = useState<"autorizado" | "pendiente">("autorizado");
+  const [search, setSearch] = useState("");
+  const [categoriaId, setCategoriaId] = useState<string>("all");
+  const [unidad, setUnidad] = useState<string>("all");
+
+  const [openSolicitar, setOpenSolicitar] = useState(false);
+  const [openImportar, setOpenImportar] = useState(false);
+  const [openCategorias, setOpenCategorias] = useState(false);
+  const [openUnidades, setOpenUnidades] = useState(false);
+  const [editInsumo, setEditInsumo] = useState<any | null>(null);
+  const [historialFor, setHistorialFor] = useState<any | null>(null);
+
+  const listFn = useServerFn(listInsumos);
+  const catsFn = useServerFn(listCategorias);
+  const unitsFn = useServerFn(listUnidades);
+  const metFn = useServerFn(getMetricasInsumos);
+
+  const filtros = {
+    estatus: tab,
+    categoriaId: categoriaId === "all" ? null : categoriaId,
+    unidad: unidad === "all" ? undefined : unidad,
+    search: search || undefined,
+  };
+
+  const insumosQ = useQuery({
+    queryKey: ["insumos", filtros],
+    queryFn: () => listFn({ data: filtros }),
+  });
+  const categoriasQ = useQuery({ queryKey: ["insumo-categorias"], queryFn: () => catsFn() });
+  const unidadesQ = useQuery({ queryKey: ["insumo-unidades"], queryFn: () => unitsFn() });
+  const metricasQ = useQuery({ queryKey: ["insumos-metricas"], queryFn: () => metFn() });
+
+  const pendientesCount = metricasQ.data?.pendientes ?? 0;
+
+  const autorizarMut = useMutation({
+    mutationFn: useServerFn(autorizarInsumo),
+    onSuccess: () => {
+      toast.success("Insumo autorizado");
+      qc.invalidateQueries({ queryKey: ["insumos"] });
+      qc.invalidateQueries({ queryKey: ["insumos-metricas"] });
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+  const rechazarMut = useMutation({
+    mutationFn: useServerFn(rechazarInsumo),
+    onSuccess: () => {
+      toast.success("Insumo rechazado");
+      qc.invalidateQueries({ queryKey: ["insumos"] });
+      qc.invalidateQueries({ queryKey: ["insumos-metricas"] });
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  return (
+    <div className="flex flex-col gap-6">
+      <header className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 className="text-xl font-semibold tracking-tight">Insumos</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Gestiona los insumos disponibles para tus obras
+          </p>
+        </div>
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+          {director && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8"
+              onClick={() => setOpenCategorias(true)}
+            >
+              <FolderTree className="size-3.5 mr-1" /> Categorías
+            </Button>
+          )}
+          {director && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8"
+              onClick={() => setOpenUnidades(true)}
+            >
+              <Ruler className="size-3.5 mr-1" /> Unidades
+            </Button>
+          )}
+          {director && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8"
+              onClick={() => setOpenImportar(true)}
+            >
+              <FileSpreadsheet className="size-3.5 mr-1" /> Importar Excel
+            </Button>
+          )}
+          <Button
+            size="sm"
+            onClick={() => setOpenSolicitar(true)}
+            className="bg-primary hover:bg-primary/90 h-8"
+          >
+            <Plus className="size-3.5 mr-1" /> Solicitar insumo
+          </Button>
+        </div>
+      </header>
+
+      {director && pendientesCount > 0 && (
+        <Card className="border-amber-300 bg-amber-50 p-4 flex items-start gap-3">
+          <AlertTriangle className="size-5 text-amber-600 mt-0.5" />
+          <div className="flex-1">
+            <p className="font-medium text-amber-900">
+              Tienes {pendientesCount}{" "}
+              {pendientesCount === 1 ? "insumo pendiente" : "insumos pendientes"} de autorización
+            </p>
+            <p className="text-sm text-amber-800">
+              Revisa la pestaña Pendientes para autorizar o rechazar.
+            </p>
+          </div>
+          <Button size="sm" variant="outline" onClick={() => setTab("pendiente")}>
+            Revisar
+          </Button>
+        </Card>
+      )}
+
+      <Card className="p-3 flex flex-col sm:flex-row sm:flex-nowrap items-stretch sm:items-center gap-2">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Nombre o código…"
+            className="pl-8 h-8 text-xs"
+          />
+        </div>
+        <Select value={categoriaId} onValueChange={setCategoriaId}>
+          <SelectTrigger className="w-36 h-8 text-xs shrink-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas las categorías</SelectItem>
+            {(categoriasQ.data ?? []).map((c: any) => (
+              <SelectItem key={c.id} value={c.id}>
+                {c.nombre}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={unidad} onValueChange={setUnidad}>
+          <SelectTrigger className="w-36 h-8 text-xs shrink-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas las unidades</SelectItem>
+            {(unidadesQ.data ?? []).map((u: any) => (
+              <SelectItem key={u.id} value={u.codigo}>
+                {u.codigo}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Card>
+
+      <TooltipProvider>
+        <Card className="p-4">
+          <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
+            <TabsList>
+              <TabsTrigger value="autorizado">Autorizados</TabsTrigger>
+              <TabsTrigger value="pendiente" className="gap-2">
+                Pendientes
+                {pendientesCount > 0 && (
+                  <Badge variant="destructive" className="h-5 px-1.5">
+                    {pendientesCount}
+                  </Badge>
+                )}
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="autorizado" className="mt-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[120px] whitespace-nowrap">Código</TableHead>
+                    <TableHead className="whitespace-nowrap">Nombre</TableHead>
+                    <TableHead className="whitespace-nowrap">Unidad</TableHead>
+                    <TableHead className="whitespace-nowrap">Categoría</TableHead>
+                    <TableHead className="whitespace-nowrap">Último precio</TableHead>
+                    <TableHead className="whitespace-nowrap">Proveedor</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(insumosQ.data ?? []).length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                        No hay insumos autorizados con esos filtros.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  {(insumosQ.data ?? []).map((i: any) => (
+                    <TableRow key={i.id}>
+                      <TableCell className="font-mono text-xs whitespace-nowrap">
+                        {i.codigo ?? "—"}
+                      </TableCell>
+                      <TableCell className="font-medium whitespace-nowrap max-w-[240px]">
+                        <TruncatedCell>
+                          <span className="inline-flex items-center gap-2">
+                            {i.nombre}
+                            {i.disponible_renta && (
+                              <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
+                                Renta
+                              </Badge>
+                            )}
+                          </span>
+                        </TruncatedCell>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <Badge variant="outline">{i.unidad}</Badge>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {i.categoria ? (
+                          <span
+                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${toneFor(i.categoria.id)}`}
+                          >
+                            {i.categoria.nombre}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">Sin categoría</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {i.ultimo_precio ? (
+                          fmtMoney(i.ultimo_precio.precio)
+                        ) : (
+                          <span className="text-muted-foreground text-xs">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {i.ultimo_precio?.proveedor ?? (
+                          <span className="text-muted-foreground text-xs">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right whitespace-nowrap">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => setHistorialFor(i)}
+                          title="Ver historial"
+                          aria-label="Ver historial de precios"
+                        >
+                          <BarChart3 className="size-4" />
+                        </Button>
+                        {director && (
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => setEditInsumo(i)}
+                            title="Editar"
+                            aria-label="Editar insumo"
+                          >
+                            <Pencil className="size-4" />
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+
+            <TabsContent value="pendiente" className="mt-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Nombre</TableHead>
+                    <TableHead className="whitespace-nowrap">Unidad</TableHead>
+                    <TableHead className="whitespace-nowrap">Categoría</TableHead>
+                    <TableHead className="whitespace-nowrap">Solicitado por</TableHead>
+                    <TableHead className="whitespace-nowrap">Fecha</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">
+                      {director ? "Acciones" : "Estado"}
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(insumosQ.data ?? []).length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                        Sin solicitudes pendientes.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  {(insumosQ.data ?? []).map((i: any) => (
+                    <TableRow key={i.id}>
+                      <TableCell className="font-medium whitespace-nowrap max-w-[240px]">
+                        <TruncatedCell>{i.nombre}</TruncatedCell>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <Badge variant="outline">{i.unidad}</Badge>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {i.categoria ? (
+                          <span
+                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${toneFor(i.categoria.id)}`}
+                          >
+                            {i.categoria.nombre}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">Sin categoría</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {i.solicitante?.nombre_completo ?? i.solicitante?.email ?? "—"}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {new Date(i.created_at).toLocaleDateString("es-MX")}
+                      </TableCell>
+                      <TableCell className="text-right space-x-2 whitespace-nowrap">
+                        {director ? (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => autorizarMut.mutate({ data: { id: i.id } })}
+                            >
+                              <Check className="size-4 mr-1" /> Autorizar
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => rechazarMut.mutate({ data: { id: i.id } })}
+                            >
+                              <X className="size-4 mr-1" /> Rechazar
+                            </Button>
+                          </>
+                        ) : (
+                          <Badge variant="secondary">Pendiente</Badge>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
+        </Card>
+      </TooltipProvider>
+
+      <SolicitarDialog
+        open={openSolicitar}
+        onOpenChange={setOpenSolicitar}
+        categorias={categoriasQ.data ?? []}
+        unidades={unidadesQ.data ?? []}
+        isDirector={director}
+      />
+      {director && <ImportarInsumosDialog open={openImportar} onOpenChange={setOpenImportar} />}
+      {director && (
+        <CategoriasDialog
+          open={openCategorias}
+          onOpenChange={setOpenCategorias}
+          categorias={categoriasQ.data ?? []}
+        />
+      )}
+      {director && (
+        <UnidadesDialog
+          open={openUnidades}
+          onOpenChange={setOpenUnidades}
+          unidades={unidadesQ.data ?? []}
+        />
+      )}
+      {editInsumo && (
+        <EditarInsumoDialog
+          insumo={editInsumo}
+          categorias={categoriasQ.data ?? []}
+          unidades={unidadesQ.data ?? []}
+          onClose={() => setEditInsumo(null)}
+        />
+      )}
+      {historialFor && (
+        <HistorialDialog insumo={historialFor} onClose={() => setHistorialFor(null)} />
+      )}
+    </div>
+  );
+}
+
+function MetricCard({
+  icon,
+  label,
+  value,
+  accent,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  accent?: boolean;
+}) {
+  return (
+    <Card className={`p-4 ${accent ? "border-amber-300 bg-amber-50" : ""}`}>
+      <div className="flex items-center gap-3">
+        <div
+          className={`rounded-md p-2 ${accent ? "bg-amber-100 text-amber-700" : "bg-primary/10 text-primary"}`}
+        >
+          {icon}
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground">{label}</p>
+          <p className="text-2xl font-semibold">{value}</p>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function SolicitarDialog({
+  open,
+  onOpenChange,
+  categorias,
+  unidades,
+  isDirector,
+}: {
+  open: boolean;
+  onOpenChange: (b: boolean) => void;
+  categorias: any[];
+  unidades: any[];
+  isDirector: boolean;
+}) {
+  const qc = useQueryClient();
+  const defaultUnidad = unidades[0]?.codigo ?? "";
+  const [nombre, setNombre] = useState("");
+  const [unidad, setUnidad] = useState<Unidad>(defaultUnidad);
+  const [categoriaId, setCategoriaId] = useState<string>("none");
+  const [disponibleRenta, setDisponibleRenta] = useState<boolean>(false);
+
+  // Ensure unidad has a valid default when unidades load
+  if (!unidad && defaultUnidad) {
+    setUnidad(defaultUnidad);
+  }
+
+  const mut = useMutation({
+    mutationFn: useServerFn(solicitarInsumo),
+    onSuccess: () => {
+      toast.success(
+        isDirector
+          ? "Insumo creado y autorizado."
+          : "Insumo solicitado. Pendiente de autorización.",
+      );
+      qc.invalidateQueries({ queryKey: ["insumos"] });
+      qc.invalidateQueries({ queryKey: ["insumos-metricas"] });
+      setNombre("");
+      setUnidad(defaultUnidad);
+      setCategoriaId("none");
+      setDisponibleRenta(false);
+      onOpenChange(false);
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{isDirector ? "Nuevo insumo" : "Solicitar insumo"}</DialogTitle>
+          <DialogDescription>
+            {isDirector
+              ? "El insumo se creará autorizado en el catálogo."
+              : "El Director revisará tu solicitud."}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3">
+          <div>
+            <Label>Nombre</Label>
+            <Input value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={200} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Unidad</Label>
+              <Select value={unidad} onValueChange={(v) => setUnidad(v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {unidades.length === 0 && (
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                      Sin unidades. Pide al Director crearlas.
+                    </div>
+                  )}
+                  {unidades.map((u: any) => (
+                    <SelectItem key={u.id} value={u.codigo}>
+                      {u.codigo}
+                      {u.nombre ? ` — ${u.nombre}` : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Categoría</Label>
+              <Select value={categoriaId} onValueChange={setCategoriaId}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sin categoría</SelectItem>
+                  {categorias.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.nombre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          {isDirector && (
+            <div className="flex items-start gap-2 pt-1">
+              <Checkbox
+                id="disponible-renta-nuevo"
+                checked={disponibleRenta}
+                onCheckedChange={(v) => setDisponibleRenta(v === true)}
+              />
+              <div className="grid gap-0.5">
+                <Label htmlFor="disponible-renta-nuevo" className="cursor-pointer">
+                  Disponible para rentas
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Si se activa, este insumo podrá seleccionarse al crear una renta.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancelar
+          </Button>
+          <Button
+            disabled={!nombre.trim() || !unidad || mut.isPending}
+            onClick={() =>
+              mut.mutate({
+                data: {
+                  nombre: nombre.trim(),
+                  unidad,
+                  categoriaId: categoriaId === "none" ? null : categoriaId,
+                  ...(isDirector ? { disponibleRenta } : {}),
+                },
+              })
+            }
+          >
+            {isDirector ? "Crear" : "Solicitar"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function derivarPrefijoUI(nombre: string): string {
+  const clean = nombre.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  return (clean + "XXX").slice(0, 3);
+}
+
+function CategoriasDialog({
+  open,
+  onOpenChange,
+  categorias,
+}: {
+  open: boolean;
+  onOpenChange: (b: boolean) => void;
+  categorias: any[];
+}) {
+  const qc = useQueryClient();
+  const [nueva, setNueva] = useState("");
+  const [nuevoPrefijo, setNuevoPrefijo] = useState("");
+  const [editing, setEditing] = useState<{ id: string; nombre: string; prefijo: string } | null>(
+    null,
+  );
+
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ["insumo-categorias"] });
+    qc.invalidateQueries({ queryKey: ["insumos-metricas"] });
+    qc.invalidateQueries({ queryKey: ["insumos"] });
+  };
+
+  const crearMut = useMutation({
+    mutationFn: useServerFn(crearCategoria),
+    onSuccess: () => {
+      toast.success("Categoría creada");
+      setNueva("");
+      setNuevoPrefijo("");
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+  const editMut = useMutation({
+    mutationFn: useServerFn(editarCategoria),
+    onSuccess: () => {
+      toast.success("Categoría actualizada");
+      setEditing(null);
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+  const delMut = useMutation({
+    mutationFn: useServerFn(eliminarCategoria),
+    onSuccess: () => {
+      toast.success("Categoría eliminada");
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const prefijoAuto = nueva.trim() ? derivarPrefijoUI(nueva.trim()) : "";
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Categorías de insumos</DialogTitle>
+          <DialogDescription>
+            El prefijo (3 caracteres) se usa para generar el código de los insumos, ej.{" "}
+            <span className="font-mono">CEM-0001</span>.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3">
+          <div className="grid grid-cols-[1fr_100px_auto] gap-2 items-end">
+            <div>
+              <Label className="text-xs">Nombre</Label>
+              <Input
+                value={nueva}
+                onChange={(e) => setNueva(e.target.value)}
+                placeholder="Nueva categoría..."
+                maxLength={100}
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Prefijo</Label>
+              <Input
+                value={nuevoPrefijo}
+                onChange={(e) =>
+                  setNuevoPrefijo(
+                    e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z0-9]/g, "")
+                      .slice(0, 3),
+                  )
+                }
+                placeholder={prefijoAuto || "AUTO"}
+                maxLength={3}
+                className="font-mono uppercase"
+              />
+            </div>
+            <Button
+              disabled={!nueva.trim() || crearMut.isPending}
+              onClick={() =>
+                crearMut.mutate({
+                  data: {
+                    nombre: nueva.trim(),
+                    prefijo: nuevoPrefijo.length === 3 ? nuevoPrefijo : undefined,
+                  },
+                })
+              }
+            >
+              <Plus /> Agregar
+            </Button>
+          </div>
+          <div className="border rounded-md divide-y max-h-80 overflow-auto">
+            {categorias.length === 0 && (
+              <p className="text-sm text-muted-foreground p-4 text-center">Sin categorías aún.</p>
+            )}
+            {categorias.map((c) => (
+              <div key={c.id} className="flex items-center gap-2 p-2">
+                {editing && editing.id === c.id ? (
+                  <>
+                    <Input
+                      value={editing.nombre}
+                      onChange={(e) =>
+                        setEditing((prev) => (prev ? { ...prev, nombre: e.target.value } : prev))
+                      }
+                      maxLength={100}
+                      className="flex-1"
+                    />
+                    <Input
+                      value={editing.prefijo}
+                      onChange={(e) =>
+                        setEditing((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                prefijo: e.target.value
+                                  .toUpperCase()
+                                  .replace(/[^A-Z0-9]/g, "")
+                                  .slice(0, 3),
+                              }
+                            : prev,
+                        )
+                      }
+                      maxLength={3}
+                      className="w-20 font-mono uppercase"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        editing &&
+                        editMut.mutate({
+                          data: {
+                            id: editing.id,
+                            nombre: editing.nombre.trim(),
+                            prefijo: editing.prefijo.length === 3 ? editing.prefijo : undefined,
+                          },
+                        })
+                      }
+                    >
+                      Guardar
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setEditing(null)}>
+                      Cancelar
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <span className="flex-1 text-sm">{c.nombre}</span>
+                    <Badge variant="outline" className="font-mono">
+                      {c.prefijo ?? "—"}
+                    </Badge>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      aria-label={`Editar categoría ${c.nombre}`}
+                      onClick={() =>
+                        setEditing({ id: c.id, nombre: c.nombre, prefijo: c.prefijo ?? "" })
+                      }
+                    >
+                      <Pencil />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      aria-label={`Eliminar categoría ${c.nombre}`}
+                      onClick={() => {
+                        if (confirm(`¿Eliminar "${c.nombre}"?`))
+                          delMut.mutate({ data: { id: c.id } });
+                      }}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function EditarInsumoDialog({
+  insumo,
+  categorias,
+  unidades,
+  onClose,
+}: {
+  insumo: any;
+  categorias: any[];
+  unidades: any[];
+  onClose: () => void;
+}) {
+  const qc = useQueryClient();
+  const [nombre, setNombre] = useState(insumo.nombre);
+  const [codigo, setCodigo] = useState<string>(insumo.codigo ?? "");
+  const [unidad, setUnidad] = useState<Unidad>(insumo.unidad);
+  const [categoriaId, setCategoriaId] = useState<string>(insumo.categoria_id ?? "none");
+  const [disponibleRenta, setDisponibleRenta] = useState<boolean>(!!insumo.disponible_renta);
+
+  const codigoValido = !codigo || /^[A-Z0-9]{2,5}-\d{3,6}$/.test(codigo);
+
+  const mut = useMutation({
+    mutationFn: useServerFn(editarInsumo),
+    onSuccess: () => {
+      toast.success("Insumo actualizado");
+      qc.invalidateQueries({ queryKey: ["insumos"] });
+      qc.invalidateQueries({ queryKey: ["insumos-renta"] });
+      onClose();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Editar insumo</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3">
+          <div className="grid grid-cols-[140px_1fr] gap-3">
+            <div>
+              <Label>Código</Label>
+              <Input
+                value={codigo}
+                onChange={(e) => setCodigo(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ""))}
+                placeholder="CEM-0001"
+                maxLength={12}
+                className="font-mono uppercase"
+              />
+              {!codigoValido && (
+                <p className="text-[11px] text-destructive mt-1">
+                  Formato: PREFIJO-NÚMERO (ej. CEM-0001)
+                </p>
+              )}
+            </div>
+            <div>
+              <Label>Nombre</Label>
+              <Input value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={200} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Unidad</Label>
+              <Select value={unidad} onValueChange={(v) => setUnidad(v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {unidades.map((u: any) => (
+                    <SelectItem key={u.id} value={u.codigo}>
+                      {u.codigo}
+                      {u.nombre ? ` — ${u.nombre}` : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Categoría</Label>
+              <Select value={categoriaId} onValueChange={setCategoriaId}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sin categoría</SelectItem>
+                  {categorias.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.nombre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <label className="flex items-start gap-3 rounded-md border p-3 cursor-pointer hover:bg-muted/40">
+            <Checkbox
+              checked={disponibleRenta}
+              onCheckedChange={(v) => setDisponibleRenta(v === true)}
+              className="mt-0.5"
+            />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Disponible para rentas</p>
+              <p className="text-xs text-muted-foreground">
+                Si está activo, el insumo podrá seleccionarse al crear una solicitud de renta en
+                obra.
+              </p>
+            </div>
+          </label>
+
+          <p className="text-xs text-muted-foreground">
+            El código se asigna automáticamente al crear el insumo. Solo se edita si necesitas
+            corregirlo manualmente.
+          </p>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button
+            disabled={!nombre.trim() || !codigoValido || mut.isPending}
+            onClick={() =>
+              mut.mutate({
+                data: {
+                  id: insumo.id,
+                  nombre: nombre.trim(),
+                  unidad,
+                  categoriaId: categoriaId === "none" ? null : categoriaId,
+                  codigo: codigo || undefined,
+                  disponibleRenta,
+                },
+              })
+            }
+          >
+            Guardar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function HistorialDialog({ insumo, onClose }: { insumo: any; onClose: () => void }) {
+  const fn = useServerFn(getHistorialPrecios);
+  const q = useQuery({
+    queryKey: ["insumo-historial", insumo.id],
+    queryFn: () => fn({ data: { insumoId: insumo.id } }),
+  });
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Historial de precios — {insumo.nombre}</DialogTitle>
+        </DialogHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Fecha</TableHead>
+              <TableHead>Precio unitario</TableHead>
+              <TableHead>Cantidad</TableHead>
+              <TableHead>Proveedor</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {(q.data ?? []).length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
+                  Sin historial. Se alimentará desde las órdenes de compra.
+                </TableCell>
+              </TableRow>
+            )}
+            {(q.data ?? []).map((h: any) => (
+              <TableRow key={h.id}>
+                <TableCell>{new Date(h.fecha).toLocaleDateString("es-MX")}</TableCell>
+                <TableCell>{fmtMoney(Number(h.precio_unitario))}</TableCell>
+                <TableCell>{h.cantidad ?? "—"}</TableCell>
+                <TableCell>{h.proveedor ?? "—"}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function UnidadesDialog({
+  open,
+  onOpenChange,
+  unidades,
+}: {
+  open: boolean;
+  onOpenChange: (b: boolean) => void;
+  unidades: any[];
+}) {
+  const qc = useQueryClient();
+  const [codigo, setCodigo] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [editing, setEditing] = useState<{ id: string; codigo: string; nombre: string } | null>(
+    null,
+  );
+
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ["insumo-unidades"] });
+    qc.invalidateQueries({ queryKey: ["insumos"] });
+  };
+
+  const crearMut = useMutation({
+    mutationFn: useServerFn(crearUnidad),
+    onSuccess: () => {
+      toast.success("Unidad creada");
+      setCodigo("");
+      setNombre("");
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+  const editMut = useMutation({
+    mutationFn: useServerFn(editarUnidad),
+    onSuccess: () => {
+      toast.success("Unidad actualizada");
+      setEditing(null);
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+  const delMut = useMutation({
+    mutationFn: useServerFn(eliminarUnidad),
+    onSuccess: () => {
+      toast.success("Unidad eliminada");
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Unidades de medida</DialogTitle>
+          <DialogDescription>
+            El código (ej. <span className="font-mono">PZA</span>) es el que aparece en los insumos.
+            El nombre es opcional para mayor claridad.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3">
+          <div className="grid grid-cols-[110px_1fr_auto] gap-2 items-end">
+            <div>
+              <Label className="text-xs">Código</Label>
+              <Input
+                value={codigo}
+                onChange={(e) =>
+                  setCodigo(
+                    e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z0-9]/g, "")
+                      .slice(0, 10),
+                  )
+                }
+                placeholder="PZA"
+                maxLength={10}
+                className="font-mono uppercase"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Nombre (opcional)</Label>
+              <Input
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                placeholder="Pieza"
+                maxLength={100}
+              />
+            </div>
+            <Button
+              disabled={!codigo.trim() || crearMut.isPending}
+              onClick={() =>
+                crearMut.mutate({
+                  data: {
+                    codigo: codigo.trim(),
+                    nombre: nombre.trim() || null,
+                  },
+                })
+              }
+            >
+              <Plus /> Agregar
+            </Button>
+          </div>
+          <div className="border rounded-md divide-y max-h-80 overflow-auto">
+            {unidades.length === 0 && (
+              <p className="text-sm text-muted-foreground p-4 text-center">Sin unidades aún.</p>
+            )}
+            {unidades.map((u: any) => (
+              <div key={u.id} className="flex items-center gap-2 p-2">
+                {editing && editing.id === u.id ? (
+                  <>
+                    <Input
+                      value={editing.codigo}
+                      onChange={(e) =>
+                        setEditing((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                codigo: e.target.value
+                                  .toUpperCase()
+                                  .replace(/[^A-Z0-9]/g, "")
+                                  .slice(0, 10),
+                              }
+                            : prev,
+                        )
+                      }
+                      maxLength={10}
+                      className="w-24 font-mono uppercase"
+                    />
+                    <Input
+                      value={editing.nombre}
+                      onChange={(e) =>
+                        setEditing((prev) => (prev ? { ...prev, nombre: e.target.value } : prev))
+                      }
+                      maxLength={100}
+                      className="flex-1"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        editing &&
+                        editMut.mutate({
+                          data: {
+                            id: editing.id,
+                            codigo: editing.codigo.trim(),
+                            nombre: editing.nombre.trim() || null,
+                          },
+                        })
+                      }
+                    >
+                      Guardar
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setEditing(null)}>
+                      Cancelar
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Badge variant="outline" className="font-mono">
+                      {u.codigo}
+                    </Badge>
+                    <span className="flex-1 text-sm text-muted-foreground">{u.nombre ?? "—"}</span>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      aria-label={`Editar unidad ${u.codigo}`}
+                      onClick={() =>
+                        setEditing({ id: u.id, codigo: u.codigo, nombre: u.nombre ?? "" })
+                      }
+                    >
+                      <Pencil />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      aria-label={`Eliminar unidad ${u.codigo}`}
+                      onClick={() => {
+                        if (confirm(`¿Eliminar la unidad "${u.codigo}"?`))
+                          delMut.mutate({ data: { id: u.id } });
+                      }}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

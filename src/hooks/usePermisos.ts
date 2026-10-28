@@ -1,0 +1,43 @@
+"use client";
+
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@/lib/server-fn/client";
+import { listRolePermissions } from "@/lib/api-client/permisos.functions";
+import { hasPermission, overridesFromRows } from "@/lib/permisos/check";
+import { useEffectiveRoles, useRealIsDirector } from "@/stores/auth";
+
+/**
+ * Fuente de verdad en cliente para permisos por rol.
+ * `can(actionKey)` evalúa contra los roles efectivos (respeta rol asumido del director).
+ */
+export function usePermisos() {
+  const listFn = useServerFn(listRolePermissions);
+  const roles = useEffectiveRoles();
+  const isDirector = useRealIsDirector();
+  const rolesKey = roles.slice().sort().join("|") || "none";
+
+  const q = useQuery({
+    queryKey: ["role_permissions", rolesKey],
+    queryFn: () => listFn(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const overrides = useMemo(() => {
+    const items =
+      (
+        q.data as
+          { items?: Array<{ role: string; action_key: string; allowed: boolean }> } | undefined
+      )?.items ?? [];
+    return overridesFromRows(items);
+  }, [q.data]);
+
+  const can = useMemo(() => {
+    return (actionKey: string) => {
+      if (!roles.includes("director") && q.data === undefined) return false;
+      return hasPermission(actionKey, roles, overrides);
+    };
+  }, [roles, overrides, q.data]);
+
+  return { can, isDirector, isLoading: q.isLoading };
+}

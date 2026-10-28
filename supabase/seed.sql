@@ -1,0 +1,12 @@
+-- Seed de `supabase db reset`.
+--
+-- El esquema se reconstruye por completo con las migraciones de
+-- `supabase/migrations` (83 archivos). La empresa de demostración NO se define
+-- aquí: se siembra con la API de Supabase para ejercitar RLS y Auth reales.
+--
+--   npm run demo:seed     -- siembra la empresa demo (falla si ya existe)
+--   npm run demo:reset    -- trunca y vuelve a sembrar
+--   npm run demo:verify   -- comprueba datos y login de los 6 usuarios
+--
+-- Este archivo existe para que `db reset` no advierta por un seed.sql ausente.
+select 1 as seed_ok;

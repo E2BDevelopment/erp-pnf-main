@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+dist
+.output
+.turbo
+coverage
+package-lock.json
+pnpm-lock.yaml
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+src/integrations/supabase/types.ts
+src/lib/server-fn/registry.server.ts
+src/lib/api-client/

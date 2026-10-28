@@ -1,0 +1,692 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-28T00:00:00.000Z",
+  "title": "Design System: ERP PNF",
+  "extensions": {
+    "colorMeta": {
+      "ink-navy": {
+        "role": "primary",
+        "displayName": "Tinta de plano",
+        "canonical": "oklch(0.28 0.06 255)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 255)",
+          "oklch(0.22 0.05 255)",
+          "oklch(0.28 0.06 255)",
+          "oklch(0.38 0.065 255)",
+          "oklch(0.50 0.06 255)",
+          "oklch(0.63 0.05 255)",
+          "oklch(0.78 0.035 255)",
+          "oklch(0.92 0.015 255)"
+        ]
+      },
+      "ink-navy-raised": {
+        "role": "primary",
+        "displayName": "Tinta levantada",
+        "canonical": "oklch(0.26 0.05 255)",
+        "tonalRamp": [
+          "oklch(0.14 0.03 255)",
+          "oklch(0.20 0.045 255)",
+          "oklch(0.26 0.05 255)",
+          "oklch(0.36 0.055 255)",
+          "oklch(0.48 0.05 255)",
+          "oklch(0.61 0.045 255)",
+          "oklch(0.77 0.03 255)",
+          "oklch(0.91 0.012 255)"
+        ]
+      },
+      "ink-navy-deep": {
+        "role": "primary",
+        "displayName": "Tinta de archivo",
+        "canonical": "oklch(0.20 0.04 255)",
+        "tonalRamp": [
+          "oklch(0.12 0.025 255)",
+          "oklch(0.16 0.035 255)",
+          "oklch(0.20 0.04 255)",
+          "oklch(0.30 0.045 255)",
+          "oklch(0.42 0.045 255)",
+          "oklch(0.56 0.04 255)",
+          "oklch(0.74 0.025 255)",
+          "oklch(0.90 0.01 255)"
+        ]
+      },
+      "paper-white": {
+        "role": "neutral",
+        "displayName": "Papel de obra",
+        "canonical": "oklch(0.99 0 0)",
+        "tonalRamp": [
+          "oklch(0.16 0 0)",
+          "oklch(0.30 0 0)",
+          "oklch(0.44 0 0)",
+          "oklch(0.58 0 0)",
+          "oklch(0.70 0 0)",
+          "oklch(0.82 0 0)",
+          "oklch(0.92 0 0)",
+          "oklch(0.99 0 0)"
+        ]
+      },
+      "sheet-white": {
+        "role": "neutral",
+        "displayName": "Hoja",
+        "canonical": "oklch(1 0 0)",
+        "tonalRamp": [
+          "oklch(0.17 0 0)",
+          "oklch(0.31 0 0)",
+          "oklch(0.45 0 0)",
+          "oklch(0.59 0 0)",
+          "oklch(0.71 0 0)",
+          "oklch(0.83 0 0)",
+          "oklch(0.93 0 0)",
+          "oklch(1 0 0)"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Grafito",
+        "canonical": "oklch(0.18 0.02 250)",
+        "tonalRamp": [
+          "oklch(0.16 0.015 250)",
+          "oklch(0.18 0.02 250)",
+          "oklch(0.28 0.02 250)",
+          "oklch(0.42 0.018 250)",
+          "oklch(0.58 0.015 250)",
+          "oklch(0.72 0.012 250)",
+          "oklch(0.86 0.008 250)",
+          "oklch(0.95 0.004 250)"
+        ]
+      },
+      "pencil-gray": {
+        "role": "neutral",
+        "displayName": "Lápiz",
+        "canonical": "oklch(0.50 0.015 250)",
+        "tonalRamp": [
+          "oklch(0.17 0.012 250)",
+          "oklch(0.29 0.015 250)",
+          "oklch(0.40 0.016 250)",
+          "oklch(0.50 0.015 250)",
+          "oklch(0.62 0.013 250)",
+          "oklch(0.74 0.010 250)",
+          "oklch(0.86 0.007 250)",
+          "oklch(0.95 0.004 250)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Regla",
+        "canonical": "oklch(0.92 0.005 250)",
+        "tonalRamp": [
+          "oklch(0.18 0.010 250)",
+          "oklch(0.32 0.010 250)",
+          "oklch(0.46 0.009 250)",
+          "oklch(0.60 0.008 250)",
+          "oklch(0.72 0.007 250)",
+          "oklch(0.82 0.006 250)",
+          "oklch(0.92 0.005 250)",
+          "oklch(0.97 0.003 250)"
+        ]
+      },
+      "wash": {
+        "role": "neutral",
+        "displayName": "Lavado",
+        "canonical": "oklch(0.96 0.005 250)",
+        "tonalRamp": [
+          "oklch(0.17 0.008 250)",
+          "oklch(0.31 0.008 250)",
+          "oklch(0.45 0.007 250)",
+          "oklch(0.59 0.007 250)",
+          "oklch(0.71 0.006 250)",
+          "oklch(0.82 0.006 250)",
+          "oklch(0.90 0.005 250)",
+          "oklch(0.96 0.005 250)"
+        ]
+      },
+      "wash-deep": {
+        "role": "neutral",
+        "displayName": "Lavado profundo",
+        "canonical": "oklch(0.94 0.01 250)",
+        "tonalRamp": [
+          "oklch(0.17 0.010 250)",
+          "oklch(0.31 0.010 250)",
+          "oklch(0.45 0.010 250)",
+          "oklch(0.59 0.010 250)",
+          "oklch(0.71 0.010 250)",
+          "oklch(0.82 0.010 250)",
+          "oklch(0.90 0.010 250)",
+          "oklch(0.96 0.010 250)"
+        ]
+      },
+      "paper-dim": {
+        "role": "neutral",
+        "displayName": "Papel tenue",
+        "canonical": "oklch(0.95 0.005 250)",
+        "tonalRamp": [
+          "oklch(0.18 0.005 250)",
+          "oklch(0.32 0.005 250)",
+          "oklch(0.46 0.005 250)",
+          "oklch(0.60 0.005 250)",
+          "oklch(0.72 0.005 250)",
+          "oklch(0.83 0.005 250)",
+          "oklch(0.91 0.005 250)",
+          "oklch(0.97 0.005 250)"
+        ]
+      },
+      "alert-red": {
+        "role": "secondary",
+        "displayName": "Rojo de alerta",
+        "canonical": "oklch(0.58 0.21 27)",
+        "tonalRamp": [
+          "oklch(0.20 0.08 27)",
+          "oklch(0.32 0.13 27)",
+          "oklch(0.44 0.17 27)",
+          "oklch(0.58 0.21 27)",
+          "oklch(0.68 0.18 27)",
+          "oklch(0.78 0.13 27)",
+          "oklch(0.88 0.07 27)",
+          "oklch(0.95 0.03 27)"
+        ]
+      },
+      "adjustment-cream": {
+        "role": "tertiary",
+        "displayName": "Marcador de ajuste",
+        "canonical": "oklch(0.975 0.035 95)",
+        "tonalRamp": [
+          "oklch(0.20 0.03 95)",
+          "oklch(0.32 0.05 95)",
+          "oklch(0.46 0.07 95)",
+          "oklch(0.60 0.09 95)",
+          "oklch(0.74 0.08 95)",
+          "oklch(0.84 0.06 95)",
+          "oklch(0.92 0.045 95)",
+          "oklch(0.975 0.035 95)"
+        ]
+      },
+      "adjustment-ink": {
+        "role": "tertiary",
+        "displayName": "Tinta de ajuste",
+        "canonical": "oklch(0.42 0.11 75)",
+        "tonalRamp": [
+          "oklch(0.18 0.04 75)",
+          "oklch(0.28 0.07 75)",
+          "oklch(0.42 0.11 75)",
+          "oklch(0.54 0.12 75)",
+          "oklch(0.66 0.11 75)",
+          "oklch(0.78 0.08 75)",
+          "oklch(0.88 0.05 75)",
+          "oklch(0.95 0.025 75)"
+        ]
+      },
+      "adjustment-line": {
+        "role": "tertiary",
+        "displayName": "Línea de ajuste",
+        "canonical": "oklch(0.90 0.06 90)",
+        "tonalRamp": [
+          "oklch(0.20 0.02 90)",
+          "oklch(0.34 0.03 90)",
+          "oklch(0.48 0.04 90)",
+          "oklch(0.62 0.05 90)",
+          "oklch(0.74 0.055 90)",
+          "oklch(0.82 0.06 90)",
+          "oklch(0.90 0.06 90)",
+          "oklch(0.96 0.03 90)"
+        ]
+      },
+      "seal-amber": {
+        "role": "secondary",
+        "displayName": "Sello ámbar",
+        "canonical": "#fef3c7",
+        "tonalRamp": [
+          "oklch(0.20 0.03 95)",
+          "oklch(0.32 0.06 95)",
+          "oklch(0.46 0.09 95)",
+          "oklch(0.58 0.11 95)",
+          "oklch(0.70 0.12 95)",
+          "oklch(0.82 0.11 95)",
+          "oklch(0.92 0.07 95)",
+          "oklch(0.975 0.04 95)"
+        ]
+      },
+      "seal-amber-ink": {
+        "role": "secondary",
+        "displayName": "Tinta ámbar",
+        "canonical": "#92400e",
+        "tonalRamp": [
+          "oklch(0.18 0.04 60)",
+          "oklch(0.28 0.07 60)",
+          "oklch(0.42 0.10 60)",
+          "oklch(0.55 0.12 60)",
+          "oklch(0.68 0.11 60)",
+          "oklch(0.80 0.08 60)",
+          "oklch(0.89 0.05 60)",
+          "oklch(0.95 0.03 60)"
+        ]
+      },
+      "seal-green": {
+        "role": "secondary",
+        "displayName": "Sello verde",
+        "canonical": "#d1fae5",
+        "tonalRamp": [
+          "oklch(0.20 0.04 165)",
+          "oklch(0.32 0.07 165)",
+          "oklch(0.44 0.10 165)",
+          "oklch(0.56 0.12 165)",
+          "oklch(0.68 0.12 165)",
+          "oklch(0.80 0.10 165)",
+          "oklch(0.91 0.07 165)",
+          "oklch(0.97 0.035 165)"
+        ]
+      },
+      "seal-green-ink": {
+        "role": "secondary",
+        "displayName": "Tinta verde",
+        "canonical": "#065f46",
+        "tonalRamp": [
+          "oklch(0.18 0.04 165)",
+          "oklch(0.26 0.07 165)",
+          "oklch(0.36 0.09 165)",
+          "oklch(0.46 0.10 165)",
+          "oklch(0.58 0.10 165)",
+          "oklch(0.72 0.09 165)",
+          "oklch(0.86 0.06 165)",
+          "oklch(0.94 0.03 165)"
+        ]
+      },
+      "seal-rose": {
+        "role": "secondary",
+        "displayName": "Sello rosa",
+        "canonical": "#ffe4e6",
+        "tonalRamp": [
+          "oklch(0.20 0.05 12)",
+          "oklch(0.32 0.09 12)",
+          "oklch(0.44 0.13 12)",
+          "oklch(0.56 0.17 12)",
+          "oklch(0.68 0.17 12)",
+          "oklch(0.80 0.14 12)",
+          "oklch(0.91 0.08 12)",
+          "oklch(0.97 0.03 12)"
+        ]
+      },
+      "seal-rose-ink": {
+        "role": "secondary",
+        "displayName": "Tinta rosa",
+        "canonical": "#9f1239",
+        "tonalRamp": [
+          "oklch(0.18 0.05 10)",
+          "oklch(0.26 0.08 10)",
+          "oklch(0.36 0.11 10)",
+          "oklch(0.46 0.14 10)",
+          "oklch(0.58 0.15 10)",
+          "oklch(0.72 0.12 10)",
+          "oklch(0.86 0.08 10)",
+          "oklch(0.94 0.04 10)"
+        ]
+      },
+      "seal-blue": {
+        "role": "secondary",
+        "displayName": "Sello azul",
+        "canonical": "#dbeafe",
+        "tonalRamp": [
+          "oklch(0.20 0.04 255)",
+          "oklch(0.32 0.08 255)",
+          "oklch(0.44 0.11 255)",
+          "oklch(0.56 0.13 255)",
+          "oklch(0.68 0.12 255)",
+          "oklch(0.80 0.09 255)",
+          "oklch(0.91 0.06 255)",
+          "oklch(0.97 0.03 255)"
+        ]
+      },
+      "seal-blue-ink": {
+        "role": "secondary",
+        "displayName": "Tinta azul",
+        "canonical": "#1e40af",
+        "tonalRamp": [
+          "oklch(0.18 0.05 265)",
+          "oklch(0.26 0.09 265)",
+          "oklch(0.36 0.12 265)",
+          "oklch(0.46 0.14 265)",
+          "oklch(0.58 0.14 265)",
+          "oklch(0.72 0.11 265)",
+          "oklch(0.86 0.07 265)",
+          "oklch(0.94 0.03 265)"
+        ]
+      },
+      "seal-violet": {
+        "role": "secondary",
+        "displayName": "Sello violeta",
+        "canonical": "#f3e8ff",
+        "tonalRamp": [
+          "oklch(0.20 0.04 300)",
+          "oklch(0.32 0.08 300)",
+          "oklch(0.44 0.11 300)",
+          "oklch(0.56 0.13 300)",
+          "oklch(0.68 0.12 300)",
+          "oklch(0.80 0.09 300)",
+          "oklch(0.91 0.06 300)",
+          "oklch(0.97 0.03 300)"
+        ]
+      },
+      "seal-violet-ink": {
+        "role": "secondary",
+        "displayName": "Tinta violeta",
+        "canonical": "#6b21a8",
+        "tonalRamp": [
+          "oklch(0.18 0.05 305)",
+          "oklch(0.26 0.10 305)",
+          "oklch(0.36 0.13 305)",
+          "oklch(0.46 0.15 305)",
+          "oklch(0.58 0.14 305)",
+          "oklch(0.72 0.11 305)",
+          "oklch(0.86 0.07 305)",
+          "oklch(0.94 0.03 305)"
+        ]
+      },
+      "seal-slate": {
+        "role": "secondary",
+        "displayName": "Sello pizarra",
+        "canonical": "#f1f5f9",
+        "tonalRamp": [
+          "oklch(0.20 0.01 250)",
+          "oklch(0.32 0.012 250)",
+          "oklch(0.44 0.012 250)",
+          "oklch(0.56 0.012 250)",
+          "oklch(0.68 0.01 250)",
+          "oklch(0.80 0.01 250)",
+          "oklch(0.90 0.008 250)",
+          "oklch(0.96 0.005 250)"
+        ]
+      },
+      "seal-slate-ink": {
+        "role": "secondary",
+        "displayName": "Tinta pizarra",
+        "canonical": "#334155",
+        "tonalRamp": [
+          "oklch(0.18 0.02 250)",
+          "oklch(0.26 0.025 250)",
+          "oklch(0.34 0.03 250)",
+          "oklch(0.44 0.03 250)",
+          "oklch(0.56 0.025 250)",
+          "oklch(0.70 0.02 250)",
+          "oklch(0.84 0.015 250)",
+          "oklch(0.93 0.008 250)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Solo el hero de la landing pública; 36 px en móvil."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Título de página y de módulo, siempre con subtítulo de 14 px."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Títulos de sheet, diálogo y tarjeta."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto de trabajo, tablas y formularios. El tamaño dominante."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Etiquetas de campo, badges y encabezados de tabla."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Rubros de navegación, leyendas de KPI y contadores; mayúsculas con tracking abierto."
+      },
+      "micro-lg": {
+        "displayName": "Micro grande",
+        "purpose": "Subtítulos de sección y metadatos que necesitan 11 px para seguir legibles en tablas densas."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "RFC, CURP, CLABE, folios y columnas contables."
+      }
+    },
+    "shadows": [
+      {
+        "name": "control",
+        "value": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        "purpose": "Inputs, selects, botones outline y checkboxes."
+      },
+      {
+        "name": "hoja",
+        "value": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        "purpose": "Tarjetas y contenedores de datos."
+      },
+      {
+        "name": "panel-flotante",
+        "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        "purpose": "Sheets laterales y diálogos; la única elevación visible."
+      }
+    ],
+    "motion": [
+      {
+        "name": "entrada",
+        "value": "0.28s power2.out",
+        "purpose": "GSAP. Contenido que aparece: paneles, listas, sheet, cabecera de obra y entrada de ruta."
+      },
+      {
+        "name": "lectura",
+        "value": "0.6s power2.out",
+        "purpose": "GSAP. Cifras que cuentan y barras que crecen; el usuario necesita leer el cambio."
+      },
+      {
+        "name": "enfasis",
+        "value": "0.34s back.out(3)",
+        "purpose": "GSAP. Único overshoot del producto: el contador de pendientes late cuando llega trabajo nuevo."
+      },
+      {
+        "name": "hero-entrada",
+        "value": "550ms cubic-bezier(0.33, 1, 0.68, 1)",
+        "purpose": "CSS. Entrada del hero público, en la primera pintura y sin esperar a la hidratación; 80 ms entre bloques."
+      },
+      {
+        "name": "state-change",
+        "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Transiciones de color, fondo y borde en controles y filas."
+      },
+      {
+        "name": "sheet-in",
+        "value": "500ms ease-in-out",
+        "purpose": "Entrada del sheet lateral de captura."
+      },
+      {
+        "name": "sheet-out",
+        "value": "300ms ease-in-out",
+        "purpose": "Salida del sheet lateral de captura."
+      },
+      {
+        "name": "dialog",
+        "value": "200ms ease-out",
+        "purpose": "Entrada y salida de diálogos centrados, con zoom de 95 % a 100 %."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "La acción de la página: navy sólido, 36 px, texto de 14 px y un icono de 16 px.",
+      "html": "<button class=\"ds-btn ds-btn--primary\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg>Nueva requisición</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 16px;border:0;border-radius:6px;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;font-weight:500;line-height:1;cursor:pointer;transition:background-color 150ms cubic-bezier(.4,0,.2,1),color 150ms cubic-bezier(.4,0,.2,1)}.ds-btn:focus-visible{outline:none;box-shadow:0 0 0 1px var(--ring,#1f3357)}.ds-icon{width:16px;height:16px;flex:none}.ds-btn--primary{background:var(--primary,#1f3357);color:var(--primary-foreground,#fcfcfc);box-shadow:0 1px 3px 0 rgb(0 0 0 / .1),0 1px 2px -1px rgb(0 0 0 / .1)}.ds-btn--primary:hover{background:color-mix(in oklab,var(--primary,#1f3357) 90%,transparent)}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Acción secundaria con borde de 1 px, fondo Hoja y la misma altura que el botón primario.",
+      "html": "<button class=\"ds-btn ds-btn--outline\">Hoy</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 16px;border:0;border-radius:6px;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;font-weight:500;line-height:1;cursor:pointer;transition:background-color 150ms cubic-bezier(.4,0,.2,1),color 150ms cubic-bezier(.4,0,.2,1)}.ds-btn:focus-visible{outline:none;box-shadow:0 0 0 1px var(--ring,#1f3357)}.ds-btn--outline{background:var(--card,#fff);color:var(--foreground,#141b2b);border:1px solid var(--input,#e6e8ec);box-shadow:0 1px 3px 0 rgb(0 0 0 / .1),0 1px 2px -1px rgb(0 0 0 / .1)}.ds-btn--outline:hover{background:var(--accent,#eef0f4);color:var(--accent-foreground,#1f3357)}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Acción terciaria sin borde ni sombra: el fondo Lavado aparece solo al pasar el cursor. Para cancelar y para acciones de fila.",
+      "html": "<button class=\"ds-btn ds-btn--ghost\">Cancelar</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 16px;border:0;border-radius:6px;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;font-weight:500;line-height:1;cursor:pointer;transition:background-color 150ms cubic-bezier(.4,0,.2,1),color 150ms cubic-bezier(.4,0,.2,1)}.ds-btn:focus-visible{outline:none;box-shadow:0 0 0 1px var(--ring,#1f3357)}.ds-btn--ghost{background:transparent;color:var(--foreground,#141b2b)}.ds-btn--ghost:hover{background:var(--accent,#eef0f4);color:var(--accent-foreground,#1f3357)}"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Confirmación de borrado: rojo de alerta sólido, misma altura y radio que el primario. Nunca es la acción por omisión de una pantalla.",
+      "html": "<button class=\"ds-btn ds-btn--destructive\">Eliminar</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 16px;border:0;border-radius:6px;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;font-weight:500;line-height:1;cursor:pointer;transition:background-color 150ms cubic-bezier(.4,0,.2,1),color 150ms cubic-bezier(.4,0,.2,1)}.ds-btn:focus-visible{outline:none;box-shadow:0 0 0 1px var(--ring,#1f3357)}.ds-btn--destructive{background:var(--destructive,#db2c2b);color:var(--destructive-foreground,#fcfcfc);box-shadow:0 1px 2px 0 rgb(0 0 0 / .05)}.ds-btn--destructive:hover{background:color-mix(in oklab,var(--destructive,#db2c2b) 90%,transparent)}"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Campo de 36 px con borde Regla, fondo transparente y foco de anillo navy de 1 px.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">Buscar proveedor</span><input class=\"ds-input\" type=\"search\" placeholder=\"Razón social o RFC\" /></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:6px;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}.ds-label{font-size:14px;font-weight:500;line-height:1;color:var(--foreground,#141b2b)}.ds-input{height:36px;width:100%;box-sizing:border-box;padding:0 12px;border:1px solid var(--input,#e6e8ec);border-radius:6px;background:transparent;color:var(--foreground,#141b2b);font-family:inherit;font-size:14px;line-height:1.43;box-shadow:0 1px 3px 0 rgb(0 0 0 / .1),0 1px 2px -1px rgb(0 0 0 / .1);transition:box-shadow 150ms cubic-bezier(.4,0,.2,1)}.ds-input::placeholder{color:var(--muted-foreground,#7d828c)}.ds-input:focus-visible{outline:none;box-shadow:0 0 0 1px var(--ring,#1f3357)}"
+    },
+    {
+      "name": "Status Chip",
+      "kind": "chip",
+      "refersTo": "status-chip-amber",
+      "description": "Sellos de estado de 20 px: relleno pastel -100, tinta -800, 12 px/600, radio 6 px. La gramática completa se muestra en fila.",
+      "html": "<div class=\"ds-chips\"><span class=\"ds-chip ds-chip--amber\">En cotización</span><span class=\"ds-chip ds-chip--blue\">Orden emitida</span><span class=\"ds-chip ds-chip--violet\">Pendiente autorización</span><span class=\"ds-chip ds-chip--green\">Completada</span><span class=\"ds-chip ds-chip--rose\">Rechazada</span><span class=\"ds-chip ds-chip--slate\">Borrador</span></div>",
+      "css": ".ds-chips{display:flex;flex-wrap:wrap;gap:8px;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}.ds-chip{display:inline-flex;align-items:center;height:20px;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:600;line-height:1;white-space:nowrap}.ds-chip--amber{background:#fef3c7;color:#92400e}.ds-chip--blue{background:#dbeafe;color:#1e40af}.ds-chip--violet{background:#f3e8ff;color:#6b21a8}.ds-chip--green{background:#d1fae5;color:#065f46}.ds-chip--rose{background:#ffe4e6;color:#9f1239}.ds-chip--slate{background:#f1f5f9;color:#334155}"
+    },
+    {
+      "name": "Obra Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Tarjeta de obra: 12 px de radio, Hoja, borde Regla, sombra de hoja y padding operativo de 16 px.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-top\"><h3 class=\"ds-card-title\">Ampliación nave industrial</h3><span class=\"ds-chip\">Industrial</span></div><p class=\"ds-card-client\">Constructora del Bajío</p><p class=\"ds-card-meta\">Contrato PNF-2026-014</p><div class=\"ds-card-foot\"><span class=\"ds-card-label\">4 pendientes</span><span class=\"ds-card-arrow\">Abrir →</span></div></article>",
+      "css": ".ds-card{box-sizing:border-box;background:var(--card,#fff);color:var(--foreground,#141b2b);border:1px solid var(--border,#e6e8ec);border-radius:12px;padding:16px;box-shadow:0 1px 3px 0 rgb(0 0 0 / .1),0 1px 2px -1px rgb(0 0 0 / .1);font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}.ds-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.ds-card-title{margin:0;font-size:16px;font-weight:600;line-height:1.3;letter-spacing:-.015em}.ds-card-client{margin:8px 0 0;font-size:14px;color:var(--muted-foreground,#7d828c)}.ds-card-meta{margin:4px 0 0;font-size:12px;color:var(--muted-foreground,#7d828c)}.ds-card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:12px;border-top:1px solid var(--border,#e6e8ec)}.ds-card-label{font-size:12px;font-weight:500;color:var(--muted-foreground,#7d828c)}.ds-card-arrow{font-size:12px;font-weight:500;color:var(--primary,#1f3357)}.ds-chip{display:inline-flex;align-items:center;height:20px;padding:2px 10px;border-radius:6px;background:#f1f5f9;color:#334155;font-size:12px;font-weight:600;line-height:1;white-space:nowrap}"
+    },
+    {
+      "name": "Tabs",
+      "kind": "nav",
+      "refersTo": "tabs-track",
+      "description": "Riel de 36 px en Lavado; la pestaña activa es una píldora de Hoja con sombra de control.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\" aria-label=\"Requisiciones\"><button class=\"ds-tab is-active\" role=\"tab\" aria-selected=\"true\">Activas</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Historial</button></div>",
+      "css": ".ds-tabs{display:inline-flex;align-items:center;gap:0;height:36px;padding:4px;box-sizing:border-box;border-radius:8px;background:var(--muted,#f1f2f5);font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}.ds-tab{appearance:none;border:0;background:transparent;border-radius:6px;padding:4px 12px;height:28px;font-family:inherit;font-size:14px;font-weight:500;line-height:1;color:var(--muted-foreground,#7d828c);cursor:pointer;transition:background-color 150ms cubic-bezier(.4,0,.2,1),color 150ms cubic-bezier(.4,0,.2,1)}.ds-tab:hover{color:var(--foreground,#141b2b)}.ds-tab:focus-visible{outline:none;box-shadow:0 0 0 1px var(--ring,#1f3357)}.ds-tab.is-active{background:var(--card,#fff);color:var(--foreground,#141b2b);box-shadow:0 1px 3px 0 rgb(0 0 0 / .1),0 1px 2px -1px rgb(0 0 0 / .1)}"
+    },
+    {
+      "name": "Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "sidebar-item-active",
+      "description": "Navegación sobre Tinta de archivo: ítem activo en Tinta levantada, icono de 16 px y contador rosa.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Obra\"><p class=\"ds-nav-label\">Obra</p><a class=\"ds-nav-item is-active\" href=\"#\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M9 5h6M9 5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2\"/><path d=\"M9 13h6\"/></svg><span class=\"ds-nav-text\">Requisiciones</span><span class=\"ds-nav-count\">3</span></a><a class=\"ds-nav-item\" href=\"#\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M3 21V9l9-6 9 6v12\"/><path d=\"M9 21v-6h6v6\"/></svg><span class=\"ds-nav-text\">Almacén</span></a></nav>",
+      "css": ".ds-nav{box-sizing:border-box;width:256px;padding:12px;background:var(--sidebar,#141f38);color:var(--sidebar-foreground,#eef0f4);font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}.ds-nav-label{margin:0 0 8px;padding:0 12px;font-size:12px;font-weight:500;line-height:1.2;letter-spacing:.05em;text-transform:uppercase;color:color-mix(in oklab,var(--sidebar-foreground,#eef0f4) 50%,transparent)}.ds-nav-item{display:flex;align-items:center;gap:8px;height:36px;box-sizing:border-box;padding:8px 12px;border-radius:6px;color:color-mix(in oklab,var(--sidebar-foreground,#eef0f4) 80%,transparent);text-decoration:none;font-size:14px;line-height:1;transition:background-color 150ms cubic-bezier(.4,0,.2,1),color 150ms cubic-bezier(.4,0,.2,1)}.ds-nav-item:hover{background:color-mix(in oklab,var(--sidebar-accent,#1d2c4d) 50%,transparent);color:var(--sidebar-foreground,#eef0f4)}.ds-nav-item.is-active{background:var(--sidebar-accent,#1d2c4d);color:var(--sidebar-accent-foreground,#fff);font-weight:500}.ds-nav-item:focus-visible{outline:none;box-shadow:0 0 0 1px var(--sidebar-ring,#7186a6)}.ds-nav-icon{width:16px;height:16px;flex:none}.ds-nav-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ds-nav-count{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;box-sizing:border-box;border-radius:9999px;background:#f43f5e;color:#fff;font-size:10px;font-weight:600;line-height:1}"
+    },
+    {
+      "name": "Edited Value",
+      "kind": "custom",
+      "refersTo": "edited-value",
+      "description": "Marca crema con lápiz para el valor que administración ajustó; no es un warning.",
+      "html": "<div class=\"ds-edited-wrap\"><span class=\"ds-edited\"><svg class=\"ds-pencil\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 20h9\"/><path d=\"M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z\"/></svg>$12,480.00</span><span class=\"ds-edited-note\">Ajustado por administración</span></div>",
+      "css": ".ds-edited-wrap{display:flex;align-items:center;gap:8px;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}.ds-edited{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;background:var(--edited,#fbf3dd);color:var(--edited-foreground,#7a5410);box-shadow:inset 0 0 0 1px var(--edited-border,#e6d29a);font-size:14px;font-weight:500;line-height:1.43;font-variant-numeric:tabular-nums}.ds-pencil{width:12px;height:12px;flex:none}.ds-edited-note{font-size:12px;color:var(--muted-foreground,#7d828c)}"
+    },
+    {
+      "name": "Mobile Bottom Bar",
+      "kind": "nav",
+      "description": "Barra inferior de campo: 64 px, Hoja, cinco destinos con icono de 20 px y etiqueta de 10 px.",
+      "html": "<nav class=\"ds-bottom\" aria-label=\"Obra\"><a class=\"ds-bottom-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M3 21V9l9-6 9 6v12\"/><path d=\"M9 21v-6h6v6\"/></svg><span>Obras</span></a><a class=\"ds-bottom-item is-active\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M6 3h12v18l-6-4-6 4Z\"/></svg><span>Presupuesto</span></a><a class=\"ds-bottom-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M9 5h6M9 5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2\"/></svg><span>Requisiciones</span><b class=\"ds-bottom-count\">3</b></a><a class=\"ds-bottom-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20a6 6 0 0 1 12 0\"/><path d=\"M16 5a3 3 0 0 1 0 6\"/><path d=\"M18 20a6 6 0 0 0-3-5\"/></svg><span>Nómina</span></a><a class=\"ds-bottom-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M4 7h16v12H4z\"/><path d=\"M4 11h16\"/><path d=\"M8 7V4h8v3\"/></svg><span>Almacén</span></a></nav>",
+      "css": ".ds-bottom{box-sizing:border-box;display:flex;align-items:stretch;width:100%;height:64px;background:var(--card,#fff);border-top:1px solid var(--border,#e6e8ec);font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}.ds-bottom-item{position:relative;display:flex;flex:1;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--muted-foreground,#7d828c);text-decoration:none;font-size:10px;line-height:1}.ds-bottom-item svg{width:20px;height:20px;flex:none}.ds-bottom-item span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ds-bottom-item.is-active{color:var(--primary,#1f3357)}.ds-bottom-count{position:absolute;top:8px;right:calc(50% - 18px);display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;box-sizing:border-box;border-radius:9999px;background:#f43f5e;color:#fff;font-size:10px;font-weight:600;line-height:1}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La bitácora de obra",
+    "overview": "El sistema se comporta como la bitácora que vive en la caseta de obra: páginas blancas, renglones finos, tinta navy, entradas firmadas y sellos de estado. No hay decoración porque cada marca en la página existe para registrar quién hizo qué, cuándo y con qué visto bueno. La interfaz hereda esa disciplina: superficies planas, reglas de un píxel, jerarquía por peso y tamaño, y color reservado para el estado o para el ajuste.\n\nLa densidad es deliberada. El cuerpo de trabajo vive en 12 y 14 px; las tablas alinean cifras con números tabulares y los encabezados de sección se escriben en mayúsculas pequeñas con tracking abierto, como los rubros de un formato. La barra lateral navy es la única superficie oscura extensa —la portada de la bitácora—; todo lo demás es papel blanco con líneas.\n\nEl lujo es de precisión, no de ornamento: una sombra apenas perceptible sobre las tarjetas, radios de 6 px en controles y 12 px en contenedores, iconos Lucide de 16 px y sellos pastel de 20 px. La referencia negativa es el dashboard genérico: nada de degradados, vidrio, fotografía de stock ni tarjetas de marketing dentro del producto.",
+    "keyCharacteristics": [
+      "Tinta navy sobre papel blanco; el color solo marca estado o ajuste.",
+      "Densidad de bitácora: cuerpo de 12–14 px, tablas de una línea, cifras tabulares.",
+      "Reglas de 1 px y superficies planas; la sombra es la excepción, no el sistema.",
+      "El mismo lenguaje a 360 px y a 1440 px: cambia el shell, no la densidad.",
+      "Sellos pastel para el estado; lápiz crema para lo ajustado por administración."
+    ],
+    "rules": [
+      {
+        "name": "The Ink-on-Paper Rule",
+        "body": "El chrome es navy sobre blanco. El color entra únicamente como sello de estado o como marca de ajuste; nunca como atmósfera, degradado o fondo de sección.",
+        "section": "colors"
+      },
+      {
+        "name": "The Stamp Rule",
+        "body": "Un color de estado vive en un tag de 20 px, un punto de 6–8 px o una celda resaltada. Puede llenar un aviso en línea cuando el aviso es el estado; no puede pintar el chrome de la página ni un botón primario.",
+        "section": "colors"
+      },
+      {
+        "name": "The Series Rule",
+        "body": "Las gráficas usan como máximo dos series y ambas salen de tokens: --color-primary para producción e --color-destructive para costos. Nada de hsl() ni #hex literales: el gráfico también cambia con el tema.",
+        "section": "colors"
+      },
+      {
+        "name": "The Pencil Rule",
+        "body": "El crema de ajuste está reservado para valores ajustados por administración, siempre acompañado del icono de lápiz. No se usa para selección, hover, advertencia ni decoración.",
+        "section": "colors"
+      },
+      {
+        "name": "The One-Family Rule",
+        "body": "No hay segunda tipografía. Si hace falta jerarquía, se cambia peso, tamaño o tracking; nunca se introduce una serif, una display o una fuente de marca.",
+        "section": "typography"
+      },
+      {
+        "name": "The Dense-by-Default Rule",
+        "body": "12 y 14 px cargan el producto. 16 px se reserva para títulos de tarjeta, sheets y campos en móvil; 24 px o más, para el título de la página y la landing.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Toda cifra que se compara en columna —importes, cantidades, avances, totales— lleva tabular-nums. Los identificadores (RFC, CURP, CLABE, folio) van en monoespaciada.",
+        "section": "typography"
+      },
+      {
+        "name": "The Shell-Switch Rule",
+        "body": "Debajo de 768 px no se encoge la barra lateral: se sustituye por la barra inferior. Un módulo nuevo debe funcionar primero a 360 px y después a 1440 px.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat-by-Default Rule",
+        "body": "Ninguna superficie se levanta al hacer hover. Una tarjeta interactiva cambia el borde a tinta al 40 %, no su posición ni su sombra.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Single-Sheet Rule",
+        "body": "No se apilan sombras. Una tarjeta dentro de un sheet no vuelve a proyectar sombra; el borde hace el trabajo.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Hairline Rule",
+        "body": "Si dos superficies necesitan separarse, se agrega una Regla de 1 px antes que una sombra o un fondo nuevo.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do usar los tokens oklch del tema para el chrome y las familias -100/-800 de Tailwind solo para sellos de estado.",
+      "Do abrir cada página con título de 24 px/600, subtítulo de 14 px en Lápiz y una sola acción primaria a la derecha.",
+      "Do mantener el cuerpo en 14 px, los metadatos en 12 px y los rubros en 10–11 px mayúsculas con tracking 0.05em.",
+      "Do usar tabular-nums en toda cifra comparativa y monoespaciada en RFC, CURP, CLABE, folios y asientos.",
+      "Do separar con Regla de 1 px y reservar la sombra para controles, tarjetas y paneles flotantes.",
+      "Do usar radios de 6 px en controles, 8 px en rieles y 12 px en tarjetas.",
+      "Do capturar en un sheet lateral en móvil, con la acción principal fija en el footer.",
+      "Do acompañar el color de estado con su etiqueta textual: el color nunca es el único portador del significado.",
+      "Do conservar los anillos de foco de 1 px y nombrar con aria-label todo botón que solo muestra un icono."
+    ],
+    "donts": [
+      "Don't introducir degradados, glassmorphism, backdrop-blur decorativo, fotografía de stock ni tarjetas de marketing dentro del producto.",
+      "Don't usar un color de estado como fondo de página, chrome de navegación o relleno de un botón primario.",
+      "Don't usar el crema de ajuste para selección, hover, advertencia o decoración.",
+      "Don't añadir una segunda tipografía, una serif de display ni una fuente de marca.",
+      "Don't pasar de 12 px de radio en superficies ni convertir botones en píldoras; el círculo se reserva a avatares y contadores.",
+      "Don't apilar sombras ni levantar tarjetas al hover; el cambio de estado se hace con borde o fondo.",
+      "Don't subir la densidad de trabajo a 16 px: tablas, formularios, metadatos y celdas viven en 14 px o menos.",
+      "Don't publicar modo oscuro por partes: los tokens .dark existen pero están dormidos y no hay selector de tema.",
+      "Don't agregar otro destino a la barra inferior de obra sin retirar uno; ya concentra todos los módulos de la obra."
+    ]
+  }
+}
