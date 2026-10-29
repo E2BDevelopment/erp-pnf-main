@@ -133,3 +133,131 @@ export const updateCompanyCapitalSocial = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
+
+export const listCompanyDocumentos = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const companyId = await getMyCompanyId(supabase, userId);
+
+    const { data: docs, error } = await (supabase as any)
+      .from("company_documentos")
+      .select("id, company_id, tipo, url, nombre_archivo, fecha_vencimiento, created_at, updated_at")
+      .eq("company_id", companyId)
+      .order("created_at", { ascending: false });
+
+    if (error) throw new Error(error.message);
+
+    // ponytail: revisión pasiva de vigencia al consultar documentos
+    const now = new Date();
+    const hoyStr = now.toISOString().split("T")[0];
+    const en30Dias = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+
+    const porVencerOExpirados = (docs ?? []).filter(
+      (d: any) => d.fecha_vencimiento && d.fecha_vencimiento <= en30Dias,
+    );
+
+    if (porVencerOExpirados.length > 0) {
+      try {
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        for (const doc of porVencerOExpirados) {
+          const yaExpiro = doc.fecha_vencimiento < hoyStr;
+          const titulo = yaExpiro
+            ? `Documento expirado: ${doc.tipo}`
+            : `Documento por vencer: ${doc.tipo}`;
+          const mensaje = yaExpiro
+            ? `El documento "${doc.tipo}" (${doc.nombre_archivo}) expiró el ${doc.fecha_vencimiento}.`
+            : `El documento "${doc.tipo}" (${doc.nombre_archivo}) vence el ${doc.fecha_vencimiento}.`;
+
+          const { data: exists } = await supabaseAdmin
+            .from("notificaciones")
+            .select("id")
+            .eq("user_id", userId)
+            .eq("tipo", "doc_empresa_vencimiento")
+            .eq("titulo", titulo)
+            .gte("created_at", new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString())
+            .maybeSingle();
+
+          if (!exists) {
+            await supabaseAdmin.from("notificaciones").insert({
+              user_id: userId,
+              company_id: companyId,
+              tipo: "doc_empresa_vencimiento",
+              titulo,
+              mensaje,
+              link: "/app/configuracion?tab=documentacion",
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Error al procesar alertas de vencimiento de documentos:", e);
+      }
+    }
+
+    return (docs ?? []) as Array<{
+      id: string;
+      company_id: string;
+      tipo: string;
+      url: string;
+      nombre_archivo: string;
+      fecha_vencimiento: string | null;
+      created_at: string;
+      updated_at: string;
+    }>;
+  });
+
+export const saveCompanyDocumento = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        tipo: z.string().trim().min(1).max(100),
+        url: z.string().min(1),
+        nombre_archivo: z.string().min(1),
+        fecha_vencimiento: z.string().nullable().optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const companyId = await getMyCompanyId(supabase, userId);
+
+    const { error } = await (supabase as any).from("company_documentos").upsert(
+      {
+        company_id: companyId,
+        tipo: data.tipo,
+        url: data.url,
+        nombre_archivo: data.nombre_archivo,
+        fecha_vencimiento: data.fecha_vencimiento || null,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "company_id,tipo" },
+    );
+
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
+export const deleteCompanyDocumento = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const companyId = await getMyCompanyId(supabase, userId);
+
+    const { error } = await (supabase as any)
+      .from("company_documentos")
+      .delete()
+      .eq("id", data.id)
+      .eq("company_id", companyId);
+
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+

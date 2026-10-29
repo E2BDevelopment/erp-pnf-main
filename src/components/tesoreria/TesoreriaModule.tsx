@@ -220,7 +220,7 @@ export function TesoreriaModule() {
                   {formatMXN(Number(c.saldo_actual))}
                 </span>
                 {!c.activa && (
-                  <Badge variant="secondary" className="ml-1 text-[10px] py-0">
+                  <Badge variant="secondary" className="ml-1 text-xs py-0">
                     inactiva
                   </Badge>
                 )}
@@ -271,7 +271,7 @@ export function TesoreriaModule() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="text-right cursor-help">
-                    <p className="text-[10px] text-muted-foreground leading-none">Saldo actual</p>
+                    <p className="text-xs text-muted-foreground leading-none">Saldo actual</p>
                     <p className="text-lg font-semibold leading-tight">
                       {formatMXN(Number(selected.saldo_actual))}
                     </p>
@@ -286,7 +286,7 @@ export function TesoreriaModule() {
             {/* Filtros + export en una fila */}
             <div className="flex flex-wrap items-end gap-2">
               <div className="flex flex-col">
-                <Label className="text-[10px] text-muted-foreground">Desde</Label>
+                <Label className="text-xs text-muted-foreground">Desde</Label>
                 <Input
                   type="date"
                   value={from}
@@ -295,7 +295,7 @@ export function TesoreriaModule() {
                 />
               </div>
               <div className="flex flex-col">
-                <Label className="text-[10px] text-muted-foreground">Hasta</Label>
+                <Label className="text-xs text-muted-foreground">Hasta</Label>
                 <Input
                   type="date"
                   value={to}
@@ -304,7 +304,7 @@ export function TesoreriaModule() {
                 />
               </div>
               <div className="flex flex-col">
-                <Label className="text-[10px] text-muted-foreground">Tipo</Label>
+                <Label className="text-xs text-muted-foreground">Tipo</Label>
                 <Select
                   value={tipoFiltro}
                   onValueChange={(v) => setTipoFiltro(v as "todos" | "ingreso" | "egreso")}
@@ -400,11 +400,11 @@ export function TesoreriaModule() {
                           <TooltipContent className="max-w-xs">
                             <div className="space-y-1">
                               <p className="text-xs">{m.concepto ?? "Sin concepto"}</p>
-                              <p className="text-[10px] opacity-80">
+                              <p className="text-xs opacity-80">
                                 Origen: {ORIGEN_LABEL[m.origen] ?? m.origen}
                               </p>
                               {m.referencia && (
-                                <p className="text-[10px] opacity-80">Ref: {m.referencia}</p>
+                                <p className="text-xs opacity-80">Ref: {m.referencia}</p>
                               )}
                             </div>
                           </TooltipContent>
@@ -430,3 +430,4 @@ export function TesoreriaModule() {
     </TooltipProvider>
   );
 }
+

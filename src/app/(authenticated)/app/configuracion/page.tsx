@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useNavigate } from "@/lib/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,15 +20,23 @@ import { IdentidadTab } from "@/components/configuracion/IdentidadTab";
 import { CuentasTab } from "@/components/configuracion/CuentasTab";
 import { PermisosTab } from "@/components/configuracion/PermisosTab";
 import { NotificacionesTab } from "@/components/configuracion/NotificacionesTab";
+import { DocumentosTab } from "@/components/configuracion/DocumentosTab";
 import { useEffectiveIsDirector } from "@/stores/auth";
 
 export default function ConfiguracionPage() {
   const navigate = useNavigate();
   const director = useEffectiveIsDirector();
-  const [tab, setTab] = useState("facturacion");
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab") || "facturacion";
+  const [tab, setTab] = useState(initialTab);
   const [saving, setSaving] = useState(false);
   const facturacionRef = useRef<FacturacionTabHandle>(null);
   const configRef = useRef<ConfiguracionTabHandle>(null);
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam) setTab(tabParam);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!director) navigate({ to: "/app", replace: true });
@@ -167,7 +176,7 @@ export default function ConfiguracionPage() {
               <CardTitle>Documentación de la empresa</CardTitle>
             </CardHeader>
             <CardContent>
-              <ModulePlaceholder title="Próximamente" />
+              <DocumentosTab />
             </CardContent>
           </Card>
         </TabsContent>

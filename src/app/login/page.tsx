@@ -139,7 +139,7 @@ function LoginPage() {
               </Button>
               <p className="text-sm text-center text-muted-foreground">
                 ¿No tienes cuenta?{" "}
-                <Link to="/onboarding" className="text-primary hover:underline">
+                <Link to="/onboarding" className="text-primary-ink hover:underline">
                   Registra tu empresa
                 </Link>
               </p>

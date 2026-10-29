@@ -157,7 +157,7 @@ export function CuentasPorPagarModule() {
             <TabsTrigger value="proveedores">
               Proveedores (OC)
               {ocPendientesCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none">
+                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-xs font-bold leading-none">
                   {ocPendientesCount > 99 ? "99+" : ocPendientesCount}
                 </span>
               )}
@@ -165,7 +165,7 @@ export function CuentasPorPagarModule() {
             <TabsTrigger value="anticipos">
               Destajos
               {anticiposPendientesCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none">
+                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-xs font-bold leading-none">
                   {anticiposPendientesCount > 99 ? "99+" : anticiposPendientesCount}
                 </span>
               )}
@@ -173,7 +173,7 @@ export function CuentasPorPagarModule() {
             <TabsTrigger value="subcontratos">
               Subcontratos
               {subcontratosPendientesCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none">
+                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-xs font-bold leading-none">
                   {subcontratosPendientesCount > 99 ? "99+" : subcontratosPendientesCount}
                 </span>
               )}
@@ -181,7 +181,7 @@ export function CuentasPorPagarModule() {
             <TabsTrigger value="gasolinas">
               Gasolinas
               {gasolinasPendientesCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none">
+                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-xs font-bold leading-none">
                   {gasolinasPendientesCount > 99 ? "99+" : gasolinasPendientesCount}
                 </span>
               )}
@@ -189,7 +189,7 @@ export function CuentasPorPagarModule() {
             <TabsTrigger value="caja-chica">
               Caja chica
               {cajaChicaPendientesCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none">
+                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-xs font-bold leading-none">
                   {cajaChicaPendientesCount > 99 ? "99+" : cajaChicaPendientesCount}
                 </span>
               )}
@@ -197,7 +197,7 @@ export function CuentasPorPagarModule() {
             <TabsTrigger value="gastos-obra">
               Gastos de obra
               {gastosObraPendientesCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none">
+                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-xs font-bold leading-none">
                   {gastosObraPendientesCount > 99 ? "99+" : gastosObraPendientesCount}
                 </span>
               )}
@@ -205,7 +205,7 @@ export function CuentasPorPagarModule() {
             <TabsTrigger value="nomina">
               Nómina
               {nominaPendientesCount > 0 && (
-                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none">
+                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-xs font-bold leading-none">
                   {nominaPendientesCount > 99 ? "99+" : nominaPendientesCount}
                 </span>
               )}
@@ -984,3 +984,5 @@ function AnticiposSubcontratoTab() {
     </div>
   );
 }
+
+

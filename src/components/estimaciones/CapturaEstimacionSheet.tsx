@@ -352,7 +352,7 @@ function StatCard({
     <Card
       className={`p-3 ${tone === "destructive" ? "border-destructive/40 bg-destructive/5" : ""}`}
     >
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
       <p
         className={`mt-1 text-base font-semibold ${tone === "destructive" ? "text-destructive" : ""}`}
       >
@@ -361,3 +361,5 @@ function StatCard({
     </Card>
   );
 }
+
+

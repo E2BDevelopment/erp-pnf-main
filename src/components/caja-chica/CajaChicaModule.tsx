@@ -464,7 +464,7 @@ export function CajaChicaModule({ obraId, scope = "obra" }: Props) {
                   {f.monto_entregado != null && (
                     <>
                       <div className="text-xs text-muted-foreground mt-1">Entregado</div>
-                      <div className="font-semibold text-primary">
+                      <div className="font-semibold text-primary-ink">
                         {formatMXN(Number(f.monto_entregado))}
                       </div>
                     </>

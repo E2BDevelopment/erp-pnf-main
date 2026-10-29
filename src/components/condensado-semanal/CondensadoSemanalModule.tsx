@@ -292,7 +292,7 @@ export function CondensadoSemanalModule() {
 
                   {/* Detalle */}
                   <details className="group">
-                    <summary className="text-sm cursor-pointer text-primary hover:underline list-none">
+                    <summary className="text-sm cursor-pointer text-primary-ink hover:underline list-none">
                       <span className="group-open:hidden">Ver detalle ▾</span>
                       <span className="hidden group-open:inline">Ocultar detalle ▴</span>
                     </summary>

@@ -44,7 +44,7 @@ export default function CatalogosLayout({ children }: { children: React.ReactNod
               to={s.to}
               className={`px-4 py-2 -mb-px text-sm font-medium border-b-2 transition-colors ${
                 isActive
-                  ? "border-primary text-primary"
+                  ? "border-primary text-primary-ink"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
               }`}
             >

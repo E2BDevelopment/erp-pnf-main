@@ -42,6 +42,7 @@ import {
   Receipt,
   Truck,
   Users,
+  ShieldAlert,
   type LucideIcon,
 } from "lucide-react";
 
@@ -286,6 +287,96 @@ export function DashboardModule() {
         <SinObras />
       ) : (
         <>
+          {/* Semáforo Ejecutivo Directivo: Salud global de cartera */}
+          {(() => {
+            const obrasConPresupuesto = data.obras.filter((o) => o.avance !== null);
+            const obrasExcedidas = obrasConPresupuesto.filter((o) => (o.avance ?? 0) > 1.0);
+            const totalContratado = data.obras.reduce((s, o) => s + o.monto_contratado, 0);
+            const totalEstimado = data.obras.reduce((s, o) => s + o.estimado, 0);
+            const pctGlobal = totalContratado > 0 ? (totalEstimado / totalContratado) * 100 : 0;
+            const tieneAlertas = obrasExcedidas.length > 0;
+
+            return (
+              <Card
+                data-panel
+                className={`p-3.5 sm:p-4 border transition-colors ${
+                  tieneAlertas
+                    ? "border-amber-500/40 bg-amber-500/5 dark:bg-amber-500/10"
+                    : "border-emerald-600/30 bg-emerald-600/5 dark:bg-emerald-600/10"
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-start sm:items-center gap-3">
+                    <div
+                      className={`p-2 rounded-md shrink-0 ${
+                        tieneAlertas
+                          ? "bg-amber-500/15 text-amber-700 dark:text-amber-400"
+                          : "bg-emerald-600/15 text-emerald-700 dark:text-emerald-400"
+                      }`}
+                    >
+                      {tieneAlertas ? (
+                        <ShieldAlert className="size-5" />
+                      ) : (
+                        <HardHat className="size-5" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                          Semáforo Ejecutivo de Obras
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className={
+                            tieneAlertas
+                              ? "border-amber-500/50 text-amber-800 dark:text-amber-300 bg-amber-500/10 text-[11px]"
+                              : "border-emerald-600/50 text-emerald-800 dark:text-emerald-300 bg-emerald-600/10 text-[11px]"
+                          }
+                        >
+                          {tieneAlertas
+                            ? `${obrasExcedidas.length} ${
+                                obrasExcedidas.length === 1
+                                  ? "obra con desvío"
+                                  : "obras con desvío"
+                              }`
+                            : "Cartera bajo control"}
+                        </Badge>
+                      </div>
+                      <p className="text-sm font-medium mt-0.5">
+                        {tieneAlertas ? (
+                          <>
+                            Atención requerida en:{" "}
+                            <span className="font-semibold text-foreground">
+                              {obrasExcedidas.map((o) => o.nombre).join(", ")}
+                            </span>{" "}
+                            (estimado rebasó el presupuesto autorizado).
+                          </>
+                        ) : (
+                          "Todas las obras activas se mantienen dentro del marco presupuestal autorizado."
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 shrink-0 pl-11 sm:pl-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-border/50">
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs text-muted-foreground">Avance Global</p>
+                      <p className="text-base font-semibold tabular-nums">
+                        {totalContratado > 0 ? `${pctGlobal.toFixed(1)}%` : "—"}
+                      </p>
+                    </div>
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs text-muted-foreground">Contratado Total</p>
+                      <p className="text-base font-semibold tabular-nums text-foreground">
+                        {formatMXN(totalContratado)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            );
+          })()}
+
           <div
             data-panel
             className={`grid gap-3 sm:grid-cols-2 ${
@@ -861,7 +952,7 @@ function CxPPanel({ cxp, tesoreria }: { cxp: DashboardCxP; tesoreria: DashboardT
 function VencimientoBadge({ fecha, vencida }: { fecha: string | null; vencida: boolean }) {
   if (!fecha) {
     return (
-      <Badge className="border-0 bg-slate-100 text-[10px] text-slate-700 hover:bg-slate-100">
+      <Badge className="border-0 bg-slate-100 text-xs text-slate-700 hover:bg-slate-100">
         Sin fecha
       </Badge>
     );
@@ -875,7 +966,7 @@ function VencimientoBadge({ fecha, vencida }: { fecha: string | null; vencida: b
       : "bg-slate-100 text-slate-700 hover:bg-slate-100";
 
   return (
-    <Badge className={`border-0 text-[10px] ${clase}`}>
+    <Badge className={`border-0 text-xs ${clase}`}>
       {vencida ? "Vencida" : "Vence"} {fechaCorta(fecha)}
     </Badge>
   );
@@ -929,3 +1020,4 @@ function DashboardSkeleton() {
     </div>
   );
 }
+

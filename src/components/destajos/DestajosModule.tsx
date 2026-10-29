@@ -175,7 +175,7 @@ export function DestajosModule({ obraId }: { obraId: string }) {
                       <td className="py-1.5 px-2">
                         <Badge
                           variant={ESTATUS_VARIANT[d.estatus_base]}
-                          className="whitespace-nowrap text-[10px] py-0 px-1.5 h-5"
+                          className="whitespace-nowrap text-xs py-0 px-1.5 h-5"
                         >
                           {ESTATUS_LABEL[d.estatus_base]}
                         </Badge>
@@ -186,7 +186,7 @@ export function DestajosModule({ obraId }: { obraId: string }) {
                       <td className="py-1.5 px-2 text-right tabular-nums">
                         {formatMXN(d.pagado_acumulado)}
                         {d.monto_total > 0 && (
-                          <span className="text-[10px] text-muted-foreground ml-1">
+                          <span className="text-xs text-muted-foreground ml-1">
                             {pct.toFixed(0)}%
                           </span>
                         )}
@@ -270,3 +270,4 @@ export function DestajosModule({ obraId }: { obraId: string }) {
     </div>
   );
 }
+

@@ -132,7 +132,7 @@ export function VerPresupuestoSheet({
                               {mov && (
                                 <Badge
                                   variant={mov.variant}
-                                  className="text-[10px] h-4 px-1 shrink-0"
+                                  className="text-xs h-4 px-1 shrink-0"
                                 >
                                   {mov.label}
                                 </Badge>
@@ -184,3 +184,4 @@ export function VerPresupuestoSheet({
     </Sheet>
   );
 }
+

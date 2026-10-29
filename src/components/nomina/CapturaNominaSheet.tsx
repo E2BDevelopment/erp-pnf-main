@@ -248,30 +248,32 @@ export function CapturaNominaSheet({
             ) : (
               <Card className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground sticky top-0">
+                  <thead className="bg-muted/90 backdrop-blur-sm text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 shadow-xs">
                     <tr>
-                      <th className="text-left p-2 min-w-[200px]">Trabajador</th>
-                      <th className="text-right p-2">Sueldo/día</th>
+                      <th className="text-left p-2.5 min-w-[180px] sticky left-0 bg-background/95 z-20 shadow-[1px_0_0_0_hsl(var(--border))]">
+                        Trabajador
+                      </th>
+                      <th className="text-right p-2 min-w-[90px]">Sueldo/día</th>
                       {dias.map((f, i) => (
-                        <th key={f} className="text-center p-1 w-20">
-                          <div>{DOW[i]}</div>
-                          <div className="text-[10px] font-normal opacity-70">
+                        <th key={f} className="text-center p-1 min-w-[76px] sm:min-w-[64px]">
+                          <div className="font-semibold text-foreground">{DOW[i]}</div>
+                          <div className="text-[11px] font-normal opacity-75">
                             {f.slice(8)}/{f.slice(5, 7)}
                           </div>
                         </th>
                       ))}
-                      <th className="text-right p-2 w-20">Días</th>
-                      <th className="text-right p-2 w-20">HE</th>
-                      <th className="text-right p-2 w-28">Importe</th>
+                      <th className="text-right p-2 min-w-[50px]">Días</th>
+                      <th className="text-right p-2 min-w-[50px]">HE</th>
+                      <th className="text-right p-2.5 min-w-[90px]">Importe</th>
                     </tr>
                   </thead>
                   <tbody>
                     {renglones.map((r) => {
                       const bloq = bloqueadosMap.get(r.trabajador_id);
                       return (
-                        <tr key={r.id} className="border-t border-border">
-                          <td className="p-2">
-                            <div className="font-medium">
+                        <tr key={r.id} className="border-t border-border hover:bg-muted/30">
+                          <td className="p-2.5 sticky left-0 bg-background/95 z-10 shadow-[1px_0_0_0_hsl(var(--border))]">
+                            <div className="font-medium text-foreground">
                               {r.trabajador?.nombre_completo ?? "—"}
                             </div>
                             {r.trabajador?.puesto && (
@@ -283,7 +285,7 @@ export function CapturaNominaSheet({
                               <div className="mt-1">
                                 <Badge
                                   variant="outline"
-                                  className="text-destructive"
+                                  className="text-destructive text-[11px]"
                                   title={`También asignado al destajo: ${bloq.destajo_nombre}`}
                                 >
                                   Destajo: {bloq.destajo_nombre}
@@ -468,33 +470,38 @@ function DiaCell({
             {
               v: 0,
               label: "·",
-              active: "bg-destructive text-destructive-foreground",
+              active: "bg-destructive text-destructive-foreground font-bold",
               hover: "hover:bg-destructive/10",
+              title: "Falta",
             },
             {
               v: 0.5,
               label: "½",
-              active: "bg-amber-500 text-white",
+              active: "bg-amber-500 text-white font-bold",
               hover: "hover:bg-amber-500/10",
+              title: "Medio día",
             },
             {
               v: 1,
               label: "1",
-              active: "bg-emerald-600 text-white",
+              active: "bg-emerald-600 text-white font-bold",
               hover: "hover:bg-emerald-500/10",
+              title: "Día completo",
             },
           ] as const
         ).map((opt) => (
           <button
             key={opt.v}
             type="button"
+            title={opt.title}
+            aria-label={opt.title}
             disabled={disabled || save.isPending}
             onClick={() => {
               setJ(opt.v);
               commitJornada(opt.v);
             }}
             className={cn(
-              "w-6 h-6 text-xs leading-none transition-colors",
+              "min-w-8 h-8 px-1 text-xs leading-none transition-colors touch-manipulation sm:min-w-6 sm:h-6 sm:px-0",
               j === opt.v ? opt.active : cn("bg-background", opt.hover),
               disabled && "opacity-60 cursor-not-allowed",
             )}
@@ -518,9 +525,9 @@ function DiaCell({
             type="button"
             disabled={disabled}
             className={cn(
-              "w-14 h-6 text-xs rounded border border-border bg-background hover:bg-muted",
+              "w-full min-w-14 h-7 text-xs rounded border border-border bg-background hover:bg-muted touch-manipulation sm:h-6",
               "inline-flex items-center justify-center gap-1 disabled:opacity-60 disabled:cursor-not-allowed",
-              horasExtras > 0 && "border-primary/50 text-primary font-medium",
+              horasExtras > 0 && "border-primary/50 text-primary-ink font-medium",
             )}
             title={notaExtras ?? undefined}
           >
@@ -555,7 +562,7 @@ function DiaCell({
                 rows={3}
                 maxLength={500}
               />
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Requerido cuando hay horas extras. Visible para el administrativo.
               </p>
             </div>
@@ -701,7 +708,7 @@ function AsignarTrabajadoresDialog({
                       <div className="font-medium flex items-center gap-2">
                         <span>{t.nombre_completo}</span>
                         {isPendiente && (
-                          <Badge variant="secondary" className="text-[10px]">
+                          <Badge variant="secondary" className="text-xs">
                             Pendiente de registro
                           </Badge>
                         )}
@@ -747,3 +754,5 @@ function AsignarTrabajadoresDialog({
     </Dialog>
   );
 }
+
+

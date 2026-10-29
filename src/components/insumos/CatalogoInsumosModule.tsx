@@ -303,7 +303,7 @@ export function CatalogoInsumosModule() {
                           <span className="inline-flex items-center gap-2">
                             {i.nombre}
                             {i.disponible_renta && (
-                              <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
+                              <Badge variant="secondary" className="h-5 px-1.5 text-xs">
                                 Renta
                               </Badge>
                             )}
@@ -493,7 +493,7 @@ function MetricCard({
     <Card className={`p-4 ${accent ? "border-amber-300 bg-amber-50" : ""}`}>
       <div className="flex items-center gap-3">
         <div
-          className={`rounded-md p-2 ${accent ? "bg-amber-100 text-amber-700" : "bg-primary/10 text-primary"}`}
+          className={`rounded-md p-2 ${accent ? "bg-amber-100 text-amber-700" : "bg-primary/10 text-primary-ink"}`}
         >
           {icon}
         </div>
@@ -1224,3 +1224,4 @@ function UnidadesDialog({
     </Dialog>
   );
 }
+

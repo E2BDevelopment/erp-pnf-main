@@ -326,7 +326,7 @@ export function CapturaPresupuestoSheet({
       >
         {importing && (
           <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm pointer-events-auto">
-            <Loader2 className="size-10 animate-spin text-primary" />
+            <Loader2 className="size-10 animate-spin text-primary-ink" />
             <p className="mt-4 text-sm text-muted-foreground">
               {parsingPdf
                 ? "Analizando PDF, por favor no cierres esta ventana..."

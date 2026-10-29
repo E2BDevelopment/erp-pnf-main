@@ -243,28 +243,28 @@ export function SemanaActualPanel({ obraId }: { obraId: string }) {
           <Table className="text-xs w-full table-fixed min-w-[420px]">
             <TableHeader>
               <TableRow>
-                <TableHead className="text-[10px] uppercase tracking-wide py-1.5 px-1.5 w-[26%]">
+                <TableHead className="text-xs uppercase tracking-wide py-1.5 px-1.5 w-[26%]">
                   Insumo
                 </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wide text-center py-1.5 px-1 w-[16%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[16%]">
                   Proveedor
                 </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wide text-center py-1.5 px-1 w-[7%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[7%]">
                   Ud
                 </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wide text-center py-1.5 px-1 w-[11%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[11%]">
                   PU
                 </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wide text-center py-1.5 px-1 w-[8%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[8%]">
                   Ini
                 </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wide text-center py-1.5 px-1 w-[8%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[8%]">
                   Rec
                 </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wide text-center py-1.5 px-1 w-[14%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[14%]">
                   Util
                 </TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wide text-center py-1.5 px-1 w-[10%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[10%]">
                   Final
                 </TableHead>
               </TableRow>
@@ -432,3 +432,4 @@ function MovRow({
     </TableRow>
   );
 }
+

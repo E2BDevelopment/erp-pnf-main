@@ -152,7 +152,7 @@ export function NotificacionesModule() {
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
               className="pl-8"
-              placeholder="Buscar en título o mensaje…"
+              aria-label="Buscar en notificaciones" placeholder="Buscar en título o mensaje…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -191,13 +191,13 @@ export function NotificacionesModule() {
                         {n.titulo}
                       </p>
                       {n.tipo && (
-                        <Badge variant="outline" className="text-[10px] shrink-0">
+                        <Badge variant="outline" className="text-xs shrink-0">
                           {n.tipo}
                         </Badge>
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.mensaje}</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {formatDateTime(n.created_at)}
                     </p>
                   </div>
@@ -210,3 +210,5 @@ export function NotificacionesModule() {
     </div>
   );
 }
+
+

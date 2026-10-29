@@ -74,17 +74,17 @@ export function VigenteTable({ rows }: { rows: VigenteRow[] }) {
                     <div className="flex items-center gap-1.5">
                       <span className="truncate">{r.clave}</span>
                       {r.origen === "modificada" && (
-                        <Badge variant="secondary" className="text-[10px] h-4 px-1 shrink-0">
+                        <Badge variant="secondary" className="text-xs h-4 px-1 shrink-0">
                           Mod
                         </Badge>
                       )}
                       {r.origen === "agregada" && (
-                        <Badge className="text-[10px] h-4 px-1 shrink-0">Nuevo</Badge>
+                        <Badge className="text-xs h-4 px-1 shrink-0">Nuevo</Badge>
                       )}
                       {eliminada && (
                         <Badge
                           variant="outline"
-                          className="text-[10px] h-4 px-1 shrink-0 text-muted-foreground"
+                          className="text-xs h-4 px-1 shrink-0 text-muted-foreground"
                         >
                           Eliminado
                         </Badge>
@@ -168,3 +168,4 @@ export function VigenteTable({ rows }: { rows: VigenteRow[] }) {
     </TooltipProvider>
   );
 }
+

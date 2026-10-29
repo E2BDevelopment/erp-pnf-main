@@ -250,7 +250,7 @@ export function CapturaEstimacionSubcontratoSheet({
           <SheetHeader className="space-y-1">
             <SheetTitle className="flex items-center gap-2 flex-wrap text-base">
               Estimación del subcontrato
-              <Badge variant={estatusVariant[estatus]} className="text-[10px] py-0 px-1.5 h-5">
+              <Badge variant={estatusVariant[estatus]} className="text-xs py-0 px-1.5 h-5">
                 {estatusLabel[estatus]}
               </Badge>
               <span className="ml-auto text-xs text-muted-foreground">
@@ -304,7 +304,7 @@ export function CapturaEstimacionSubcontratoSheet({
                   />
                 </div>
                 {computed.erroresPorClave.size > 0 && (
-                  <Badge variant="destructive" className="gap-1 text-[10px] py-0 px-1.5 h-5">
+                  <Badge variant="destructive" className="gap-1 text-xs py-0 px-1.5 h-5">
                     <AlertTriangle className="size-3" /> {computed.erroresPorClave.size} con exceso
                   </Badge>
                 )}
@@ -312,7 +312,7 @@ export function CapturaEstimacionSubcontratoSheet({
 
               <Card className="mt-3 overflow-x-auto">
                 <table className="w-full min-w-[720px] text-sm table-fixed">
-                  <thead className="bg-muted/50 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
                     <tr>
                       <th className="text-left py-1.5 px-2 w-16">Clave</th>
                       <th className="text-left py-1.5 px-2">Concepto</th>
@@ -443,11 +443,11 @@ export function CapturaEstimacionSubcontratoSheet({
                             placeholder="0.00"
                           />
                         </div>
-                        <p className="text-[10px] text-muted-foreground text-right">
+                        <p className="text-xs text-muted-foreground text-right">
                           Disponible: {formatMXN(computed.fondoDisponible)}
                         </p>
                         {computed.excedeLiberacion && (
-                          <p className="text-[10px] text-destructive text-right">
+                          <p className="text-xs text-destructive text-right">
                             Excede el fondo disponible.
                           </p>
                         )}
@@ -532,7 +532,7 @@ function StatCard({
     <Card
       className={`p-3 ${tone === "destructive" ? "border-destructive/40 bg-destructive/5" : ""}`}
     >
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
       <p
         className={`mt-1 text-base font-semibold ${tone === "destructive" ? "text-destructive" : ""}`}
       >
@@ -557,9 +557,11 @@ function Row({
     <div className="flex items-center justify-between gap-2">
       <span className={`text-xs ${bold ? "font-semibold" : "text-muted-foreground"}`}>
         {label}
-        {hint && <span className="ml-1 text-[10px] text-muted-foreground/70">({hint})</span>}
+        {hint && <span className="ml-1 text-xs text-muted-foreground/70">({hint})</span>}
       </span>
       <span className={`tabular-nums text-sm ${bold ? "font-semibold" : ""}`}>{value}</span>
     </div>
   );
 }
+
+

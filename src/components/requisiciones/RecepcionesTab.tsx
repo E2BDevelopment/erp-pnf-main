@@ -211,7 +211,7 @@ export function RecepcionesTab({ requisicionId }: Props) {
                                 href={r.evidencia_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="inline-flex items-center gap-1 text-primary hover:underline text-sm"
+                                className="inline-flex items-center gap-1 text-primary-ink hover:underline text-sm"
                               >
                                 <ImageIcon className="size-3.5" /> Ver
                               </a>

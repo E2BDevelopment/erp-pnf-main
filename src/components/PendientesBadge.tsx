@@ -23,7 +23,7 @@ export function PendientesBadge({ count, className }: Props) {
     <ContadorLatido
       valor={count}
       className={cn(
-        "relative inline-grid h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-semibold leading-none text-white tabular-nums",
+        "relative inline-grid h-4.5 min-w-4.5 place-items-center rounded-full bg-rose-600 px-1 text-[11px] font-semibold leading-none text-white tabular-nums",
         className,
       )}
     >

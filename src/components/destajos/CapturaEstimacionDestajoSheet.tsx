@@ -249,7 +249,7 @@ export function CapturaEstimacionDestajoSheet({
           <SheetHeader className="space-y-1">
             <SheetTitle className="flex items-center gap-2 flex-wrap text-base">
               Estimación del destajo
-              <Badge variant={estatusVariant[estatus]} className="text-[10px] py-0 px-1.5 h-5">
+              <Badge variant={estatusVariant[estatus]} className="text-xs py-0 px-1.5 h-5">
                 {estatusLabel[estatus]}
               </Badge>
               <span className="ml-auto text-xs text-muted-foreground">
@@ -303,7 +303,7 @@ export function CapturaEstimacionDestajoSheet({
                   />
                 </div>
                 {computed.erroresPorClave.size > 0 && (
-                  <Badge variant="destructive" className="gap-1 text-[10px] py-0 px-1.5 h-5">
+                  <Badge variant="destructive" className="gap-1 text-xs py-0 px-1.5 h-5">
                     <AlertTriangle className="size-3" /> {computed.erroresPorClave.size} con exceso
                   </Badge>
                 )}
@@ -311,7 +311,7 @@ export function CapturaEstimacionDestajoSheet({
 
               <Card className="mt-3 overflow-x-auto">
                 <table className="w-full min-w-[720px] text-sm table-fixed">
-                  <thead className="bg-muted/50 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
                     <tr>
                       <th className="text-left py-1.5 px-2 w-16">Clave</th>
                       <th className="text-left py-1.5 px-2">Concepto</th>
@@ -538,7 +538,7 @@ function StatCard({
     <Card
       className={`p-2 ${tone === "destructive" ? "border-destructive/40 bg-destructive/5" : ""}`}
     >
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
       <p
         className={`mt-0.5 text-sm font-semibold tabular-nums ${tone === "destructive" ? "text-destructive" : ""}`}
       >
@@ -553,9 +553,11 @@ function Row({ label, value, hint }: { label: string; value: string; hint?: stri
     <div className="flex items-center justify-between">
       <span className="text-muted-foreground text-xs">
         {label}
-        {hint && <span className="block text-[10px]">{hint}</span>}
+        {hint && <span className="block text-xs">{hint}</span>}
       </span>
       <span className="tabular-nums">{value}</span>
     </div>
   );
 }
+
+

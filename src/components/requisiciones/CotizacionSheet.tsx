@@ -6,12 +6,12 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CheckCircle2, FileText, Send, Wallet, Trash2 } from "lucide-react";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -164,27 +164,28 @@ export function CotizacionSheet({
   const proveedores: any[] = provQ.data ?? [];
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-4xl overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Cotización · {req?.folio ?? "—"}</SheetTitle>
-          <SheetDescription>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="flex h-[calc(100dvh-1rem)] w-[calc(100%-1rem)] max-w-6xl flex-col gap-0 overflow-hidden p-0 sm:h-[min(90dvh,900px)] sm:w-[calc(100%-3rem)]">
+        <DialogHeader className="shrink-0 border-b px-5 py-4 text-left sm:px-6">
+          <DialogTitle>Cotización · {req?.folio ?? "—"}</DialogTitle>
+          <DialogDescription>
             Compara precios, asigna proveedores y autoriza pedidos
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
-        {cotQ.isLoading ? (
-          <p className="mt-6 text-sm text-muted-foreground">Cargando…</p>
-        ) : (
-          <Tabs value={tab} onValueChange={(v) => setTab(v as CotizacionTab)} className="mt-4">
-            <TabsList className="grid grid-cols-5 w-full">
-              <TabsTrigger value="requisicion">Requisición</TabsTrigger>
-              <TabsTrigger value="solicitudes">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6">
+          {cotQ.isLoading ? (
+            <p className="text-sm text-muted-foreground">Cargando…</p>
+          ) : (
+          <Tabs value={tab} onValueChange={(v) => setTab(v as CotizacionTab)}>
+            <TabsList className="flex h-auto w-full justify-start overflow-x-auto">
+              <TabsTrigger className="shrink-0" value="requisicion">Requisición</TabsTrigger>
+              <TabsTrigger className="shrink-0" value="solicitudes">
                 Cotizaciones ({(solsQ.data ?? []).length})
               </TabsTrigger>
-              <TabsTrigger value="comparativa">Comparativa</TabsTrigger>
-              <TabsTrigger value="ocs">OCs ({ocs.length})</TabsTrigger>
-              <TabsTrigger value="recepciones">Recepciones</TabsTrigger>
+              <TabsTrigger className="shrink-0" value="comparativa">Comparativa</TabsTrigger>
+              <TabsTrigger className="shrink-0" value="ocs">OCs ({ocs.length})</TabsTrigger>
+              <TabsTrigger className="shrink-0" value="recepciones">Recepciones</TabsTrigger>
             </TabsList>
 
             <TabsContent value="requisicion" className="mt-4 space-y-4">
@@ -513,9 +514,10 @@ export function CotizacionSheet({
               <RecepcionesTab requisicionId={requisicionId} />
             </TabsContent>
           </Tabs>
-        )}
-      </SheetContent>
-    </Sheet>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

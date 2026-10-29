@@ -144,98 +144,169 @@ export function RequisicionesModule({ obraId }: Props) {
           )}
 
           {usarVistaTabla && activas.length > 0 && (
-            <Card className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="h-8">
-                    <TableHead className="py-1 text-xs">Folio</TableHead>
-                    <TableHead className="hidden sm:table-cell py-1 text-xs">Solicitante</TableHead>
-                    <TableHead className="hidden md:table-cell text-right py-1 text-xs">
-                      # insumos
-                    </TableHead>
-                    <TableHead className="py-1 text-xs">Fecha más próxima</TableHead>
-                    <TableHead className="py-1 text-xs">Estatus</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {activas.map((r: any) => {
-                    const meta = ESTATUS_META[r.estatus as RequisicionEstatus];
-                    const items = r.items ?? [];
-                    const fechas = items
-                      .map((it: any) => it.fecha_requerida)
-                      .filter(Boolean)
-                      .map((d: string) => new Date(d).getTime());
-                    const minF = fechas.length > 0 ? Math.min(...fechas) : null;
-                    const urgent = minF !== null && Math.ceil((minF - Date.now()) / 86400000) <= 3;
-                    const estatus = r.estatus as RequisicionEstatus;
-                    const esBorrador = estatus === "borrador";
-                    const handleRowClick = () => {
-                      if (esBorrador) return abrirBorrador(r.id);
-                      if ((estatus === "enviada" || estatus === "en_cotizacion") && puedeCotizar) {
-                        return setCotizacion({ id: r.id, tab: "requisicion" });
-                      }
-                      if (puedeVerOC) return setCotizacion({ id: r.id, tab: "ocs" });
-                      return abrirVisor(r.id);
-                    };
-                    return (
-                      <TableRow
-                        key={r.id}
-                        className="hover:bg-muted/50 h-9 cursor-pointer"
-                        onClick={handleRowClick}
-                      >
-                        <TableCell className="py-1 font-medium text-sm whitespace-nowrap">
-                          {esBorrador ? "Borrador" : r.folio}
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell py-1 text-sm text-muted-foreground whitespace-nowrap">
-                          {r.solicitante?.nombre_completo ?? "—"}
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell text-right py-1 text-sm">
-                          {items.length}
-                        </TableCell>
-                        <TableCell className="py-1">
-                          {minF === null ? (
-                            <span className="text-muted-foreground text-sm">—</span>
-                          ) : (
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-sm whitespace-nowrap">
-                                {formatDate(new Date(minF).toISOString())}
+            <Card className="overflow-hidden">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/40 border-b border-border hover:bg-muted/40">
+                      <TableHead className="py-2.5 pl-4 text-xs font-semibold uppercase tracking-wider w-[110px] text-muted-foreground">
+                        Folio
+                      </TableHead>
+                      <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Solicitante
+                      </TableHead>
+                      <TableHead className="hidden md:table-cell py-2.5 text-xs font-semibold uppercase tracking-wider text-center text-muted-foreground w-[60px]">
+                        Ins.
+                      </TableHead>
+                      <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[120px]">
+                        Fecha req.
+                      </TableHead>
+                      <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[150px]">
+                        Estatus
+                      </TableHead>
+                      <TableHead className="py-2.5 pr-4 text-xs font-semibold uppercase tracking-wider text-right text-muted-foreground w-[100px]">
+                        Acción
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {activas.map((r: any) => {
+                      const meta = ESTATUS_META[r.estatus as RequisicionEstatus];
+                      const items = r.items ?? [];
+                      const fechas = items
+                        .map((it: any) => it.fecha_requerida)
+                        .filter(Boolean)
+                        .map((d: string) => new Date(d).getTime());
+                      const minF = fechas.length > 0 ? Math.min(...fechas) : null;
+                      const daysLeft = minF !== null ? Math.ceil((minF - Date.now()) / 86400000) : null;
+                      const urgent = daysLeft !== null && daysLeft <= 3;
+                      const estatus = r.estatus as RequisicionEstatus;
+                      const esBorrador = estatus === "borrador";
+                      const handleRowClick = () => {
+                        if (esBorrador) return abrirBorrador(r.id);
+                        if ((estatus === "enviada" || estatus === "en_cotizacion") && puedeCotizar) {
+                          return setCotizacion({ id: r.id, tab: "requisicion" });
+                        }
+                        if (puedeVerOC) return setCotizacion({ id: r.id, tab: "ocs" });
+                        return abrirVisor(r.id);
+                      };
+
+                      // Derive action label
+                      const accionLabel: string | null = (() => {
+                        if (esBorrador) return "Editar";
+                        if ((estatus === "enviada" || estatus === "en_cotizacion") && puedeCotizar) return "Cotizar";
+                        if (estatus === "pendiente_autorizacion" && puedeRevisar) return "Revisar";
+                        if (estatus === "oc_generada" && puedeVerOC) return "Ver OC";
+                        if (puedeVerOC || puedeCotizar) return "Abrir";
+                        return null;
+                      })();
+
+                      const accionVariant = (() => {
+                        if (estatus === "en_cotizacion") return "default" as const;
+                        if (estatus === "enviada" && puedeCotizar) return "default" as const;
+                        return "outline" as const;
+                      })();
+
+                      return (
+                        <TableRow
+                          key={r.id}
+                          className="cursor-pointer border-b border-border/60 last:border-0 hover:bg-muted/30 transition-colors group"
+                          onClick={handleRowClick}
+                        >
+                          {/* Folio */}
+                          <TableCell className="py-3 pl-4 align-middle">
+                            <span className={`font-mono text-xs font-semibold tracking-wide ${esBorrador ? "text-muted-foreground italic" : "text-foreground"}`}>
+                              {esBorrador ? "Borrador" : r.folio}
+                            </span>
+                          </TableCell>
+
+                          {/* Solicitante */}
+                          <TableCell className="py-3 align-middle">
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-sm font-medium text-foreground leading-tight truncate max-w-[220px]">
+                                {r.solicitante?.nombre_completo ?? "—"}
                               </span>
-                              {urgent && (
-                                <Badge className="bg-rose-100 text-rose-800 text-[10px] px-1.5 py-0 h-4">
-                                  Urgente
-                                </Badge>
+                              {items.length > 0 && (
+                                <span className="text-xs text-muted-foreground">
+                                  {items.length} {items.length === 1 ? "insumo" : "insumos"}
+                                  {items[0]?.insumo?.nombre && (
+                                    <> · <span className="truncate">{items[0].insumo.nombre}{items.length > 1 ? ` +${items.length - 1}` : ""}</span></>
+                                  )}
+                                </span>
                               )}
                             </div>
-                          )}
-                        </TableCell>
-                        <TableCell className="py-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <Badge className={`${meta.badge} border-0 text-[10px] px-2 py-0 h-5`}>
+                          </TableCell>
+
+                          {/* # insumos */}
+                          <TableCell className="hidden md:table-cell py-3 text-center align-middle">
+                            <span className="text-sm tabular-nums text-muted-foreground">{items.length}</span>
+                          </TableCell>
+
+                          {/* Fecha requerida */}
+                          <TableCell className="py-3 align-middle whitespace-nowrap">
+                            {minF === null ? (
+                              <span className="text-muted-foreground text-sm">—</span>
+                            ) : (
+                              <div className="flex flex-col gap-0.5">
+                                <span className={`text-sm tabular-nums ${urgent ? "font-semibold text-rose-700 dark:text-rose-400" : "text-foreground"}`}>
+                                  {formatDate(new Date(minF).toISOString())}
+                                </span>
+                                {urgent && (
+                                  <span className="text-[11px] font-medium text-rose-600 dark:text-rose-400">
+                                    {daysLeft === 0 ? "Hoy" : daysLeft < 0 ? "Vencida" : `${daysLeft}d`}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </TableCell>
+
+                          {/* Estatus */}
+                          <TableCell className="py-3 align-middle">
+                            <Badge className={`${meta.badge} border-0 text-xs px-2 py-0.5 font-medium`}>
                               {meta.label}
                             </Badge>
-                            {esBorrador && (
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-8 w-8 p-0 text-destructive"
-                                disabled={eliminarBorrador.isPending}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (confirm("¿Eliminar este borrador?"))
-                                    eliminarBorrador.mutate(r.id);
-                                }}
-                                aria-label="Eliminar borrador"
-                              >
-                                <Trash2 className="size-3" />
-                              </Button>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+                          </TableCell>
+
+                          {/* Acción */}
+                          <TableCell className="py-3 pr-4 text-right align-middle">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {accionLabel && (
+                                <Button
+                                  size="sm"
+                                  variant={accionVariant}
+                                  className="h-7 px-3 text-xs opacity-0 group-hover:opacity-100 transition-opacity focus-visible:opacity-100"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRowClick();
+                                  }}
+                                >
+                                  {accionLabel}
+                                </Button>
+                              )}
+                              {esBorrador && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity focus-visible:opacity-100"
+                                  disabled={eliminarBorrador.isPending}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (confirm("¿Eliminar este borrador?"))
+                                      eliminarBorrador.mutate(r.id);
+                                  }}
+                                  aria-label="Eliminar borrador"
+                                >
+                                  <Trash2 className="size-3.5" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
             </Card>
           )}
 
@@ -283,7 +354,7 @@ export function RequisicionesModule({ obraId }: Props) {
                       </p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <Badge className={`${meta.badge} border-0 text-[10px] px-2 py-0.5`}>
+                      <Badge className={`${meta.badge} border-0 text-xs px-2 py-0.5`}>
                         {meta.label}
                       </Badge>
                       {esBorrador && (
@@ -335,9 +406,10 @@ export function RequisicionesModule({ obraId }: Props) {
                     <div className="mt-2 pl-6 space-y-1.5" onClick={(e) => e.stopPropagation()}>
                       <div className="flex flex-wrap gap-1.5">
                         {items.slice(0, 6).map((it: any) => (
-                          <span
+                          <button
+                            type="button"
                             key={it.id}
-                            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md bg-muted text-foreground cursor-pointer"
+                            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md bg-muted text-foreground cursor-pointer hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring text-left"
                             onClick={() => abrirVisor(r.id)}
                           >
                             <strong>{Number(it.cantidad)}</strong> {it.insumo?.unidad}
@@ -351,7 +423,7 @@ export function RequisicionesModule({ obraId }: Props) {
                                 </span>
                               </>
                             )}
-                          </span>
+                          </button>
                         ))}
                         {items.length > 6 && (
                           <span className="text-xs text-muted-foreground self-center">
@@ -367,48 +439,85 @@ export function RequisicionesModule({ obraId }: Props) {
         </TabsContent>
 
         <TabsContent value="historial" className="mt-4">
-          <Card className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Folio</TableHead>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead className="text-center"># insumos</TableHead>
-                  <TableHead>Estatus</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {historial.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                      Sin requisiciones
-                    </TableCell>
+          <Card className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/40 border-b border-border hover:bg-muted/40">
+                    <TableHead className="py-2.5 pl-4 text-xs font-semibold uppercase tracking-wider w-[110px] text-muted-foreground">
+                      Folio
+                    </TableHead>
+                    <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Solicitante
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell py-2.5 text-xs font-semibold uppercase tracking-wider text-center text-muted-foreground w-[60px]">
+                      Ins.
+                    </TableHead>
+                    <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[120px]">
+                      Fecha
+                    </TableHead>
+                    <TableHead className="py-2.5 pr-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[150px]">
+                      Estatus
+                    </TableHead>
                   </TableRow>
-                )}
-                {historial.map((r: any) => {
-                  const meta = ESTATUS_META[r.estatus as RequisicionEstatus];
-                  const handleRowClick = () => {
-                    if (puedeVerOC) return setCotizacion({ id: r.id, tab: "ocs" });
-                    if (puedeCotizar) return setCotizacion({ id: r.id, tab: "requisicion" });
-                    return abrirVisor(r.id);
-                  };
-                  return (
-                    <TableRow
-                      key={r.id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={handleRowClick}
-                    >
-                      <TableCell className="font-medium">{r.folio}</TableCell>
-                      <TableCell>{formatDate(r.created_at)}</TableCell>
-                      <TableCell className="text-center">{r.items?.length ?? 0}</TableCell>
-                      <TableCell>
-                        <Badge className={`${meta.badge} border-0`}>{meta.label}</Badge>
+                </TableHeader>
+                <TableBody>
+                  {historial.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground py-10 text-sm">
+                        Sin requisiciones en el historial
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                  )}
+                  {historial.map((r: any) => {
+                    const meta = ESTATUS_META[r.estatus as RequisicionEstatus];
+                    const handleRowClick = () => {
+                      if (puedeVerOC) return setCotizacion({ id: r.id, tab: "ocs" });
+                      if (puedeCotizar) return setCotizacion({ id: r.id, tab: "requisicion" });
+                      return abrirVisor(r.id);
+                    };
+                    return (
+                      <TableRow
+                        key={r.id}
+                        className="cursor-pointer border-b border-border/60 last:border-0 hover:bg-muted/30 transition-colors group"
+                        onClick={handleRowClick}
+                      >
+                        <TableCell className="py-3 pl-4 align-middle">
+                          <span className="font-mono text-xs font-semibold tracking-wide text-foreground">
+                            {r.folio}
+                          </span>
+                        </TableCell>
+                        <TableCell className="py-3 align-middle">
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-sm font-medium text-foreground leading-tight truncate max-w-[220px]">
+                              {r.solicitante?.nombre_completo ?? "—"}
+                            </span>
+                            {(r.items?.length ?? 0) > 0 && (
+                              <span className="text-xs text-muted-foreground">
+                                {r.items.length} {r.items.length === 1 ? "insumo" : "insumos"}
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell py-3 text-center align-middle">
+                          <span className="text-sm tabular-nums text-muted-foreground">{r.items?.length ?? 0}</span>
+                        </TableCell>
+                        <TableCell className="py-3 align-middle whitespace-nowrap">
+                          <span className="text-sm text-muted-foreground tabular-nums">
+                            {formatDate(r.created_at)}
+                          </span>
+                        </TableCell>
+                        <TableCell className="py-3 pr-4 align-middle">
+                          <Badge className={`${meta.badge} border-0 text-xs px-2 py-0.5 font-medium`}>
+                            {meta.label}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
           </Card>
         </TabsContent>
       </Tabs>
@@ -436,3 +545,4 @@ export function RequisicionesModule({ obraId }: Props) {
     </div>
   );
 }
+

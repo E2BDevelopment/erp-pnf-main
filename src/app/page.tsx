@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Link } from "@/lib/navigation";
 import { Building2, Users, Wallet, ClipboardList, ShieldCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,9 +12,14 @@ function Landing() {
       <header className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
-            <div className="size-8 shrink-0 rounded-md bg-primary text-primary-foreground grid place-items-center font-semibold">
-              P
-            </div>
+            <Image
+              src="/assets/img/icon-1.png"
+              alt="Logo ERP PNF"
+              width={32}
+              height={32}
+              className="size-8 shrink-0 rounded-md object-contain"
+              priority
+            />
             <span className="hidden font-semibold text-foreground min-[400px]:inline">ERP PNF</span>
           </div>
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
@@ -29,7 +35,7 @@ function Landing() {
 
       <main>
         <section className="max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-28 text-center">
-          <p className="hero-entrada text-sm font-medium text-primary mb-4">
+          <p className="hero-entrada text-sm font-medium text-primary-ink mb-4">
             ERP para empresas constructoras
           </p>
           <h1
@@ -99,7 +105,7 @@ function Landing() {
               },
             ].map((f) => (
               <div key={f.title} className="rounded-lg border border-border bg-card p-5">
-                <f.icon className="size-5 text-primary mb-3" />
+                <f.icon className="size-5 text-primary-ink mb-3" />
                 <h3 className="font-medium text-foreground">{f.title}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{f.desc}</p>
               </div>

@@ -14,3 +14,6 @@ export const updateCompanyConfig = clientFn<typeof Impl.updateCompanyConfig>("ap
 export const setCompanyLogo = clientFn<typeof Impl.setCompanyLogo>("api/company.functions.setCompanyLogo");
 export const getCompanyLogoSignedUrl = clientFn<typeof Impl.getCompanyLogoSignedUrl>("api/company.functions.getCompanyLogoSignedUrl");
 export const updateCompanyCapitalSocial = clientFn<typeof Impl.updateCompanyCapitalSocial>("api/company.functions.updateCompanyCapitalSocial");
+export const listCompanyDocumentos = clientFn<typeof Impl.listCompanyDocumentos>("api/company.functions.listCompanyDocumentos");
+export const saveCompanyDocumento = clientFn<typeof Impl.saveCompanyDocumento>("api/company.functions.saveCompanyDocumento");
+export const deleteCompanyDocumento = clientFn<typeof Impl.deleteCompanyDocumento>("api/company.functions.deleteCompanyDocumento");

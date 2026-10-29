@@ -23,8 +23,8 @@ export default function GlobalError({
       <body
         style={{
           font: '14px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif',
-          background: "oklch(0.99 0 0)",
-          color: "oklch(0.18 0.02 250)",
+          background: "#f9fafb",
+          color: "#20252b",
           display: "grid",
           placeItems: "center",
           minHeight: "100vh",
@@ -33,27 +33,25 @@ export default function GlobalError({
         }}
       >
         <div style={{ width: "100%", maxWidth: "26rem", textAlign: "center" }}>
-          <div
-            aria-hidden
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/img/icon-1.png"
+            alt="Logo ERP PNF"
+            width={40}
+            height={40}
             style={{
-              display: "grid",
-              placeItems: "center",
               width: "2.5rem",
               height: "2.5rem",
               margin: "0 auto 1rem",
               borderRadius: "0.5rem",
-              background: "oklch(0.28 0.06 255)",
-              color: "oklch(0.99 0 0)",
-              fontSize: "1.125rem",
-              fontWeight: 600,
+              objectFit: "contain",
+              display: "block",
             }}
-          >
-            P
-          </div>
+          />
           <h1 style={{ fontSize: "1.5rem", fontWeight: 600, letterSpacing: "-0.025em", margin: 0 }}>
             No se pudo cargar la aplicación
           </h1>
-          <p style={{ color: "oklch(0.5 0.015 250)", margin: "0.5rem 0 0" }}>
+          <p style={{ color: "#5f6773", margin: "0.5rem 0 0" }}>
             Algo falló antes de que la interfaz estuviera lista. Recarga para volver a intentarlo.
           </p>
           {error.digest && (
@@ -61,7 +59,7 @@ export default function GlobalError({
               style={{
                 fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
                 fontSize: "0.75rem",
-                color: "oklch(0.5 0.015 250)",
+                color: "#5f6773",
                 margin: "0.75rem 0 0",
               }}
             >
@@ -80,8 +78,8 @@ export default function GlobalError({
               padding: "0 1rem",
               borderRadius: "0.375rem",
               border: "1px solid transparent",
-              background: "oklch(0.28 0.06 255)",
-              color: "oklch(0.99 0 0)",
+              background: "#f47721",
+              color: "#20252b",
               font: "inherit",
               fontWeight: 500,
               cursor: "pointer",

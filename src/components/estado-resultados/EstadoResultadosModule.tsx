@@ -524,7 +524,7 @@ function ConceptosTabla({ items }: { items: ConceptoDetalle[] }) {
             <tr key={c.id} className="border-b border-border/50 last:border-b-0">
               <td className="py-1.5 px-3">
                 <div className="font-medium">{c.descripcion}</div>
-                {c.meta && <div className="text-[10px] text-muted-foreground">{c.meta}</div>}
+                {c.meta && <div className="text-xs text-muted-foreground">{c.meta}</div>}
               </td>
               {showCantidad && (
                 <td className="text-right tabular-nums py-1.5 px-2">
@@ -546,3 +546,4 @@ function ConceptosTabla({ items }: { items: ConceptoDetalle[] }) {
     </div>
   );
 }
+

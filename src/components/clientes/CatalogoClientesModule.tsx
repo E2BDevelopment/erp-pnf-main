@@ -191,7 +191,7 @@ export function CatalogoClientesModule({ initialClienteId }: { initialClienteId?
                 <TabsTrigger value="pendientes" className="text-xs h-6 px-2">
                   Pendientes
                   {pendientesCount > 0 && (
-                    <Badge className="ml-1.5 h-4 px-1 bg-amber-100 text-amber-800 hover:bg-amber-100 text-[10px]">
+                    <Badge className="ml-1.5 h-4 px-1 bg-amber-100 text-amber-800 hover:bg-amber-100 text-xs">
                       {pendientesCount}
                     </Badge>
                   )}
@@ -484,3 +484,5 @@ export function CatalogoClientesModule({ initialClienteId }: { initialClienteId?
     </div>
   );
 }
+
+

@@ -67,8 +67,8 @@ export function MobileBottomBar({
                 title={it.pendientes ? `${it.pendientes} pendientes por atender` : undefined}
                 className={cn(
                   "flex flex-col items-center justify-center gap-1 leading-none transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none",
-                  scroll ? "w-[4.5rem] shrink-0 text-[10px]" : "flex-1 text-[11px]",
-                  active ? "text-primary" : "text-muted-foreground",
+                  scroll ? "w-[4.5rem] shrink-0 text-[11px]" : "flex-1 text-[11px]",
+                  active ? "text-primary-ink" : "text-muted-foreground",
                 )}
               >
                 <span className="relative inline-flex p-1">

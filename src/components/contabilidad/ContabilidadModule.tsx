@@ -256,7 +256,7 @@ function SaldoRow({ s }: { s: Saldo }) {
           {s.nombre}
         </span>
         {!s.disponible && (
-          <Badge variant="secondary" className="text-[10px] h-4">
+          <Badge variant="secondary" className="text-xs h-4">
             Pendiente
           </Badge>
         )}
@@ -345,3 +345,4 @@ function BalanceSkeleton() {
 
 // avoid unused-import warning
 void GRUPO_LABELS;
+

@@ -200,13 +200,13 @@ function ObraHeader({
               <div
                 key={m.id}
                 title={`${m.user?.nombre_completo ?? "—"} · ${ROLE_LABELS[m.role] ?? m.role}`}
-                className="size-7 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[10px] font-medium"
+                className="size-7 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[11px] font-medium"
               >
                 {initials(m.user?.nombre_completo)}
               </div>
             ))}
             {extra > 0 && (
-              <div className="size-7 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[10px] font-medium text-muted-foreground">
+              <div className="size-7 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[11px] font-medium text-muted-foreground">
                 +{extra}
               </div>
             )}

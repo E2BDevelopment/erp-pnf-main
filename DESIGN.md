@@ -1,19 +1,20 @@
 ---
 name: ERP PNF
-description: Tinta navy sobre papel blanco — la bitácora operativa de una constructora mexicana.
+description: Grafito estructural y naranja de seguridad sobre papel — la bitácora operativa de una constructora mexicana.
 colors:
-  ink-navy: "oklch(0.28 0.06 255)"
-  ink-navy-raised: "oklch(0.26 0.05 255)"
-  ink-navy-deep: "oklch(0.20 0.04 255)"
-  paper-white: "oklch(0.99 0 0)"
-  sheet-white: "oklch(1 0 0)"
-  graphite: "oklch(0.18 0.02 250)"
-  pencil-gray: "oklch(0.50 0.015 250)"
-  hairline: "oklch(0.92 0.005 250)"
-  wash: "oklch(0.96 0.005 250)"
-  wash-deep: "oklch(0.94 0.01 250)"
-  paper-dim: "oklch(0.95 0.005 250)"
-  alert-red: "oklch(0.58 0.21 27)"
+  brand-orange: "#f47721"
+  brand-orange-ink: "#c2410c"
+  brand-orange-wash: "#fff1e6"
+  graphite: "#20252b"
+  graphite-raised: "#2b3138"
+  graphite-deep: "#181c21"
+  paper-white: "#f9fafb"
+  sheet-white: "#ffffff"
+  pencil-gray: "#5f6773"
+  hairline: "#e5e7eb"
+  wash: "#f3f4f6"
+  ink-on-dark: "#f3f4f6"
+  alert-red: "#dc2626"
   adjustment-cream: "oklch(0.975 0.035 95)"
   adjustment-ink: "oklch(0.42 0.11 75)"
   adjustment-line: "oklch(0.90 0.06 90)"
@@ -95,8 +96,8 @@ spacing:
   "12": "48px"
 components:
   button-primary:
-    backgroundColor: "{colors.ink-navy}"
-    textColor: "{colors.paper-white}"
+    backgroundColor: "{colors.brand-orange}"
+    textColor: "{colors.graphite}"
     typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "0 16px"
@@ -190,8 +191,8 @@ components:
     rounded: "{rounded.md}"
     padding: "4px 12px"
   sidebar-item-active:
-    backgroundColor: "{colors.ink-navy-raised}"
-    textColor: "{colors.paper-dim}"
+    backgroundColor: "{colors.graphite-raised}"
+    textColor: "{colors.ink-on-dark}"
     typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "8px 12px"
@@ -210,14 +211,14 @@ components:
 
 **Creative North Star: "La bitácora de obra"**
 
-El sistema se comporta como la bitácora que vive en la caseta de obra: páginas blancas, renglones finos, tinta navy, entradas firmadas y sellos de estado. No hay decoración porque cada marca en la página existe para registrar quién hizo qué, cuándo y con qué visto bueno. La interfaz hereda esa disciplina: superficies planas, reglas de un píxel, jerarquía por peso y tamaño, y color reservado para el estado o para el ajuste.
+El sistema se comporta como la bitácora que vive en la caseta de obra: páginas blancas, renglones finos, tinta grafito, entradas firmadas y sellos de estado. No hay decoración porque cada marca en la página existe para registrar quién hizo qué, cuándo y con qué visto bueno. La interfaz hereda esa disciplina: superficies planas, reglas de un píxel, jerarquía por peso y tamaño, y naranja reservado para la acción y la atención.
 
-La densidad es deliberada. El cuerpo de trabajo vive en 12 y 14 px; las tablas alinean cifras con números tabulares y los encabezados de sección se escriben en mayúsculas pequeñas con tracking abierto, como los rubros de un formato. La barra lateral navy es la única superficie oscura extensa —la portada de la bitácora—; todo lo demás es papel blanco con líneas.
+La densidad es deliberada. El cuerpo de trabajo vive en 12 y 14 px; las tablas alinean cifras con números tabulares y los encabezados de sección se escriben en mayúsculas pequeñas con tracking abierto, como los rubros de un formato. La barra lateral grafito es la única superficie oscura extensa —la portada de la bitácora—; todo lo demás es papel blanco con líneas.
 
 El lujo es de precisión, no de ornamento: una sombra apenas perceptible sobre las tarjetas, radios de 6 px en controles y 12 px en contenedores, iconos Lucide de 16 px y sellos pastel de 20 px. La referencia negativa es el dashboard genérico: nada de degradados, vidrio, fotografía de stock ni tarjetas de marketing dentro del producto.
 
 **Key Characteristics:**
-- Tinta navy sobre papel blanco; el color solo marca estado o ajuste.
+- Grafito sobre papel; el naranja de seguridad marca acción, estado activo y atención, nunca atmósfera.
 - Densidad de bitácora: cuerpo de 12–14 px, tablas de una línea, cifras tabulares.
 - Reglas de 1 px y superficies planas; la sombra es la excepción, no el sistema.
 - El mismo lenguaje a 360 px y a 1440 px: cambia el shell, no la densidad.
@@ -225,40 +226,43 @@ El lujo es de precisión, no de ornamento: una sombra apenas perceptible sobre l
 
 ## Colors
 
-Una paleta de tinta y papel: navy profundo para la estructura, blancos neutros para el contenido y seis familias pastel que funcionan como sellos de estado.
+Una paleta de tinta y seguridad: grafito para la estructura, naranja corporativo para la acción, grises neutros para el contenido y seis familias pastel que funcionan como sellos de estado.
 
 ### Primary
-- **Tinta de plano** (`oklch(0.28 0.06 255)`): acciones primarias, enlaces, iconos activos, checkboxes y focus ring. Es el único acento de marca; su escasez es lo que le da autoridad.
-- **Tinta de archivo** (`oklch(0.20 0.04 255)`): barra lateral de escritorio y menú móvil. La portada oscura de la bitácora.
-- **Tinta levantada** (`oklch(0.26 0.05 255)`): relleno del ítem activo y del hover en la navegación navy.
+- **Naranja corporativo** (`#f47721`): relleno de la acción primaria, checkboxes y switches activos, riel de la navegación y cualquier marca que pida atención inmediata. Sobre él siempre va tinta grafito (5.5:1); nunca texto blanco.
+- **Naranja profundo** (`#c2410c`): la versión legible del naranja. Se usa como tinta de enlaces, iconos activos, montos destacados y focus ring sobre superficie clara (4.9:1 sobre Fondo). El relleno saturado no se usa como texto.
+- **Grafito** (`#20252b`): barra lateral de escritorio y menú móvil. La portada oscura de la bitácora. También es la tinta del texto principal.
+- **Grafito levantado** (`#2b3138`): relleno del ítem activo y del hover en la navegación grafito.
 
 ### Secondary — el sistema de sellos
 No es una marca secundaria: es el vocabulario semántico de estado. Todos los sellos comparten la misma gramática: relleno `-100`, tinta `-800`, texto de 12 px con peso 600, sin borde.
 - **Sello ámbar** (`#fef3c7` / `#92400e`): algo en curso o con saldo — cotizando, pago parcial, consumo pendiente, advertencia operativa.
 - **Sello verde** (`#d1fae5` / `#065f46`): cerrado y en orden — completada, pagado, autorizado, asistencia registrada.
-- **Sello rosa** (`#ffe4e6` / `#9f1239`): rechazo o riesgo — rechazada, vencida, urgente. Su versión sólida (`rose-500`) es el contador de pendientes.
+- **Sello rosa** (`#ffe4e6` / `#9f1239`): rechazo o riesgo — rechazada, vencida, urgente. Su versión sólida (`rose-600`) es el contador de pendientes.
 - **Sello azul** (`#dbeafe` / `#1e40af`): documento emitido — orden de compra generada, recepción en tránsito.
 - **Sello violeta** (`#f3e8ff` / `#6b21a8`): espera de autorización — pendiente del visto bueno del Supervisor.
 - **Sello pizarra** (`#f1f5f9` / `#334155`): borrador, enviada o metadato neutro.
-- **Rojo de alerta** (`oklch(0.58 0.21 27)`): la única versión fuerte del rojo; se reserva para acciones destructivas, errores de formulario y montos negativos.
+- **Rojo de alerta** (`#dc2626`): la única versión fuerte del rojo; se reserva para acciones destructivas, errores de formulario y montos negativos. Convive con el naranja porque este nunca significa error.
 
 Las variantes de una sola pantalla —cian para recepción parcial, por ejemplo— siguen la misma gramática `-100` / `-800`; no crean una familia nueva.
 
 ### Neutral
-- **Papel de obra** (`oklch(0.99 0 0)`): fondo de la aplicación y de las páginas públicas.
-- **Hoja** (`oklch(1 0 0)`): tarjetas, sheets, barras y cualquier superficie que se apoya sobre el papel.
-- **Grafito** (`oklch(0.18 0.02 250)`): texto principal.
-- **Lápiz** (`oklch(0.50 0.015 250)`): texto secundario, encabezados de tabla, metadatos y subtítulos.
-- **Regla** (`oklch(0.92 0.005 250)`): el borde de 1 px que separa casi todo.
-- **Lavado** (`oklch(0.96 0.005 250)`): riel de tabs, fondos deshabilitados, hover de filas.
-- **Lavado profundo** (`oklch(0.94 0.01 250)`): hover de controles fantasma y botones outline.
-- **Papel tenue** (`oklch(0.95 0.005 250)`): texto de navegación sobre navy.
+- **Papel de obra** (`#f9fafb`): fondo de la aplicación y de las páginas públicas.
+- **Hoja** (`#ffffff`): tarjetas, sheets, barras y cualquier superficie que se apoya sobre el papel.
+- **Grafito** (`#20252b`): texto principal.
+- **Lápiz** (`#5f6773`): texto secundario, encabezados de tabla, metadatos y subtítulos (5.5:1 sobre Papel de obra).
+- **Regla** (`#e5e7eb`): el borde de 1 px que separa casi todo.
+- **Lavado** (`#f3f4f6`): riel de tabs, fondos deshabilitados, hover de filas.
+- **Lavado cálido** (`#fff1e6`): hover de controles fantasma y botones outline. Es el naranja al 8 %, no un segundo acento.
+- **Papel tenue** (`#f3f4f6`): texto de navegación sobre grafito.
 - **Marcador de ajuste** (`oklch(0.975 0.035 95)` con tinta `oklch(0.42 0.11 75)` y línea `oklch(0.90 0.06 90)`): el crema del lápiz con el que administración corrige un valor. No es un warning.
 
 ### Named Rules
-**The Ink-on-Paper Rule.** El chrome es navy sobre blanco. El color entra únicamente como sello de estado o como marca de ajuste; nunca como atmósfera, degradado o fondo de sección.
+**The Graphite-and-Orange Rule.** El chrome es grafito sobre papel. El naranja entra como acción, estado activo o marca de atención; nunca como atmósfera, degradado o fondo de sección.
 
-**The Stamp Rule.** Un color de estado vive en un tag de 20 px, un punto de 6–8 px o una celda resaltada. Puede llenar un aviso en línea cuando el aviso *es* el estado; no puede pintar el chrome de la página ni un botón primario.
+**The Two-Oranges Rule.** El naranja de relleno (`#f47721`) no carga texto: sobre él va grafito. Cuando el naranja es tinta —enlaces, iconos, foco— se usa el profundo (`#c2410c`) para conservar 4.5:1 sobre superficies claras.
+
+**The Stamp Rule.** Un color de estado vive en un tag de 20 px, un punto de 6–8 px o una celda resaltada. Puede llenar un aviso en línea cuando el aviso *es* el estado; no puede pintar el chrome de la página ni un botón primario. El naranja corporativo no es un sello.
 
 **The Series Rule.** Las gráficas usan como máximo dos series y ambas salen de tokens: `--color-primary` para producción e `--color-destructive` para costos. Nada de `hsl()` ni `#hex` literales: el gráfico también cambia con el tema.
 
@@ -290,7 +294,7 @@ Las variantes de una sola pantalla —cian para recepción parcial, por ejemplo�
 
 ## Layout
 
-El shell corporativo es una barra lateral navy de 256 px, una barra superior de 56 px y un contenido centrado a 1280 px (`max-w-7xl`) con padding de 16/24/32 px según el breakpoint. En móvil la barra lateral desaparece y una barra inferior fija de 64 px toma el relevo; el contenido reserva 96 px de padding inferior para no quedar debajo.
+El shell corporativo es una barra lateral grafito de 256 px, una barra superior de 56 px y un contenido centrado a 1280 px (`max-w-7xl`) con padding de 16/24/32 px según el breakpoint. En móvil la barra lateral desaparece y una barra inferior fija de 64 px toma el relevo; el contenido reserva 96 px de padding inferior para no quedar debajo.
 
 Dentro de una obra, el shell cambia a un workspace de 1024 px (`max-w-5xl`): una cabecera de dos líneas —nombre de la obra y cliente/contrato— con chevron de regreso, y debajo los módulos. La barra inferior de obra es la superficie más densa del sistema: concentra todos los módulos de la obra en una sola fila de iconos de 20 px con etiquetas de 10–11 px.
 
@@ -337,14 +341,14 @@ Los diálogos son cuadrados en el teléfono y adoptan 8 px a partir de `sm`; los
 
 ### Buttons
 - **Shape:** radio de 6 px (`6px`), altura de 36 px, padding horizontal de 16 px, texto de 14 px con peso 500, icono Lucide de 16 px y separación de 8 px.
-- **Primary:** fondo Tinta de plano, texto blanco, sombra de control. Es la acción de la página; solo una por vista.
-- **Hover / Focus:** el fondo baja a 90 % de opacidad; el foco dibuja un anillo de 1 px en Tinta de plano, sin glow ni cambio de borde. La transición es de 150 ms.
-- **Secondary / Ghost / Tertiary:** `outline` es Hoja con borde Regla y sombra de control; `ghost` no tiene chrome hasta el hover (Lavado profundo); `destructive` usa Rojo de alerta con texto blanco. `link` es texto Tinta de plano subrayado al hover.
+- **Primary:** fondo Naranja corporativo, texto Grafito, sombra de control. Es la acción de la página; solo una por vista.
+- **Hover / Focus:** el fondo baja a 90 % de opacidad; el foco dibuja un anillo de 1 px en Naranja profundo, sin glow ni cambio de borde. La transición es de 150 ms.
+- **Secondary / Ghost / Tertiary:** `outline` es Hoja con borde Regla y sombra de control; `ghost` no tiene chrome hasta el hover (Lavado cálido); `destructive` usa Rojo de alerta con texto blanco. `link` es texto Naranja profundo subrayado al hover.
 - **Sizes:** 32 px (`sm`), 36 px (default), 40 px (`lg`), 36×36 px (`icon`). En móvil, la acción primaria puede ocupar todo el ancho del formulario o del footer del sheet.
 
 ### Chips
 - **Style:** badge de 20 px de alto, radio 6 px, padding 2×10 px, 12 px con peso 600. El estado usa relleno pastel `-100` y tinta `-800`, sin borde.
-- **State:** no hay chip seleccionable. Para filtros se usan tabs o checkboxes; para metadatos neutros, badge `secondary` con Lavado y texto Tinta de plano.
+- **State:** no hay chip seleccionable. Para filtros se usan tabs o checkboxes; para metadatos neutros, badge `secondary` con Lavado y texto Grafito.
 - **Counters:** contador de pendientes en Sello rosa fuerte (`bg-rose-600`), texto blanco, círculo completo, 16 px, 10 px en negrita, truncado a “9+”. Es `rose-600` y no `rose-500` porque el texto de 10 px necesita 4.5:1: con 500 la razón cae a 3.66:1.
 
 ### Cards / Containers
@@ -357,15 +361,15 @@ Los diálogos son cuadrados en el teléfono y adoptan 8 px a partir de `sm`; los
 
 ### Inputs / Fields
 - **Style:** altura 36 px, radio 6 px, fondo transparente sobre Hoja, borde Regla de 1 px, padding 12 px, texto de 16 px en móvil y 14 px desde `md`, sombra de control.
-- **Focus:** anillo de 1 px en Tinta de plano (`ring-1`), sin glow. El borde no cambia de color.
+- **Focus:** anillo de 1 px en Naranja profundo (`ring-1`), sin glow. El borde no cambia de color.
 - **Error / Disabled:** el error se comunica con texto Rojo de alerta y toast; el campo deshabilitado baja a 50 % de opacidad. Las etiquetas son 14 px con peso 500 y viven a 6 px del campo.
 - **Layout:** los formularios se apilan con `space-y-4`; en escritorio, dos columnas solo cuando los campos son cortos (fechas, montos, claves).
 
 ### Navigation
-- **Desktop:** barra lateral de 256 px en Tinta de archivo; monograma “P” de 32 px, nombre del producto y “Constructoras” en 12 px al 60 %. Los rubros (“Obra”, “Corporativo”, “Administración”) son micro de 12 px en mayúsculas, tracking 0.05em, al 50 % de opacidad.
-- **Items:** 36 px de alto, radio 6 px, icono de 16 px, texto de 14 px. El activo usa Tinta levantada y texto blanco; el inactivo vive al 80 % y el hover al 50 % de la tinta levantada. Los pendientes se montan como contador rosa a la derecha. El activo suma una barra de 3 px en Hoja pegada al borde izquierdo: el relleno solo separa 1.17:1 del fondo, y el estado necesita 3:1 (WCAG 1.4.11). El foco de teclado dibuja el anillo de 1 px de `--sidebar-ring`.
+- **Desktop:** barra lateral de 256 px en Grafito; monograma “P” de 32 px en Naranja corporativo con tinta Grafito, nombre del producto y “Constructoras” en 12 px al 60 %. Los rubros (“Obra”, “Corporativo”, “Administración”) son micro de 12 px en mayúsculas, tracking 0.05em, al 50 % de opacidad.
+- **Items:** 36 px de alto, radio 6 px, icono de 16 px, texto de 14 px. El activo usa Grafito levantado y texto blanco; el inactivo vive al 80 % y el hover al 50 % del levantado. Los pendientes se montan como contador rosa a la derecha. El activo suma una barra de 3 px en Naranja corporativo pegada al borde izquierdo: el naranja separa 4.7:1 del Grafito levantado y cumple el 3:1 de WCAG 1.4.11. El foco de teclado dibuja el anillo de 1 px de `--sidebar-ring`.
 - **Top bar:** 56 px, Hoja, borde inferior Regla. Logo de empresa o “ERP PNF”, campana de notificaciones y menú de avatar.
-- **Mobile:** barra inferior fija de 64 px, Hoja, borde superior Regla. Cada destino es icono de 20 px sobre etiqueta de 10–11 px; el activo es Tinta de plano y el inactivo Lápiz. En modo corporativo, “Más” abre el menú completo en un sheet lateral.
+- **Mobile:** barra inferior fija de 64 px, Hoja, borde superior Regla. Cada destino es icono de 20 px sobre etiqueta de 10–11 px; el activo es Naranja profundo y el inactivo Lápiz. En modo corporativo, “Más” abre el menú completo en un sheet lateral.
 - **Riel del menú:** el scrollbar del sidebar se dibuja con la tinta del panel al 28 % (46 % al hover), sin flechas, sobre riel transparente, y con `scrollbar-gutter: stable` para que el contenido no salte cuando aparece. El scrollbar del navegador no pertenece a ningún sistema; este sí.
 
 ### Tabs
@@ -390,7 +394,8 @@ Los diálogos son cuadrados en el teléfono y adoptan 8 px a partir de `sm`; los
 ## Do's and Don'ts
 
 ### Do:
-- **Do** usar los tokens `oklch` del tema para el chrome y las familias `-100/-800` de Tailwind solo para sellos de estado.
+- **Do** usar los tokens del tema para el chrome y las familias `-100/-800` de Tailwind solo para sellos de estado.
+- **Do** escribir el naranja con la tinta correcta: Grafito sobre el relleno, Naranja profundo cuando el naranja es texto.
 - **Do** abrir cada página con título de 24 px/600, subtítulo de 14 px en Lápiz y una sola acción primaria a la derecha.
 - **Do** mantener el cuerpo en 14 px, los metadatos en 12 px y los rubros en 10–11 px mayúsculas con tracking 0.05em.
 - **Do** usar `tabular-nums` en toda cifra comparativa y monoespaciada en RFC, CURP, CLABE, folios y asientos.
@@ -402,7 +407,7 @@ Los diálogos son cuadrados en el teléfono y adoptan 8 px a partir de `sm`; los
 
 ### Don't:
 - **Don't** introducir degradados, glassmorphism, `backdrop-blur` decorativo, fotografía de stock ni tarjetas de marketing dentro del producto.
-- **Don't** usar un color de estado como fondo de página, chrome de navegación o relleno de un botón primario.
+- **Don't** usar un sello de estado como fondo de página, chrome de navegación o relleno de un botón primario; el naranja corporativo no es un sello.
 - **Don't** usar el crema de ajuste para selección, hover, advertencia o decoración.
 - **Don't** añadir una segunda tipografía, una serif de display ni una fuente “de marca”.
 - **Don't** pasar de 12 px de radio en superficies ni convertir botones en píldoras; el círculo se reserva a avatares y contadores.

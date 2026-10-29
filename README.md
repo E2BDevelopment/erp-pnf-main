@@ -195,18 +195,23 @@ server-side only.
 
 ### Base de datos local (Docker)
 
-La base de datos es una réplica del proyecto original de Supabase: las 83 migraciones de
-`supabase/migrations` se aplican en orden y reconstruyen el esquema completo (72 tablas,
-22 funciones RPC, 42 enums y 4 buckets de Storage). `supabase/config.toml` fija Postgres 17,
+La base de datos es una réplica del proyecto original de Supabase: las 84 migraciones de
+`supabase/migrations` se aplican en orden y reconstruyen el esquema completo (73 tablas,
+26 funciones, 42 enums y 5 buckets de Storage). `supabase/config.toml` fija Postgres 17,
 los puertos, Auth, Storage y Mailpit; el CLI (`supabase@2.122.0`) está en `devDependencies`
 para que el stack no cambie entre máquinas.
 
-Requisitos: Docker Desktop corriendo y Node.js 20+.
+Requisitos: Docker Desktop instalado y Node.js 20+. En Windows, `npm run db:start` inicia
+Docker Desktop automáticamente si el daemon no está corriendo y espera a que responda.
+
+> En Windows, `analytics` está desactivado en `supabase/config.toml`: el contenedor `vector`
+> no puede acceder al socket de Docker Desktop y entra en un bucle de reinicio. No afecta a
+> la aplicación ni a los datos.
 
 ```sh
 npm run db:start       # Postgres, Auth, Storage, Studio y Mailpit en Docker
 npm run db:status      # URL y llaves del stack local
-npm run db:reset       # reaplica las 83 migraciones desde cero
+npm run db:reset       # reaplica las 84 migraciones desde cero
 npm run db:replica     # db:reset + siembra de la demo en un solo paso
 npm run db:stop        # detiene el stack (conserva los datos)
 ```
@@ -273,7 +278,7 @@ confirma en segundos si el problema es de datos o del navegador.
 | `npm run typecheck`           | TypeScript check                                              |
 | `npm run lint`                | ESLint                                                        |
 | `npm run generate:server-fns` | Regenerate RPC facades after adding/removing server functions |
-| `npm run db:start`            | Start the local Supabase stack (Docker)                       |
+| `npm run db:start`            | Start Docker Desktop if needed and the local Supabase stack   |
 | `npm run db:stop`             | Stop the local stack, keeping data                            |
 | `npm run db:status`           | Show local URLs and keys                                      |
 | `npm run db:reset`            | Reapply all migrations from scratch                           |

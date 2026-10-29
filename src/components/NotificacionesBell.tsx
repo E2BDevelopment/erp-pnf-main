@@ -7,7 +7,6 @@ import { useNavigate } from "@/lib/navigation";
 import { Bell, CheckCheck, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { ContadorLatido } from "@/components/anim/ContadorLatido";
 import { useStagger } from "@/components/anim/useStagger";
 import { cn } from "@/lib/utils";
@@ -81,7 +80,7 @@ export function NotificacionesBell() {
           {noLeidas > 0 && (
             <ContadorLatido
               valor={noLeidas}
-              className="absolute -top-1 -right-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-semibold tabular-nums text-white"
+              className="absolute -top-1 -right-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-600 px-1 text-[11px] font-semibold tabular-nums text-white"
             >
               {noLeidas > 9 ? "9+" : noLeidas}
             </ContadorLatido>
@@ -105,7 +104,7 @@ export function NotificacionesBell() {
           )}
         </div>
 
-        <ScrollArea className="max-h-96">
+        <div className="max-h-80 overflow-y-auto">
           {q.isPending ? (
             <div className="space-y-3 p-3" aria-hidden>
               {Array.from({ length: 3 }, (_, index) => (
@@ -172,7 +171,7 @@ export function NotificacionesBell() {
               ))}
             </ul>
           )}
-        </ScrollArea>
+        </div>
 
         <div className="border-t px-3 py-2">
           <button

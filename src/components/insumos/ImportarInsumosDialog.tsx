@@ -337,7 +337,7 @@ export function ImportarInsumosDialog({
           <div className="space-y-4 overflow-auto">
             <Card className="p-4 bg-muted/40">
               <div className="flex items-start gap-3">
-                <FileSpreadsheet className="size-5 text-primary mt-0.5" />
+                <FileSpreadsheet className="size-5 text-primary-ink mt-0.5" />
                 <div className="flex-1">
                   <p className="font-medium">Paso 1: Descarga la plantilla</p>
                   <p className="text-sm text-muted-foreground">

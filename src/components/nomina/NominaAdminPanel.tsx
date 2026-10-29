@@ -390,7 +390,7 @@ function DetalleTrabajadorDialog({
         ) : (
           <Card className="p-3 border-primary/30 bg-primary/5">
             <p className="text-sm font-medium flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-primary" />
+              <CheckCircle2 className="size-4 text-primary-ink" />
               Semana cuadrada: ningún día excede una jornada.
             </p>
           </Card>
@@ -411,7 +411,7 @@ function DetalleTrabajadorDialog({
                 {dias.map((f, i) => (
                   <th key={f} className="text-center p-1 w-14">
                     <div>{DOW[i]}</div>
-                    <div className="text-[10px] font-normal opacity-70">{f.slice(8)}</div>
+                    <div className="text-xs font-normal opacity-70">{f.slice(8)}</div>
                   </th>
                 ))}
                 <th className="text-right p-2 w-20">Días</th>
@@ -437,7 +437,7 @@ function DetalleTrabajadorDialog({
                           </span>
                           {a && a.horas_extras > 0 && (
                             <span
-                              className="text-[10px] text-primary inline-flex items-center gap-0.5"
+                              className="text-xs text-primary-ink inline-flex items-center gap-0.5"
                               title={a.nota_extras ?? "Sin nota"}
                             >
                               +{a.horas_extras}h
@@ -666,3 +666,4 @@ function AjusteAsistenciaDialog({
     </Dialog>
   );
 }
+

@@ -110,19 +110,19 @@ export function SubcontratosModule({ obraId }: { obraId: string }) {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Card className="p-3">
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Contratado vigente
           </p>
           <p className="mt-1 text-base font-semibold tabular-nums">{formatMXN(contratado)}</p>
         </Card>
         <Card className="p-3">
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Pagado acumulado
           </p>
           <p className="mt-1 text-base font-semibold tabular-nums">{formatMXN(pagado)}</p>
         </Card>
         <Card className="p-3 border-primary/30 bg-primary/5">
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Subcontratos activos
           </p>
           <p className="mt-1 text-base font-semibold tabular-nums">{activos}</p>
@@ -250,3 +250,4 @@ export function SubcontratosModule({ obraId }: { obraId: string }) {
     </div>
   );
 }
+

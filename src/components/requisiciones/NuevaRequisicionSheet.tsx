@@ -531,13 +531,13 @@ function InsumoPicker({
                           {ins.nombre} <span className="text-muted-foreground">({ins.unidad})</span>
                         </div>
                         {ins.categoria?.nombre && (
-                          <div className="text-[10px] text-muted-foreground truncate">
+                          <div className="text-xs text-muted-foreground truncate">
                             {ins.categoria.nombre}
                           </div>
                         )}
                       </div>
                       {isDisabled && (
-                        <span className="ml-2 text-[10px] text-muted-foreground shrink-0">
+                        <span className="ml-2 text-xs text-muted-foreground shrink-0">
                           Ya agregado
                         </span>
                       )}
@@ -577,3 +577,4 @@ function InsumoPicker({
     </div>
   );
 }
+

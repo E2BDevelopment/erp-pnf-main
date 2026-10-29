@@ -170,14 +170,20 @@ function FechaProximaCell({ rowId, fetchDetalle }: { rowId: string; fetchDetalle
   const d = new Date(min);
   const short = d.toLocaleDateString("es-MX", { day: "2-digit", month: "short" }).replace(".", "");
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex flex-col gap-0.5">
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="text-xs whitespace-nowrap">{short}</span>
+          <span className={`text-sm tabular-nums whitespace-nowrap ${urgent ? "font-semibold text-rose-700 dark:text-rose-400" : "text-foreground"}`}>
+            {short}
+          </span>
         </TooltipTrigger>
         <TooltipContent>{formatDate(d.toISOString())}</TooltipContent>
       </Tooltip>
-      {urgent && <span className="size-1.5 rounded-full bg-rose-500" title="Urgente" />}
+      {urgent && (
+        <span className="text-[11px] font-medium text-rose-600 dark:text-rose-400 leading-none">
+          {diff === 0 ? "Hoy" : diff < 0 ? "Vencida" : `${diff}d`}
+        </span>
+      )}
     </div>
   );
 }
@@ -247,79 +253,119 @@ function RequisicionesTable({
   return (
     <TooltipProvider delayDuration={150}>
       <Card className="overflow-hidden">
-        <Table className="table-fixed w-full text-xs min-w-[560px]">
-          <TableHeader>
-            <TableRow className="h-8">
-              <TableHead className="py-1 px-2 text-xs w-[64px]">Folio</TableHead>
-              <TableHead className="py-1 px-2 text-xs">Obra</TableHead>
-              <TableHead className="py-1 px-2 text-xs w-[110px]">Solicitante</TableHead>
-              <TableHead className="hidden xl:table-cell text-right py-1 px-2 text-xs w-14">
-                Ins.
-              </TableHead>
-              <TableHead className="py-1 px-2 text-xs w-[74px]">Fecha</TableHead>
-              <TableHead className="py-1 px-2 text-xs w-[76px]">Estatus</TableHead>
-              <TableHead className="text-right py-1 px-2 text-xs w-[84px]">Acción</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {rows.map((r) => {
-              const meta = ESTATUS_META[r.estatus as RequisicionEstatus];
-              const folioShort = (r.folio ?? "").replace(/^REQ-?/i, "");
-              return (
-                <TableRow key={r.id} className="hover:bg-muted/50 h-9">
-                  <TableCell
-                    className="py-1 px-2 font-medium cursor-pointer whitespace-nowrap"
+        <div className="overflow-x-auto">
+          <Table className="w-full min-w-[600px]">
+            <TableHeader>
+              <TableRow className="bg-muted/40 border-b border-border hover:bg-muted/40">
+                <TableHead className="py-2.5 pl-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[90px]">
+                  Folio
+                </TableHead>
+                <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Obra
+                </TableHead>
+                <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[160px]">
+                  Solicitante
+                </TableHead>
+                <TableHead className="hidden xl:table-cell py-2.5 text-xs font-semibold uppercase tracking-wider text-center text-muted-foreground w-[50px]">
+                  Ins.
+                </TableHead>
+                <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[88px]">
+                  Fecha req.
+                </TableHead>
+                <TableHead className="py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[160px]">
+                  Estatus
+                </TableHead>
+                <TableHead className="py-2.5 pr-4 text-xs font-semibold uppercase tracking-wider text-right text-muted-foreground w-[100px]">
+                  Acción
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map((r) => {
+                const meta = ESTATUS_META[r.estatus as RequisicionEstatus];
+                return (
+                  <TableRow
+                    key={r.id}
+                    className="border-b border-border/60 last:border-0 hover:bg-muted/30 transition-colors group cursor-pointer"
                     onClick={() => onRowClick(r.id)}
                   >
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span>{folioShort}</span>
-                      </TooltipTrigger>
-                      <TooltipContent>{r.folio}</TooltipContent>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell className="py-1 px-2 min-w-0">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="truncate">{r.obra?.nombre ?? "—"}</div>
-                      </TooltipTrigger>
-                      <TooltipContent>{r.obra?.nombre ?? "—"}</TooltipContent>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell className="py-1 px-2 text-muted-foreground min-w-0">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="truncate">{r.solicitante ?? "—"}</div>
-                      </TooltipTrigger>
-                      <TooltipContent>{r.solicitante ?? "—"}</TooltipContent>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-cell text-right py-1 px-2">
-                    {r.insumos_count}
-                  </TableCell>
+                    {/* Folio */}
+                    <TableCell className="py-3 pl-4 align-middle">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="font-mono text-xs font-semibold tracking-wide text-foreground whitespace-nowrap">
+                            {r.folio}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>{r.folio}</TooltipContent>
+                      </Tooltip>
+                    </TableCell>
 
-                  <TableCell className="py-1 px-2">
-                    <FechaProximaCell rowId={r.id} fetchDetalle={fetchDetalle} />
-                  </TableCell>
-                  <TableCell className="py-1 px-2">
-                    <Badge
-                      className={`${meta?.badge ?? ""} text-[10px] px-1.5 py-0 h-5 whitespace-nowrap`}
-                      variant="secondary"
-                    >
-                      {meta?.label ?? r.estatus}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right py-1 px-2">
-                    <AccionCell row={r} onAction={onAction} />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                    {/* Obra */}
+                    <TableCell className="py-3 align-middle min-w-0">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="block text-sm font-medium text-foreground truncate max-w-[280px]">
+                            {r.obra?.nombre ?? "—"}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>{r.obra?.nombre ?? "—"}</TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+
+                    {/* Solicitante */}
+                    <TableCell className="py-3 align-middle min-w-0">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="block text-sm text-muted-foreground truncate">
+                            {r.solicitante ?? "—"}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>{r.solicitante ?? "—"}</TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+
+                    {/* Ins. */}
+                    <TableCell className="hidden xl:table-cell py-3 text-center align-middle">
+                      <span className="text-sm tabular-nums text-muted-foreground">
+                        {r.insumos_count}
+                      </span>
+                    </TableCell>
+
+                    {/* Fecha */}
+                    <TableCell className="py-3 align-middle">
+                      <FechaProximaCell rowId={r.id} fetchDetalle={fetchDetalle} />
+                    </TableCell>
+
+                    {/* Estatus */}
+                    <TableCell className="py-3 align-middle">
+                      <Badge
+                        className={`${meta?.badge ?? ""} border-0 text-xs px-2 py-0.5 font-medium whitespace-nowrap`}
+                        variant="secondary"
+                      >
+                        {meta?.label ?? r.estatus}
+                      </Badge>
+                    </TableCell>
+
+                    {/* Acción */}
+                    <TableCell className="py-3 pr-4 text-right align-middle">
+                      <div
+                        className="flex justify-end"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <AccionCell row={r} onAction={onAction} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
     </TooltipProvider>
   );
 }
 
 export default AdminRequisicionesPage;
+

@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   // Libraries that ship Node-oriented builds should stay out of the bundle
   // when they are used from server code.
   serverExternalPackages: ["xlsx"],
-  allowedDevOrigins: ["192.168.56.1"],
+  allowedDevOrigins:  ['192.168.100.16'],
 };
 
 export default nextConfig;

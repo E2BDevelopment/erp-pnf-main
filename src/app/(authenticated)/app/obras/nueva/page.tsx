@@ -6,7 +6,10 @@ import { useServerFn } from "@/lib/server-fn/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { crearObra, listCompanyUsers } from "@/lib/api-client/obras.functions";
 import { listClientes, crearCliente } from "@/lib/api-client/clientes.functions";
-import { listUnidadesNegocio } from "@/lib/api-client/unidades-negocio.functions";
+import {
+  listUnidadesNegocio,
+  crearUnidadNegocio,
+} from "@/lib/api-client/unidades-negocio.functions";
 import { usePermisos } from "@/hooks/usePermisos";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -149,36 +152,16 @@ function NuevaObra() {
             <Label htmlFor="nombre">Nombre de la obra *</Label>
             <Input id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
           </div>
-          <div>
-            <Label>Unidad de negocio *</Label>
-            {unidadesQ.isLoading ? (
-              <p className="text-xs text-muted-foreground mt-1">Cargando…</p>
-            ) : (unidadesQ.data ?? []).length === 0 ? (
-              <Alert className="mt-2">
-                <AlertCircle className="size-4" />
-                <AlertDescription>
-                  Aún no hay unidades de negocio.{" "}
-                  <Link to="/app/configuracion" className="underline font-medium">
-                    Crea la primera en Configuración
-                  </Link>
-                  .
-                </AlertDescription>
-              </Alert>
-            ) : (
-              <Select value={unidadNegocioId} onValueChange={setUnidadNegocioId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecciona unidad" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(unidadesQ.data ?? []).map((u) => (
-                    <SelectItem key={u.id} value={u.id}>
-                      {u.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
+          <UnidadNegocioSelector
+            value={unidadNegocioId}
+            onChange={setUnidadNegocioId}
+            unidades={unidadesQ.data ?? []}
+            isLoading={unidadesQ.isLoading}
+            onCreated={(u) => {
+              qc.invalidateQueries({ queryKey: ["unidades-negocio"] });
+              setUnidadNegocioId(u.id);
+            }}
+          />
           <ClienteSelector
             value={clienteId}
             onChange={setClienteId}
@@ -535,6 +518,92 @@ function ClienteSelector({
                 })
               }
               disabled={m.isPending}
+            >
+              {m.isPending ? "Creando…" : "Crear"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function UnidadNegocioSelector({
+  value,
+  onChange,
+  unidades,
+  isLoading,
+  onCreated,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  unidades: Array<{ id: string; nombre: string }>;
+  isLoading: boolean;
+  onCreated: (u: { id: string }) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [nombre, setNombre] = useState("");
+  const create = useServerFn(crearUnidadNegocio);
+  const m = useMutation({
+    mutationFn: create,
+    onSuccess: (u) => {
+      toast.success("Unidad creada");
+      onCreated(u);
+      setOpen(false);
+      setNombre("");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <div>
+      <Label>Unidad de negocio *</Label>
+      <div className="flex gap-2 mt-1.5">
+        <Select value={value} onValueChange={onChange}>
+          <SelectTrigger className="flex-1">
+            <SelectValue placeholder={isLoading ? "Cargando…" : "Selecciona unidad"} />
+          </SelectTrigger>
+          <SelectContent>
+            {unidades.map((u) => (
+              <SelectItem key={u.id} value={u.id}>
+                {u.nombre}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button type="button" variant="outline" onClick={() => setOpen(true)}>
+          <Plus className="size-4 mr-1" /> Nueva
+        </Button>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Nueva unidad de negocio</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Nombre *</Label>
+              <Input
+                placeholder="Ej. Residencial, Comercial, Industrial…"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && nombre.trim()) {
+                    e.preventDefault();
+                    m.mutate({ data: { nombre: nombre.trim() } });
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => m.mutate({ data: { nombre: nombre.trim() } })}
+              disabled={!nombre.trim() || m.isPending}
             >
               {m.isPending ? "Creando…" : "Crear"}
             </Button>

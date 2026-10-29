@@ -199,7 +199,7 @@ export function GasolinasModule({ obraId, scope = "obra" }: Props) {
             {v.monto_autorizado != null && (
               <>
                 <div className="text-xs text-muted-foreground mt-1">Autorizado</div>
-                <div className="font-semibold text-primary">{formatMXN(v.monto_autorizado)}</div>
+                <div className="font-semibold text-primary-ink">{formatMXN(v.monto_autorizado)}</div>
               </>
             )}
           </div>

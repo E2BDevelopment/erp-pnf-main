@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useRouterState } from "@/lib/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -293,9 +294,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const sidebarBranding = (
     <div className="flex items-center gap-2 px-6 py-5 border-b border-sidebar-border">
-      <div className="size-8 rounded-md bg-sidebar-primary text-sidebar-primary-foreground grid place-items-center font-semibold">
-        P
-      </div>
+      <Image
+        src="/assets/img/icon-1.png"
+        alt="Logo ERP PNF"
+        width={32}
+        height={32}
+        className="size-8 shrink-0 rounded-md object-contain"
+        priority
+      />
       <div className="min-w-0">
         <p className="text-sm font-semibold leading-tight">ERP PNF</p>
         <p
@@ -898,7 +904,7 @@ function DevUserSwitcher() {
                 {u.nombre_completo || u.email}
                 {isCurrent && <span className="ml-2 text-xs text-muted-foreground">(actual)</span>}
               </span>
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-[11px] text-muted-foreground">
                 {u.roles.length > 0 ? u.roles.join(", ") : "sin rol"}
               </span>
             </DropdownMenuItem>

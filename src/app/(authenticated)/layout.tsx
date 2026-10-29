@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect } from "react";
 import { useNavigate } from "@/lib/navigation";
 import { useAuthStore } from "@/stores/auth";
@@ -26,12 +27,14 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
     return (
       <div className="grid min-h-screen place-items-center bg-background px-4">
         <div role="status" aria-live="polite" className="flex flex-col items-center gap-4">
-          <div
-            aria-hidden
-            className="grid size-10 place-items-center rounded-lg bg-primary text-base font-semibold text-primary-foreground"
-          >
-            P
-          </div>
+          <Image
+            src="/assets/img/icon-1.png"
+            alt="Logo ERP PNF"
+            width={40}
+            height={40}
+            className="size-10 rounded-lg object-contain"
+            priority
+          />
           <p className="text-sm text-muted-foreground">Cargando tu empresa…</p>
         </div>
       </div>

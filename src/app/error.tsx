@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect } from "react";
 import Link from "next/link";
 import { LayoutDashboard, RotateCw } from "lucide-react";
@@ -24,12 +25,14 @@ export default function Error({
   return (
     <div className="grid min-h-screen place-items-center bg-background px-4">
       <div className="w-full max-w-md text-center">
-        <div
-          aria-hidden
-          className="mx-auto grid size-10 place-items-center rounded-lg bg-primary text-base font-semibold text-primary-foreground"
-        >
-          P
-        </div>
+        <Image
+          src="/assets/img/icon-1.png"
+          alt="Logo ERP PNF"
+          width={40}
+          height={40}
+          className="mx-auto size-10 rounded-lg object-contain"
+          priority
+        />
         <h1 className="mt-4 text-2xl font-semibold tracking-tight">No se pudo cargar la página</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Algo falló al abrir esta pantalla. Vuelve a intentarlo; si persiste, entra de nuevo a tu

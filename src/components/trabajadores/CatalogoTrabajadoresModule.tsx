@@ -99,7 +99,7 @@ function Avatar({ name }: { name: string }) {
     .map((n) => n[0]?.toUpperCase())
     .join("");
   return (
-    <div className="size-8 rounded-full bg-primary text-white grid place-items-center text-[11px] font-medium shrink-0">
+    <div className="size-8 rounded-full bg-primary text-primary-foreground grid place-items-center text-[11px] font-medium shrink-0">
       {initials || "?"}
     </div>
   );
@@ -210,7 +210,7 @@ export function CatalogoTrabajadoresModule() {
                 <TabsTrigger value="pendientes" className="text-xs h-6 px-2">
                   Pendientes
                   {stats.pendientes > 0 && (
-                    <Badge className="ml-1.5 h-4 px-1 bg-amber-100 text-amber-800 hover:bg-amber-100 text-[10px]">
+                    <Badge className="ml-1.5 h-4 px-1.5 bg-amber-100 text-amber-800 hover:bg-amber-100 text-[11px]">
                       {stats.pendientes}
                     </Badge>
                   )}
@@ -301,8 +301,16 @@ export function CatalogoTrabajadoresModule() {
             {rows.map((r) => (
               <li
                 key={r.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => setDetalleId(r.id)}
-                className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_110px_90px_90px_90px_40px] gap-3 items-center px-3 py-2.5 hover:bg-muted/40 cursor-pointer transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setDetalleId(r.id);
+                  }
+                }}
+                className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_110px_90px_90px_90px_40px] gap-3 items-center px-3 py-2.5 hover:bg-muted/40 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {/* Trabajador */}
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -452,3 +460,4 @@ export function CatalogoTrabajadoresModule() {
     </div>
   );
 }
+

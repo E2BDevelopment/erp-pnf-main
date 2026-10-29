@@ -3,7 +3,7 @@ import { FileQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
- * 404 público, con la identidad del producto (monograma "P" + tinta navy).
+ * 404 público, con la paleta de marca (fondo neutro y naranja de acción).
  * Para una dirección fuera del sistema; dentro de `/app` manda el 404 del shell.
  */
 export default function NotFound() {
