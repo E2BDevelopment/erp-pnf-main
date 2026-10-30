@@ -28,9 +28,7 @@ export async function rpc<T = unknown>(
   });
 
   const body = (await response.json().catch(() => null)) as
-    | { ok: true; data: T | null }
-    | { ok: false; error: string }
-    | null;
+    { ok: true; data: T | null } | { ok: false; error: string } | null;
 
   return {
     status: response.status,

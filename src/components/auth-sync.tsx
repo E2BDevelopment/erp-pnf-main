@@ -64,6 +64,7 @@ export function AuthSync() {
         router.refresh();
         return;
       }
+      setLoading(true);
       void loadSession().then(() => router.refresh());
     });
 

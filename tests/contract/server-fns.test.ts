@@ -123,7 +123,7 @@ describe("contrato de server functions", () => {
 
   it("el RPC mapea autenticación a 401, Zod a 400 y el resto a 500", () => {
     const route = readFileSync(resolve(SRC, "app/api/rpc/[fn]/route.ts"), "utf8");
-    expect(route).toContain("message.startsWith(\"Unauthorized\") ? 401");
+    expect(route).toContain('message.startsWith("Unauthorized") ? 401');
     expect(route).toContain("error instanceof ZodError ? 400 : 500");
     expect(route).toContain("Server function no encontrada");
   });

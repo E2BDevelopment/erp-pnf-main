@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const BASE_URL = process.env.E2E_BASE_URL ?? "http://127.0.0.1:3000";
+// Next 16 bloquea recursos de desarrollo si el Host no coincide con el origen
+// del servidor. El dev server escucha como "localhost", así que las pruebas
+// deben usar ese mismo origen (127.0.0.1 provoca 403 en HMR y fuentes).
+const BASE_URL = process.env.E2E_BASE_URL ?? "http://localhost:3000";
 
 export default defineConfig({
   testDir: "./tests/e2e",

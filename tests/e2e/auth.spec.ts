@@ -21,7 +21,9 @@ test.describe("autenticación y navegación por rol", () => {
     await expect(page.getByRole("heading", { name: "Obras", level: 1 })).toBeVisible();
     await expect(page.getByText("Residencial Los Encinos — Torre A")).toBeVisible();
     await expect(page.getByText("Ampliación Nave Industrial Bajío")).toBeVisible();
-    await expect(page.getByRole("link", { name: /Nueva obra/i })).toBeVisible();
+    await expect(
+      page.locator("#contenido").getByRole("link", { name: "Nueva obra", exact: true }),
+    ).toBeVisible();
   });
 
   test("el residente solo ve su obra y no ve configuración de empresa", async ({ page }) => {
@@ -55,7 +57,7 @@ test.describe("autenticación y navegación por rol", () => {
     await login(page, DEMO_USERS.director);
     await logout(page);
 
-    await expect(page.getByRole("heading", { name: "Iniciar sesión" })).toBeVisible();
+    await expect(page.getByText("Iniciar sesión", { exact: true })).toBeVisible();
     await page.goto("/app/dashboard");
     await page.waitForURL("**/login", { timeout: 30_000 });
   });

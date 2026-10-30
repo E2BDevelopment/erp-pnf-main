@@ -187,11 +187,16 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="<anon-or-publishable-key>"
 SUPABASE_URL="https://<project>.supabase.co"
 SUPABASE_PUBLISHABLE_KEY="<anon-or-publishable-key>"
 SUPABASE_SERVICE_ROLE_KEY="<service-role-key>"
+RENTAS_CRON_SECRET="<random-secret-at-least-32-characters>"
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY` is required by operations that bypass RLS: onboarding
 (company creation), team management and the development role switcher. Keep it
 server-side only.
+
+`RENTAS_CRON_SECRET` protects `POST /api/public/hooks/devengar-rentas`. Configure a
+random value of at least 32 characters in the app and in the scheduled caller, and send
+it as `Authorization: Bearer <secret>`. Never expose it through a `NEXT_PUBLIC_` variable.
 
 ### Base de datos local (Docker)
 

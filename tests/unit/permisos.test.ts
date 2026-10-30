@@ -11,8 +11,10 @@ function queryBuilder(result: QueryResult) {
   builder.select = () => builder;
   builder.eq = () => builder;
   builder.maybeSingle = async () => result;
-  builder.then = (resolve: (value: QueryResult) => unknown, reject?: (reason: unknown) => unknown) =>
-    Promise.resolve(result).then(resolve, reject);
+  builder.then = (
+    resolve: (value: QueryResult) => unknown,
+    reject?: (reason: unknown) => unknown,
+  ) => Promise.resolve(result).then(resolve, reject);
   return builder;
 }
 
@@ -74,12 +76,12 @@ describe("hasPermission", () => {
   });
 
   it("combina varios roles con unión: basta que uno tenga el permiso", () => {
-    expect(hasPermission("presupuestos.autorizar_oc", ["residente", "supervisor"], sinOverrides)).toBe(
-      true,
-    );
-    expect(hasPermission("presupuestos.autorizar_oc", ["residente", "auxiliar"], sinOverrides)).toBe(
-      false,
-    );
+    expect(
+      hasPermission("presupuestos.autorizar_oc", ["residente", "supervisor"], sinOverrides),
+    ).toBe(true);
+    expect(
+      hasPermission("presupuestos.autorizar_oc", ["residente", "auxiliar"], sinOverrides),
+    ).toBe(false);
   });
 
   it("devuelve false para una acción que no existe", () => {
@@ -138,7 +140,9 @@ describe("requirePermission", () => {
         error: null,
       },
     });
-    await expect(requirePermission(permitido.client, "user-1", "obras.crear")).resolves.toBeUndefined();
+    await expect(
+      requirePermission(permitido.client, "user-1", "obras.crear"),
+    ).resolves.toBeUndefined();
 
     const denegado = fakeSupabase({
       profiles: perfil,

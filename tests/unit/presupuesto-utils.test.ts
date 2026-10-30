@@ -323,7 +323,13 @@ describe("procesarOrdenCambio", () => {
         precio_unitario: 100,
         concepto: "Cimentación",
       },
-      { clave: "1.3", tipo_movimiento: "adicion", cantidad: 3, precio_unitario: 100, concepto: "Relleno" },
+      {
+        clave: "1.3",
+        tipo_movimiento: "adicion",
+        cantidad: 3,
+        precio_unitario: 100,
+        concepto: "Relleno",
+      },
       { clave: "1.2", tipo_movimiento: "eliminacion" },
     ]);
     expect(r.errores).toEqual([]);
@@ -343,8 +349,20 @@ describe("procesarOrdenCambio", () => {
 
   it("rechaza adicionar una clave existente o sin padre", () => {
     const r = procesarOrdenCambio(vigente, [
-      { clave: "1.1", tipo_movimiento: "adicion", cantidad: 1, precio_unitario: 1, concepto: "Duplicada" },
-      { clave: "3.1", tipo_movimiento: "adicion", cantidad: 1, precio_unitario: 1, concepto: "Sin padre" },
+      {
+        clave: "1.1",
+        tipo_movimiento: "adicion",
+        cantidad: 1,
+        precio_unitario: 1,
+        concepto: "Duplicada",
+      },
+      {
+        clave: "3.1",
+        tipo_movimiento: "adicion",
+        cantidad: 1,
+        precio_unitario: 1,
+        concepto: "Sin padre",
+      },
     ]);
     expect(r.errores).toHaveLength(2);
     expect(r.errores[0].errores).toContain("La clave ya existe en el vigente");

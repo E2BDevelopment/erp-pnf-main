@@ -12,6 +12,8 @@ export default tseslint.config(
       ".tmp",
       ".opencode",
       ".impeccable",
+      ".agents",
+      "docs/reportes",
       "next-env.d.ts",
       "node_modules",
       "scripts",

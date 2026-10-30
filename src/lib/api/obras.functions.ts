@@ -61,7 +61,7 @@ export const getObraDashboard = createServerFn({ method: "POST" })
       .eq("id", data.obraId)
       .maybeSingle();
     if (obraError) throw new Error(obraError.message);
-    if (!obra) throw new Error("Obra no encontrada");
+    if (!obra) throw new Error("Unauthorized: obra no disponible");
 
     const { data: teamRows, error: teamError } = await supabase
       .from("obra_team")

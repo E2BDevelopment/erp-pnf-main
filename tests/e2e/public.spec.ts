@@ -9,14 +9,13 @@ test.describe("páginas públicas", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: /Tu obra, tu equipo y tus finanzas en un mismo lugar/i,
+        name: /Tu constructora\. Todos sus proyectos\. Un solo lugar\./i,
       }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: "Iniciar sesión" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Registrar empresa" }).first()).toBeVisible();
-    await expect(
-      page.getByRole("heading", { level: 2, name: "Capacidades del sistema" }),
-    ).toHaveCount(1);
+    const banner = page.getByRole("banner");
+    await expect(banner.getByRole("link", { name: "Iniciar sesión" })).toBeVisible();
+    await expect(banner.getByRole("link", { name: "Crear cuenta", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2 }).first()).toBeVisible();
 
     expect(errors, `Errores de consola:\n${errors.join("\n")}`).toEqual([]);
   });
@@ -24,7 +23,7 @@ test.describe("páginas públicas", () => {
   test("el formulario de login es accesible y navegable", async ({ page }) => {
     await page.goto("/login");
 
-    await expect(page.getByRole("heading", { name: "Iniciar sesión" })).toBeVisible();
+    await expect(page.getByText("Iniciar sesión", { exact: true })).toBeVisible();
     await expect(page.getByLabel("Correo electrónico", { exact: true })).toBeVisible();
     await expect(page.getByLabel("Contraseña", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Ingresar", exact: true })).toBeVisible();
@@ -46,7 +45,7 @@ test.describe("páginas públicas", () => {
   test("una ruta privada sin sesión redirige al login", async ({ page }) => {
     await page.goto("/app/dashboard");
     await page.waitForURL("**/login", { timeout: 30_000 });
-    await expect(page.getByRole("heading", { name: "Iniciar sesión" })).toBeVisible();
+    await expect(page.getByText("Iniciar sesión", { exact: true })).toBeVisible();
   });
 
   test("una ruta inexistente responde 404", async ({ page }) => {

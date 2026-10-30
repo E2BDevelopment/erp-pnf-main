@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 /**
  * El puente de sesión se carga en diferido: solo las rutas que leen la sesión
@@ -32,6 +33,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <TooltipProvider delayDuration={200}>
         <AuthSyncGate />
         {children}
+        <LoadingOverlay />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>

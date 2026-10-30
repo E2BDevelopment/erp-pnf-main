@@ -1,6 +1,7 @@
 "use client";
 
 import { Link, useNavigate } from "@/lib/navigation";
+import Image from "next/image";
 import { ChevronLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const userId = useAuthStore((s) => s.userId);
   const profile = useAuthStore((s) => s.profile);
+  const setLoading = useAuthStore((s) => s.setLoading);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberEmail, setRememberEmail] = useState(false);
@@ -46,9 +48,11 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setSubmitting(false);
     if (error) {
+      setLoading(false);
       toast.error(error.message);
       return;
     }
@@ -85,6 +89,14 @@ function LoginPage() {
         </Link>
         <Card className="w-full">
           <CardHeader>
+            <Image
+              src="/assets/img/icon-1.png"
+              alt="Logotipo de ERP PNF"
+              width={80}
+              height={80}
+              priority
+              className="mx-auto mb-3 size-20 rounded-lg object-contain"
+            />
             <CardTitle>Iniciar sesión</CardTitle>
             <CardDescription>Accede a tu cuenta de ERP PNF.</CardDescription>
           </CardHeader>

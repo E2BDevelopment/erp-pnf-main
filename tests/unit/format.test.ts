@@ -77,8 +77,7 @@ describe("formatRelativeTime", () => {
 });
 
 describe("estadoVencimiento", () => {
-  const enDias = (dias: number) =>
-    new Date(Date.now() + dias * 24 * 60 * 60_000).toISOString();
+  const enDias = (dias: number) => new Date(Date.now() + dias * 24 * 60 * 60_000).toISOString();
 
   it("sin fecha ni url => sin_documento", () => {
     expect(estadoVencimiento(null)).toBe("sin_documento");

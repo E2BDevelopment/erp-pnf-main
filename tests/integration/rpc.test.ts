@@ -1,9 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import {
-  DEMO_OBRAS,
-  DEMO_USERS,
-  loadTestEnv,
-} from "../helpers/env";
+import { DEMO_OBRAS, DEMO_USERS, loadTestEnv } from "../helpers/env";
 import { assertServerIsUp, BASE_URL, rpc } from "../helpers/rpc";
 import { signInDemo, signOut, type DemoSession } from "../helpers/supabase";
 
@@ -208,16 +204,13 @@ describe("permisos de servidor", () => {
     expect(response.error).toContain("No tienes permiso");
   });
 
-  /**
-   * Hallazgo SEC-03: la RLS de obras es por empresa, no por equipo de obra.
-   * Residente2 no pertenece a Residencial y aun así puede leer su dashboard.
-   */
-  it.fails("residente2 no debería leer el dashboard de otra obra", async () => {
+  /** SEC-03 regression: an unassigned resident must not read another obra. */
+  it("residente2 no puede leer el dashboard de otra obra", async () => {
     const response = await rpc(
       "api/obras.functions.getObraDashboard",
       { obraId: DEMO_OBRAS.residencial },
       residente2.token,
     );
-    expect([403, 404]).toContain(response.status);
+    expect([401, 403, 404]).toContain(response.status);
   });
 });

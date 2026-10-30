@@ -550,21 +550,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     );
   };
   return (
-    <div ref={shellRef} className="flex min-h-screen w-full bg-background">
+    <div ref={shellRef} className="flex min-h-dvh w-full bg-background">
       <a
         href="#contenido"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
       >
         Saltar al contenido
       </a>
-      {/* Sidebar desktop */}
-      <aside className="hidden md:sticky md:top-0 md:flex md:h-screen md:w-64 md:shrink-0 flex-col bg-sidebar text-sidebar-foreground">
+      {/* Sidebar desktop. Fija al viewport, no sticky: si el documento crece
+          por un portal externo (overlays, avisos) la barra no se despega del
+          borde inferior ni deja un hueco blanco. */}
+      <aside className="hidden md:fixed md:top-0 md:left-0 md:z-20 md:flex md:h-dvh md:w-64 flex-col bg-sidebar text-sidebar-foreground">
         {sidebarBranding}
         {renderNav()}
       </aside>
 
       {/* Main */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col md:pl-64">
         <header className="sticky top-0 z-20 flex min-h-14 items-center justify-between border-b border-border bg-card px-4 pt-[env(safe-area-inset-top)] md:px-6">
           <div className="flex items-center gap-2">
             <Link

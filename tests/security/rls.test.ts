@@ -61,7 +61,10 @@ beforeAll(async () => {
 afterAll(async () => {
   // Restaurar primero el perfil: la empresa temporal no debe quedar referenciada.
   if (originalCompanyId) {
-    await admin.from("profiles").update({ company_id: originalCompanyId }).eq("id", auxiliar.userId);
+    await admin
+      .from("profiles")
+      .update({ company_id: originalCompanyId })
+      .eq("id", auxiliar.userId);
   }
   if (tempObraId) await admin.from("obras").delete().eq("id", tempObraId);
   if (tempCompanyId) await admin.from("companies").delete().eq("id", tempCompanyId);
@@ -70,12 +73,8 @@ afterAll(async () => {
 });
 
 describe("aislamiento entre empresas", () => {
-  /**
-   * SEC-01 (crítico): "Users update own profile" permite cambiar company_id.
-   * Al cambiar de empresa, current_company_id() cambia y la RLS abre los datos
-   * de la empresa víctima. El test documenta el comportamiento inseguro actual.
-   */
-  it.fails("un usuario no debería poder cambiar su propia empresa", async () => {
+  /** SEC-01 regression: identity and tenant columns are server-managed. */
+  it("un usuario no puede cambiar su propia empresa", async () => {
     try {
       const { error } = await auxiliar.client
         .from("profiles")
@@ -91,6 +90,16 @@ describe("aislamiento entre empresas", () => {
           .eq("id", auxiliar.userId);
       }
     }
+  });
+
+  it("un usuario no puede crear su perfil asignándose otra empresa", async () => {
+    const { error } = await auxiliar.client.from("profiles").insert({
+      id: auxiliar.userId,
+      company_id: tempCompanyId,
+      nombre_completo: "Perfil manipulado",
+      email: "perfil-manipulado@example.invalid",
+    });
+    expect(error).not.toBeNull();
   });
 
   it("un usuario anónimo no puede leer obras ni perfiles", async () => {
@@ -115,12 +124,8 @@ describe("aislamiento entre empresas", () => {
 });
 
 describe("escalamiento de privilegios", () => {
-  /**
-   * SEC-04 (crítico): "User inserts own director role on onboarding" solo
-   * comprueba user_id = auth.uid(), no el rol ni la empresa. Cualquier usuario
-   * puede insertarse un rol director.
-   */
-  it.fails("un auxiliar no debería poder insertarse el rol director", async () => {
+  /** SEC-04 regression: role grants are managed by trusted server code. */
+  it("un auxiliar no puede insertarse el rol director", async () => {
     try {
       const { error } = await auxiliar.client.from("user_roles").insert({
         user_id: auxiliar.userId,
@@ -139,7 +144,7 @@ describe("escalamiento de privilegios", () => {
     }
   });
 
-  it.fails("un residente no debería leer el dashboard de otra obra por RPC", async () => {
+  it("un residente no puede leer el dashboard de otra obra por RPC", async () => {
     const response = await fetch(
       `${BASE_URL}/api/rpc/${encodeURIComponent("api/obras.functions.getObraDashboard")}`,
       {
@@ -153,17 +158,13 @@ describe("escalamiento de privilegios", () => {
         }),
       },
     );
-    expect([403, 404]).toContain(response.status);
+    expect([401, 403, 404]).toContain(response.status);
   });
 });
 
 describe("RLS laxa en obras y obra_team", () => {
-  /**
-   * SEC-03 (alto): "Company members manage obras" permite UPDATE directo a
-   * cualquier miembro de la empresa, saltándose requirePermission de la capa
-   * de aplicación. El test usa una obra temporal y la restaura al final.
-   */
-  it.fails("un residente no debería poder editar una obra por PostgREST", async () => {
+  /** SEC-03 regression: a user without obra-management permission cannot edit. */
+  it("un residente no puede editar una obra por PostgREST", async () => {
     try {
       const { error } = await residente.client
         .from("obras")
@@ -179,12 +180,8 @@ describe("RLS laxa en obras y obra_team", () => {
     }
   });
 
-  /**
-   * SEC-05 (alto): "Company members manage obra_team" permite que cualquier
-   * miembro se agregue a sí mismo al equipo de otra obra y luego use los
-   * módulos de esa obra. El test solo inserta y limpia la fila.
-   */
-  it.fails("residente2 no debería poder agregarse al equipo de otra obra", async () => {
+  /** SEC-05 regression: team membership cannot be self-assigned. */
+  it("residente2 no puede agregarse al equipo de otra obra", async () => {
     try {
       const { error } = await residente2.client.from("obra_team").insert({
         obra_id: tempObraId,
@@ -204,21 +201,31 @@ describe("RLS laxa en obras y obra_team", () => {
 });
 
 describe("superficie pública y cabeceras", () => {
-  /**
-   * SEC-06 (crítico): el hook usa service_role y no valida firma, secreto ni
-   * autenticación. No se invoca para no mutar contabilidad; se audita el código.
-   */
-  it.fails("el hook público de rentas debería exigir autenticación o secreto", () => {
+  /** SEC-06 regression: privileged work starts only after constant-time auth. */
+  it("el hook de rentas valida credencial antes de importar el cliente privilegiado", () => {
     const source = readFileSync(
       resolve(process.cwd(), "src/app/api/public/hooks/devengar-rentas/route.ts"),
       "utf8",
     );
     expect(source).toMatch(/authorization|bearer|secret|apikey|signature/i);
+    expect(source.indexOf("timingSafeEqual")).toBeLessThan(
+      source.indexOf('await import("@/integrations/supabase/client.server")'),
+    );
   });
 
-  it.fails("la aplicación debería enviar cabeceras de seguridad", async () => {
+  it("el hook de rentas rechaza solicitudes sin credencial", async () => {
+    const response = await fetch(`${BASE_URL}/api/public/hooks/devengar-rentas`, {
+      method: "POST",
+    });
+    expect([401, 503]).toContain(response.status);
+  });
+
+  it("la aplicación envía cabeceras de seguridad", async () => {
     const response = await fetch(BASE_URL);
-    expect(response.headers.get("content-security-policy")).toBeTruthy();
+    expect(response.headers.get("content-security-policy")).toMatch(/'nonce-[^']+'/);
+    if (process.env.NODE_ENV === "production") {
+      expect(response.headers.get("strict-transport-security")).toBeTruthy();
+    }
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
     expect(response.headers.get("x-frame-options")).toBeTruthy();
     expect(response.headers.get("referrer-policy")).toBeTruthy();

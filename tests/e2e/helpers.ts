@@ -15,6 +15,7 @@ const IGNORED_CONSOLE = [
   /React DevTools/i,
   /\[Fast Refresh\]/i,
   /Failed to load resource: the server responded with a status of 404/i,
+  /WebSocket connection to .*\/_next\/hmr/i,
 ];
 
 /** Inicia sesión por la UI real y espera al dashboard. */

@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
+import { connection } from "next/server";
 import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "ERP PNF — ERP para empresas constructoras",
+  title: "ERP PNF — ERP SaaS para constructoras mexicanas",
   description:
-    "Sistema ERP en español para empresas constructoras: obras, requisiciones, nómina, tesorería y más.",
+    "Administra obras, requisiciones, nómina, compras y tesorería desde el ERP SaaS diseñado para constructoras mexicanas.",
   icons: {
     icon: "/assets/img/icon-1.png",
     shortcut: "/assets/img/icon-1.png",
@@ -26,7 +27,9 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  await connection();
+
   return (
     <html lang="es">
       <body>
