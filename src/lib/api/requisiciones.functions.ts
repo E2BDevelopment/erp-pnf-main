@@ -97,7 +97,7 @@ export const listRequisicionesAsignadas = createServerFn({ method: "POST" })
     let q = supabase
       .from("requisiciones")
       .select(
-        "id, folio, estatus, notas, enviada_at, created_at, creado_por, obra_id, items:requisicion_insumos(id)",
+        "id, folio, estatus, notas, enviada_at, created_at, creado_por, obra_id, items:requisicion_insumos(id, fecha_requerida)",
       )
       .neq("estatus", "borrador")
       .order("created_at", { ascending: false });
@@ -127,6 +127,26 @@ export const listRequisicionesAsignadas = createServerFn({ method: "POST" })
       for (const o of obs ?? []) obraMap.set(o.id, o);
     }
 
+    const residenteMap = new Map<string, string>();
+    if (obraIdsRows.length > 0) {
+      const { data: residentes } = await supabase
+        .from("obra_team")
+        .select("obra_id, user_id")
+        .in("obra_id", obraIdsRows)
+        .eq("role", "residente");
+      const residenteIds = Array.from(new Set((residentes ?? []).map((r: any) => r.user_id)));
+      const { data: perfilesResidentes } = residenteIds.length
+        ? await supabase.from("profiles").select("id, nombre_completo").in("id", residenteIds)
+        : { data: [] };
+      const nombreResidente = new Map(
+        (perfilesResidentes ?? []).map((p: any) => [p.id, p.nombre_completo]),
+      );
+      for (const r of residentes ?? []) {
+        const nombre = nombreResidente.get(r.user_id);
+        if (nombre) residenteMap.set(r.obra_id, nombre);
+      }
+    }
+
     return (rows ?? []).map((r: any) => ({
       id: r.id,
       folio: r.folio,
@@ -135,7 +155,12 @@ export const listRequisicionesAsignadas = createServerFn({ method: "POST" })
       enviada_at: r.enviada_at,
       created_at: r.created_at,
       obra: obraMap.get(r.obra_id) ?? null,
+      residente: residenteMap.get(r.obra_id) ?? null,
       insumos_count: (r.items ?? []).length,
+      fecha_requerida: (r.items ?? [])
+        .map((item: any) => item.fecha_requerida)
+        .filter(Boolean)
+        .sort()[0] ?? null,
       solicitante: r.creado_por ? (profileMap.get(r.creado_por)?.nombre_completo ?? null) : null,
     }));
   });

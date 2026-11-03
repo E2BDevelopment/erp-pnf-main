@@ -2,6 +2,7 @@ import { createServerFn } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requirePermission } from "@/lib/permisos/require";
+import { validarComisionesEquipo, validarEquipoObra } from "@/lib/obra-utils";
 
 export const listObras = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -133,10 +134,8 @@ export const crearObra = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!profile?.company_id) throw new Error("Sin empresa asociada");
 
-    const roles = new Set(data.team.map((m) => m.role));
-    if (!roles.has("residente") || !roles.has("administrativo") || !roles.has("supervisor")) {
-      throw new Error("Se requiere mínimo un Residente, un Administrativo y un Supervisor");
-    }
+    const errorEquipo = validarEquipoObra(data.team);
+    if (errorEquipo) throw new Error(errorEquipo);
 
     const { data: obra, error } = await supabase
       .from("obras")
@@ -276,10 +275,8 @@ export const actualizarObraTeam = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     await requirePermission(supabase, userId, "obras.asignar_team");
 
-    const roles = new Set(data.team.map((m) => m.role));
-    if (!roles.has("residente") || !roles.has("administrativo") || !roles.has("supervisor")) {
-      throw new Error("Se requiere mínimo un Residente, un Administrativo y un Supervisor");
-    }
+    const errorEquipo = validarEquipoObra(data.team);
+    if (errorEquipo) throw new Error(errorEquipo);
 
     const { error: delErr } = await supabase.from("obra_team").delete().eq("obra_id", data.obraId);
     if (delErr) throw new Error(delErr.message);
@@ -310,6 +307,15 @@ export const actualizarObraComisiones = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     await requirePermission(supabase, userId, "obras.asignar_team");
+
+    const { data: team, error: teamErr } = await supabase
+      .from("obra_team")
+      .select("user_id")
+      .eq("obra_id", data.obraId);
+    if (teamErr) throw new Error(teamErr.message);
+
+    const errorEquipo = validarComisionesEquipo(team ?? [], data.comisiones);
+    if (errorEquipo) throw new Error(errorEquipo);
 
     const { error: delErr } = await supabase
       .from("obra_comisiones")

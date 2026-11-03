@@ -39,7 +39,7 @@ El producto empieza como herramienta interna de una constructora y está constru
 - **El presupuesto autorizado es la base.** Se carga como archivo Excel (`.xlsx`) al crear la obra o después, desde dentro de la obra; los renglones del presupuesto son la referencia contra la que se estima y se gasta.
 - **Cadena documental de compra.** Requisición de obra → visto bueno del Supervisor → solicitud y comparativa de cotizaciones → orden de compra → recepción en almacén → cuenta por pagar → pago en tesorería.
 - **Datos de la obra.** Nombre, tipo (Industrial, Comercial, Residencial, Infraestructura, Vivienda en serie, Urbanización), cliente, número de contrato, ubicación, fecha de inicio y fecha de terminación.
-- **Equipo mínimo por obra.** Para poder operar, el Director asigna al menos un Residente, un Administrativo y un Supervisor.
+- **Equipo mínimo por obra.** Para poder operar, el Director asigna al menos un Residente y un Administrativo. Solo puede haber un Residente y un Administrativo por obra.
 - **Autorización configurable.** Cada empresa ajusta qué rol puede ejecutar cada acción; el Director siempre puede. Las acciones sensibles se validan también en el servidor, no solo en la navegación.
 - **Documentos que entran y salen.** El presupuesto autorizado se carga desde Excel (`.xlsx`) o se anexa en PDF; las solicitudes de cotización se emiten en PDF; los catálogos de insumos se importan y exportan en Excel.
 - **Avisos dentro del producto.** Notificaciones y contadores de pendientes por módulo avisan lo que espera autorización o captura.

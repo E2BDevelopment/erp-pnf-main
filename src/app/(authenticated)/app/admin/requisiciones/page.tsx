@@ -41,6 +41,8 @@ function AdminRequisicionesPage() {
 
   const [tab, setTab] = useState<"activas" | "historial">("activas");
   const [obraFilter, setObraFilter] = useState<string>("todas");
+  const [residenteFilter, setResidenteFilter] = useState("todos");
+  const [solicitanteFilter, setSolicitanteFilter] = useState("todos");
   const abrirVisor = (id: string) => setCotizacion({ id, tab: "requisicion", readOnly: true });
   const [cotizacion, setCotizacion] = useState<{
     id: string;
@@ -72,10 +74,26 @@ function AdminRequisicionesPage() {
     return Array.from(seen.entries()).map(([id, nombre]) => ({ id, nombre }));
   }, [rows]);
 
+  const residentes = useMemo(
+    () => Array.from(new Set((rows as any[]).map((r) => r.residente).filter(Boolean))).sort(),
+    [rows],
+  );
+  const solicitantes = useMemo(
+    () => Array.from(new Set((rows as any[]).map((r) => r.solicitante).filter(Boolean))).sort(),
+    [rows],
+  );
+
   const filtered = useMemo(() => {
-    if (obraFilter === "todas") return rows;
-    return (rows as any[]).filter((r) => r.obra?.id === obraFilter);
-  }, [rows, obraFilter]);
+    return [...(rows as any[])]
+      .filter((r) => obraFilter === "todas" || r.obra?.id === obraFilter)
+      .filter((r) => residenteFilter === "todos" || r.residente === residenteFilter)
+      .filter((r) => solicitanteFilter === "todos" || r.solicitante === solicitanteFilter)
+      .sort((a, b) => {
+        const fechaA = a.fecha_requerida ? new Date(a.fecha_requerida).getTime() : Infinity;
+        const fechaB = b.fecha_requerida ? new Date(b.fecha_requerida).getTime() : Infinity;
+        return fechaA - fechaB;
+      });
+  }, [rows, obraFilter, residenteFilter, solicitanteFilter]);
 
   if (!allowed) {
     return (
@@ -99,21 +117,35 @@ function AdminRequisicionesPage() {
             <TabsTrigger value="historial">Historial</TabsTrigger>
           </TabsList>
 
-          {obras.length > 1 && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:w-[min(100%,720px)]">
             <Select value={obraFilter} onValueChange={setObraFilter}>
-              <SelectTrigger className="w-full sm:w-64">
-                <SelectValue placeholder="Filtrar por obra" />
+              <SelectTrigger aria-label="Filtrar por obra">
+                <SelectValue placeholder="Obra" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todas">Todas las obras</SelectItem>
-                {obras.map((o) => (
-                  <SelectItem key={o.id} value={o.id}>
-                    {o.nombre}
-                  </SelectItem>
-                ))}
+                {obras.map((o) => <SelectItem key={o.id} value={o.id}>{o.nombre}</SelectItem>)}
               </SelectContent>
             </Select>
-          )}
+            <Select value={residenteFilter} onValueChange={setResidenteFilter}>
+              <SelectTrigger aria-label="Filtrar por residente">
+                <SelectValue placeholder="Residente" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos los residentes</SelectItem>
+                {residentes.map((nombre) => <SelectItem key={nombre} value={nombre}>{nombre}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={solicitanteFilter} onValueChange={setSolicitanteFilter}>
+              <SelectTrigger aria-label="Filtrar por solicitante">
+                <SelectValue placeholder="Solicitante" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos los solicitantes</SelectItem>
+                {solicitantes.map((nombre) => <SelectItem key={nombre} value={nombre}>{nombre}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <TabsContent value="activas" className="mt-4">

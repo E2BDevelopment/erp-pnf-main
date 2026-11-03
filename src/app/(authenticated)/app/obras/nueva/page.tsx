@@ -33,6 +33,11 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { Trash2, Plus, AlertCircle } from "lucide-react";
+import {
+  siguienteRolEquipo,
+  validarComisionesEquipo,
+  validarEquipoObra,
+} from "@/lib/obra-utils";
 
 const ROLES_OBRA = [
   { value: "residente", label: "Residente" },
@@ -72,7 +77,8 @@ function NuevaObra() {
   const [teamError, setTeamError] = useState<string | null>(null);
 
   const teamValido = team.length > 0 && team.every((t) => !!t.user_id);
-  const comisionesValidas = comisiones.every((c) => !!c.user_id);
+  const comisionesValidas =
+    comisiones.every((c) => !!c.user_id) && !validarComisionesEquipo(team, comisiones);
   const puedeCrear = teamValido && comisionesValidas;
 
   const fetchClientes = useServerFn(listClientes);
@@ -86,6 +92,13 @@ function NuevaObra() {
   });
   const usersQ = useQuery({ queryKey: ["company-users"], queryFn: () => fetchUsers() });
   const unidadesQ = useQuery({ queryKey: ["unidades-negocio"], queryFn: () => fetchUnidades() });
+
+  const usuariosEquipo = (usersQ.data ?? []).filter((u) =>
+    team.some((t) => t.user_id === u.id),
+  );
+  const usuariosDisponiblesComision = usuariosEquipo.filter(
+    (u) => !comisiones.some((c) => c.user_id === u.id),
+  );
 
   const createObraM = useMutation({
     mutationFn: createObraFn,
@@ -114,10 +127,12 @@ function NuevaObra() {
     }
     setTeamError(null);
 
-    const rs = new Set(teamLimpio.map((t) => t.role));
-    if (!rs.has("residente") || !rs.has("administrativo") || !rs.has("supervisor")) {
-      return toast.error("Se requiere mínimo Residente, Administrativo y Supervisor");
-    }
+    const errorEquipo = validarEquipoObra(teamLimpio);
+    if (errorEquipo) return toast.error(errorEquipo);
+
+    const errorComisiones = validarComisionesEquipo(teamLimpio, comisionesLimpias);
+    if (errorComisiones) return toast.error(errorComisiones);
+
     createObraM.mutate({
       data: {
         nombre: nombre.trim(),
@@ -229,13 +244,13 @@ function NuevaObra() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setTeam([...team, { user_id: "", role: "residente" }])}
+                onClick={() => setTeam([...team, { user_id: "", role: siguienteRolEquipo(team) }])}
               >
                 <Plus className="size-3.5 mr-1" /> Agregar
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mb-3">
-              Mínimo un Residente, un Administrativo y un Supervisor.
+              Mínimo un Residente y un Administrativo (máximo uno de cada uno).
             </p>
             <div className="space-y-2">
               {team.map((row, idx) => (
@@ -271,18 +286,34 @@ function NuevaObra() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {ROLES_OBRA.map((r) => (
-                        <SelectItem key={r.value} value={r.value}>
-                          {r.label}
-                        </SelectItem>
-                      ))}
+                      {ROLES_OBRA.map((r) => {
+                        const rolUnico = r.value === "residente" || r.value === "administrativo";
+                        const yaAsignado = team.some((t, i) => i !== idx && t.role === r.value);
+                        return (
+                          <SelectItem
+                            key={r.value}
+                            value={r.value}
+                            disabled={rolUnico && yaAsignado}
+                          >
+                            {r.label}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                   <Button
                     variant="ghost"
                     size="icon"
                     aria-label="Quitar integrante del equipo"
-                    onClick={() => setTeam(team.filter((_, i) => i !== idx))}
+                    onClick={() => {
+                      const quitado = team[idx];
+                      setTeam(team.filter((_, i) => i !== idx));
+                      if (quitado.user_id) {
+                        setComisiones((prev) =>
+                          prev.filter((c) => c.user_id !== quitado.user_id),
+                        );
+                      }
+                    }}
                   >
                     <Trash2 className="size-4" />
                   </Button>
@@ -386,9 +417,11 @@ function NuevaObra() {
               <Button variant="outline" onClick={() => setStep(1)} disabled={createObraM.isPending}>
                 Atrás
               </Button>
-              <Button onClick={handleSubmit} disabled={createObraM.isPending || !puedeCrear}>
-                {createObraM.isPending ? "Creando…" : "Crear obra"}
-              </Button>
+              {puedeCrearObra && (
+                <Button onClick={handleSubmit} disabled={createObraM.isPending || !puedeCrear}>
+                  {createObraM.isPending ? "Creando…" : "Crear obra"}
+                </Button>
+              )}
             </div>
           </div>
         </Card>

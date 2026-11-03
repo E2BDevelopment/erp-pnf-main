@@ -35,6 +35,7 @@ import {
 import { listPagosOC, cancelarPagoOC } from "@/lib/api-client/pagos.functions";
 import { RegistrarPagoOCDialog } from "@/components/pagos/RegistrarPagoOCDialog";
 import { RecepcionDialog } from "@/components/almacen/RecepcionDialog";
+import { useConfirm } from "@/hooks/useConfirm";
 
 import { getSolicitudesRequisicion } from "@/lib/api-client/solicitudes-cotizacion.functions";
 import { SolicitudesTab } from "./SolicitudesTab";
@@ -536,6 +537,7 @@ function OCPagosPanel({
   puedeCancelar: boolean;
   onChange: () => void;
 }) {
+  const confirm = useConfirm();
   const fetchPagos = useServerFn(listPagosOC);
   const cancelarFn = useServerFn(cancelarPagoOC);
   const [openDialog, setOpenDialog] = useState(false);
@@ -601,12 +603,14 @@ function OCPagosPanel({
                         variant="ghost"
                         aria-label="Cancelar pago"
                         title="Cancelar pago"
-                        onClick={() => {
-                          if (
-                            confirm(
-                              "¿Cancelar este pago? Se revertirá el saldo de la cuenta y de la OC.",
-                            )
-                          ) {
+                        onClick={async () => {
+                          const confirmed = await confirm({
+                            title: "¿Cancelar este pago?",
+                            description: "Se revertirá el saldo de la cuenta y de la OC.",
+                            confirmLabel: "Cancelar pago",
+                            destructive: true,
+                          });
+                          if (confirmed) {
                             cancelMut.mutate(p.id);
                           }
                         }}

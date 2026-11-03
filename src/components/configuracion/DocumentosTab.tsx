@@ -24,6 +24,7 @@ import {
   deleteCompanyDocumento,
 } from "@/lib/api-client/company.functions";
 import { useAuthStore } from "@/stores/auth";
+import { useConfirm } from "@/hooks/useConfirm";
 import { estadoVencimiento, formatDate, type EstadoDoc } from "@/lib/format";
 
 const BUCKET = "company-docs";
@@ -57,6 +58,7 @@ const ESTADO_LABEL: Record<EstadoDoc, string> = {
 };
 
 export function DocumentosTab() {
+  const confirm = useConfirm();
   const qc = useQueryClient();
   const companyId = useAuthStore((s) => s.profile?.company_id);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -361,8 +363,14 @@ export function DocumentosTab() {
                           className="text-destructive hover:text-destructive"
                           title="Eliminar"
                           disabled={deleteMutation.isPending}
-                          onClick={() => {
-                            if (confirm(`¿Eliminar el documento "${doc.tipo}"?`)) {
+                          onClick={async () => {
+                            const confirmed = await confirm({
+                              title: "¿Eliminar el documento?",
+                              description: `Se eliminará "${doc.tipo}" de los documentos de la empresa.`,
+                              confirmLabel: "Eliminar",
+                              destructive: true,
+                            });
+                            if (confirmed) {
                               deleteMutation.mutate({ data: { id: doc.id } });
                             }
                           }}

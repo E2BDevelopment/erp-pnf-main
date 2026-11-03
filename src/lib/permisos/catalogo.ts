@@ -254,30 +254,77 @@ export const CATALOGO_ACCIONES: AccionCatalogo[] = [
 
   // Catálogos
   {
-    key: "catalogos.terceros",
+    key: "catalogos.terceros.crear",
+    modulo: "Catálogos",
+    label: "Crear en catálogo de terceros",
+    defaults: A,
+  },
+  {
+    key: "catalogos.terceros.autorizar",
+    modulo: "Catálogos",
+    label: "Autorizar en catálogo de terceros",
+    defaults: NONE,
+  },
+  {
+    key: "catalogos.terceros.editar",
     modulo: "Catálogos",
     label: "Editar catálogo de terceros",
     defaults: A,
   },
   {
-    key: "catalogos.trabajadores",
+    key: "catalogos.trabajadores.crear",
+    modulo: "Catálogos",
+    label: "Crear en catálogo de trabajadores",
+    defaults: A,
+  },
+  {
+    key: "catalogos.trabajadores.autorizar",
+    modulo: "Catálogos",
+    label: "Autorizar en catálogo de trabajadores",
+    defaults: NONE,
+  },
+  {
+    key: "catalogos.trabajadores.editar",
     modulo: "Catálogos",
     label: "Editar catálogo de trabajadores",
     defaults: A,
   },
   {
-    key: "catalogos.insumos",
+    key: "catalogos.insumos.crear",
+    modulo: "Catálogos",
+    label: "Crear en catálogo de insumos",
+    defaults: A,
+  },
+  {
+    key: "catalogos.insumos.autorizar",
+    modulo: "Catálogos",
+    label: "Autorizar en catálogo de insumos",
+    defaults: NONE,
+  },
+  {
+    key: "catalogos.insumos.editar",
     modulo: "Catálogos",
     label: "Editar catálogo de insumos",
     defaults: A,
   },
   {
-    key: "catalogos.clientes",
+    key: "catalogos.clientes.crear",
+    modulo: "Catálogos",
+    label: "Crear en catálogo de clientes",
+    defaults: A,
+  },
+  {
+    key: "catalogos.clientes.autorizar",
+    modulo: "Catálogos",
+    label: "Autorizar en catálogo de clientes",
+    defaults: NONE,
+  },
+  {
+    key: "catalogos.clientes.editar",
     modulo: "Catálogos",
     label: "Editar catálogo de clientes",
     defaults: A,
   },
-
   // Contabilidad
   {
     key: "contabilidad.ver_balance",

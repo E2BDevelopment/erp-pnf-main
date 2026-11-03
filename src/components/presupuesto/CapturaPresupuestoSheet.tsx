@@ -28,6 +28,7 @@ import { Plus, Trash2, Upload, Download, AlertCircle, CheckCircle2, Loader2 } fr
 import { toast } from "sonner";
 import { formatMXN } from "@/lib/format";
 import { useSacudir } from "@/components/anim/useSacudir";
+import { useConfirm } from "@/hooks/useConfirm";
 
 type RowDraft = RenglonInput & { _id: string };
 
@@ -51,6 +52,7 @@ export function CapturaPresupuestoSheet({
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const confirm = useConfirm();
   const fetchOne = useServerFn(getPresupuesto);
   const { data, isLoading } = useQuery({
     queryKey: ["presupuesto", presupuestoId],
@@ -249,11 +251,14 @@ export function CapturaPresupuestoSheet({
   };
 
   const handleImportarExcel = async (file: File) => {
-    if (
-      hasContenido() &&
-      !window.confirm("Se reemplazarán los renglones actuales con los del archivo. ¿Continuar?")
-    )
-      return;
+    if (hasContenido()) {
+      const confirmed = await confirm({
+        title: "¿Reemplazar los renglones actuales?",
+        description: "Se reemplazarán los renglones actuales con los del archivo seleccionado.",
+        confirmLabel: "Reemplazar",
+      });
+      if (!confirmed) return;
+    }
     setParsing(true);
     try {
       const b64 = await fileToBase64(file);
@@ -272,11 +277,14 @@ export function CapturaPresupuestoSheet({
   };
 
   const handleImportarPdf = async (file: File) => {
-    if (
-      hasContenido() &&
-      !window.confirm("Se reemplazarán los renglones actuales con los del PDF. ¿Continuar?")
-    )
-      return;
+    if (hasContenido()) {
+      const confirmed = await confirm({
+        title: "¿Reemplazar los renglones actuales?",
+        description: "Se reemplazarán los renglones actuales con los del PDF seleccionado.",
+        confirmLabel: "Reemplazar",
+      });
+      if (!confirmed) return;
+    }
     setParsingPdf(true);
     try {
       const b64 = await fileToBase64(file);

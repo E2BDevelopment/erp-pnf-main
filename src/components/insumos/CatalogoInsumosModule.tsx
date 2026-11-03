@@ -51,6 +51,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useConfirm } from "@/hooks/useConfirm";
 import { TruncatedCell } from "@/components/pagos/TruncatedCell";
 import { useEffectiveRoles, isDirector as checkDirector } from "@/stores/auth";
 import {
@@ -662,6 +663,7 @@ function CategoriasDialog({
   onOpenChange: (b: boolean) => void;
   categorias: any[];
 }) {
+  const confirm = useConfirm();
   const qc = useQueryClient();
   const [nueva, setNueva] = useState("");
   const [nuevoPrefijo, setNuevoPrefijo] = useState("");
@@ -830,9 +832,14 @@ function CategoriasDialog({
                       size="icon"
                       variant="ghost"
                       aria-label={`Eliminar categoría ${c.nombre}`}
-                      onClick={() => {
-                        if (confirm(`¿Eliminar "${c.nombre}"?`))
-                          delMut.mutate({ data: { id: c.id } });
+                      onClick={async () => {
+                        const confirmed = await confirm({
+                          title: `¿Eliminar "${c.nombre}"?`,
+                          description: "La categoría se quitará del catálogo de insumos.",
+                          confirmLabel: "Eliminar",
+                          destructive: true,
+                        });
+                        if (confirmed) delMut.mutate({ data: { id: c.id } });
                       }}
                     >
                       <Trash2 />
@@ -1042,6 +1049,7 @@ function UnidadesDialog({
   onOpenChange: (b: boolean) => void;
   unidades: any[];
 }) {
+  const confirm = useConfirm();
   const qc = useQueryClient();
   const [codigo, setCodigo] = useState("");
   const [nombre, setNombre] = useState("");
@@ -1207,9 +1215,14 @@ function UnidadesDialog({
                       size="icon"
                       variant="ghost"
                       aria-label={`Eliminar unidad ${u.codigo}`}
-                      onClick={() => {
-                        if (confirm(`¿Eliminar la unidad "${u.codigo}"?`))
-                          delMut.mutate({ data: { id: u.id } });
+                      onClick={async () => {
+                        const confirmed = await confirm({
+                          title: `¿Eliminar la unidad "${u.codigo}"?`,
+                          description: "La unidad se quitará del catálogo de insumos.",
+                          confirmLabel: "Eliminar",
+                          destructive: true,
+                        });
+                        if (confirmed) delMut.mutate({ data: { id: u.id } });
                       }}
                     >
                       <Trash2 />

@@ -12,9 +12,11 @@ import {
 } from "@/lib/api-client/unidades-negocio.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useConfirm } from "@/hooks/useConfirm";
 import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
 
 export function UnidadesNegocioManager() {
+  const confirm = useConfirm();
   const qc = useQueryClient();
   const fetchList = useServerFn(listUnidadesNegocio);
   const createFn = useServerFn(crearUnidadNegocio);
@@ -135,8 +137,14 @@ export function UnidadesNegocioManager() {
                     size="icon"
                     variant="ghost"
                     aria-label={`Eliminar ${u.nombre}`}
-                    onClick={() => {
-                      if (confirm(`¿Eliminar "${u.nombre}"?`)) {
+                    onClick={async () => {
+                      const confirmed = await confirm({
+                        title: `¿Eliminar "${u.nombre}"?`,
+                        description: "La unidad de negocio se quitará del catálogo de la empresa.",
+                        confirmLabel: "Eliminar",
+                        destructive: true,
+                      });
+                      if (confirmed) {
                         remove.mutate({ data: { id: u.id } });
                       }
                     }}

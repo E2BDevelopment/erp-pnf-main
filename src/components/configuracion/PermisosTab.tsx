@@ -1,11 +1,11 @@
 "use client";
 
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Info } from "lucide-react";
+import { ChevronDown, Info, Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 import { CATALOGO_ACCIONES, MODULOS_ORDEN, type PermRole } from "@/lib/permisos/catalogo";
 import { listRolePermissions, setRolePermission } from "@/lib/api-client/permisos.functions";
 
@@ -27,6 +28,10 @@ const ROLE_LABEL: Record<PermRole, string> = {
 };
 
 export function PermisosTab() {
+  const [busqueda, setBusqueda] = useState("");
+  const [modulosAbiertos, setModulosAbiertos] = useState<Set<string>>(
+    () => new Set(MODULOS_ORDEN),
+  );
   const qc = useQueryClient();
   const listFn = useServerFn(listRolePermissions);
   const setFn = useServerFn(setRolePermission);
@@ -78,8 +83,30 @@ export function PermisosTab() {
     return v ?? def;
   };
 
+  const filtro = busqueda.trim().toLocaleLowerCase();
+  const accionesPorModulo = (modulo: string) =>
+    CATALOGO_ACCIONES.filter(
+      (accion) =>
+        accion.modulo === modulo &&
+        (!filtro ||
+          `${accion.label} ${accion.descripcion ?? ""} ${accion.key} ${modulo}`
+            .toLocaleLowerCase()
+            .includes(filtro)),
+    );
+
   return (
     <div className="space-y-4">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={busqueda}
+          onChange={(event) => setBusqueda(event.target.value)}
+          placeholder="Buscar módulo o acción…"
+          aria-label="Buscar permisos"
+          className="pl-9"
+        />
+      </div>
+
       <Alert>
         <Info className="size-4" />
         <AlertDescription>
@@ -87,9 +114,9 @@ export function PermisosTab() {
         </AlertDescription>
       </Alert>
 
-      <div className="rounded-md border overflow-x-auto">
+      <div className="max-h-[70vh] rounded-md border overflow-auto [&>div]:overflow-visible">
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky top-0 z-20 bg-background">
             <TableRow>
               <TableHead className="min-w-[280px]">Acción</TableHead>
               <TableHead className="text-center whitespace-nowrap">Director</TableHead>
@@ -101,46 +128,70 @@ export function PermisosTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {MODULOS_ORDEN.map((modulo) => (
-              <Fragment key={modulo}>
-                <TableRow className="bg-muted/50 hover:bg-muted/50">
-                  <TableCell
-                    colSpan={2 + ROLES.length}
-                    className="font-semibold text-xs uppercase tracking-wide text-muted-foreground"
-                  >
-                    {modulo}
-                  </TableCell>
-                </TableRow>
-                {CATALOGO_ACCIONES.filter((a) => a.modulo === modulo).map((a) => (
-                  <TableRow key={a.key}>
-                    <TableCell>
-                      <div className="text-sm">{a.label}</div>
-                      {a.descripcion && (
-                        <div className="text-xs text-muted-foreground">{a.descripcion}</div>
-                      )}
+            {MODULOS_ORDEN.map((modulo) => {
+              const acciones = accionesPorModulo(modulo);
+              if (!acciones.length) return null;
+              const abierto = modulosAbiertos.has(modulo);
+
+              return (
+                <Fragment key={modulo}>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableCell
+                      colSpan={2 + ROLES.length}
+                      className="p-0 font-semibold text-xs uppercase tracking-wide text-muted-foreground"
+                    >
+                      <button
+                        type="button"
+                        className="flex w-full items-center gap-2 px-2 py-3 text-left hover:text-foreground"
+                        aria-expanded={abierto}
+                        onClick={() =>
+                          setModulosAbiertos((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(modulo)) next.delete(modulo);
+                            else next.add(modulo);
+                            return next;
+                          })
+                        }
+                      >
+                        <ChevronDown
+                          className={`size-4 transition-transform ${abierto ? "" : "-rotate-90"}`}
+                        />
+                        {modulo}
+                      </button>
                     </TableCell>
-                    <TableCell className="text-center">
-                      <Checkbox checked disabled aria-label="Director (siempre)" />
-                    </TableCell>
-                    {ROLES.map((r) => {
-                      const checked = isChecked(r, a.key, a.defaults[r]);
-                      return (
-                        <TableCell key={r} className="text-center">
-                          <Checkbox
-                            checked={checked}
-                            disabled={mut.isPending}
-                            onCheckedChange={(v) =>
-                              mut.mutate({ role: r, action_key: a.key, allowed: v === true })
-                            }
-                            aria-label={`${ROLE_LABEL[r]} — ${a.label}`}
-                          />
-                        </TableCell>
-                      );
-                    })}
                   </TableRow>
-                ))}
-              </Fragment>
-            ))}
+                  {abierto &&
+                    acciones.map((a) => (
+                      <TableRow key={a.key}>
+                        <TableCell>
+                          <div className="text-sm">{a.label}</div>
+                          {a.descripcion && (
+                            <div className="text-xs text-muted-foreground">{a.descripcion}</div>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Checkbox checked disabled aria-label="Director (siempre)" />
+                        </TableCell>
+                        {ROLES.map((r) => {
+                          const checked = isChecked(r, a.key, a.defaults[r]);
+                          return (
+                            <TableCell key={r} className="text-center">
+                              <Checkbox
+                                checked={checked}
+                                disabled={mut.isPending}
+                                onCheckedChange={(v) =>
+                                  mut.mutate({ role: r, action_key: a.key, allowed: v === true })
+                                }
+                                aria-label={`${ROLE_LABEL[r]} — ${a.label}`}
+                              />
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))}
+                </Fragment>
+              );
+            })}
           </TableBody>
         </Table>
       </div>

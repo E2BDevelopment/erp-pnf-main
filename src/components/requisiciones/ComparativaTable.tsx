@@ -48,6 +48,7 @@ import {
 } from "@/lib/api-client/cotizaciones.functions";
 import type { AppRole } from "@/stores/auth";
 import { usePermisos } from "@/hooks/usePermisos";
+import { useConfirm } from "@/hooks/useConfirm";
 
 interface Props {
   reqItems: any[];
@@ -86,6 +87,7 @@ export function ComparativaTable({
   roles,
   readOnly = false,
 }: Props) {
+  const confirm = useConfirm();
   const qc = useQueryClient();
   const guardarFn = useServerFn(guardarPaquete);
   const generarFn = useServerFn(generarOC);
@@ -1005,12 +1007,15 @@ export function ComparativaTable({
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => {
-                              if (
-                                confirm(
-                                  "¿Eliminar esta asignación? Se borrará el paquete y la OC en borrador.",
-                                )
-                              ) {
+                            onClick={async () => {
+                              const confirmed = await confirm({
+                                title: "¿Quitar esta asignación?",
+                                description:
+                                  "Se borrará el paquete y la OC en borrador asociados al proveedor.",
+                                confirmLabel: "Quitar asignación",
+                                destructive: true,
+                              });
+                              if (confirmed) {
                                 eliminarMut.mutate(paquete.id);
                               }
                             }}

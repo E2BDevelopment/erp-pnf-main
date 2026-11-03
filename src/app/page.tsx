@@ -22,12 +22,12 @@ import { Button } from "@/components/ui/button";
 import LandingMotion from "@/components/landing-motion";
 
 const purchaseFlow = [
-  { label: "Requisición", icon: ClipboardCheck },
-  { label: "Visto bueno", icon: BadgeCheck },
-  { label: "Cotizaciones", icon: FileSpreadsheet },
-  { label: "Orden de compra", icon: FileCheck2 },
-  { label: "Recepción", icon: Boxes },
-  { label: "Pago", icon: Landmark },
+  { label: "Requisición", owner: "Residente o Auxiliar", icon: ClipboardCheck },
+  { label: "Visto bueno", owner: "Supervisor", icon: BadgeCheck },
+  { label: "Cotizaciones", owner: "Administración", icon: FileSpreadsheet },
+  { label: "Orden de compra", owner: "Administración", icon: FileCheck2 },
+  { label: "Recepción", owner: "Almacén de obra", icon: Boxes },
+  { label: "Pago", owner: "Tesorería", icon: Landmark },
 ];
 
 const modules = [
@@ -35,8 +35,8 @@ const modules = [
   { icon: Users, title: "Personal y asignaciones", detail: "Roles, responsables y permisos configurables." },
   { icon: Wallet, title: "Presupuestos y costos", detail: "Seguimiento por renglón, estimaciones y gastos." },
   { icon: Boxes, title: "Compras y almacén", detail: "De la requisición a la recepción de materiales." },
-  { icon: ReceiptText, title: "Nómina y destajos", detail: "Captura y seguimiento con ciclo semanal." },
-  { icon: ChartNoAxesCombined, title: "Tesorería y reportes", detail: "Pagos y condensado semanal de la operación." },
+  { icon: ReceiptText, title: "Nómina y destajos", detail: "Trabajo contratado ligado al presupuesto, con estimaciones semanales." },
+  { icon: ChartNoAxesCombined, title: "Tesorería y reportes", detail: "Pagos y condensado semanal: producción, ingresos y egresos por obra." },
 ];
 
 function ProductPreview() {
@@ -98,7 +98,7 @@ export default function Landing() {
               <a href="#plataforma" className="landing-nav-link">Plataforma</a>
               <a href="#soluciones" className="landing-nav-link">Soluciones</a>
               <a href="#beneficios" className="landing-nav-link">Beneficios</a>
-              <a href="#nosotros" className="landing-nav-link">Nosotros</a>
+              <a href="#cierre-semanal" className="landing-nav-link">Ciclo semanal</a>
             </nav>
             <div className="landing-header-actions">
               <Button asChild variant="ghost" size="sm" className="landing-login"><Link to="/login">Iniciar sesión</Link></Button>
@@ -107,7 +107,7 @@ export default function Landing() {
             <details className="landing-mobile-menu">
               <summary aria-label="Abrir menú de navegación"><span /><span /><span /></summary>
               <nav aria-label="Navegación móvil">
-                <a href="#plataforma">Plataforma</a><a href="#soluciones">Soluciones</a><a href="#beneficios">Beneficios</a><a href="#nosotros">Nosotros</a>
+                <a href="#plataforma">Plataforma</a><a href="#soluciones">Soluciones</a><a href="#beneficios">Beneficios</a><a href="#cierre-semanal">Ciclo semanal</a>
                 <Link to="/onboarding">Crear cuenta <ArrowRight className="size-4" /></Link>
               </nav>
             </details>
@@ -124,14 +124,14 @@ export default function Landing() {
             </svg>
             <div className="landing-container landing-hero-grid">
               <div className="landing-hero-copy">
-                <p className="landing-eyebrow"><span /> CONSTRUCTION MANAGEMENT SOFTWARE</p>
                 <h1><span className="landing-hero-line"><span>Tu constructora.</span></span><span className="landing-hero-line"><span>Todos sus proyectos.</span></span><span className="landing-hero-line landing-hero-line-accent"><span>Un solo lugar.</span></span></h1>
                 <p className="landing-hero-description">Administra obras, equipos, presupuestos y operaciones desde una plataforma diseñada para las necesidades de las constructoras mexicanas.</p>
                 <div className="landing-hero-actions mt-7 flex flex-wrap items-center gap-3">
                   <Button asChild size="lg" className="landing-cta"><Link to="/onboarding">Crear cuenta de empresa <ArrowRight className="ml-2 size-4" /></Link></Button>
                   <Button asChild size="lg" variant="outline" className="landing-secondary-cta"><a href="#soluciones">Explorar plataforma</a></Button>
                 </div>
-                <div className="landing-audience"><span>UNA OPERACIÓN, CADA RESPONSABILIDAD CLARA</span><div><span>Dirección</span><span>Campo</span><span>Administración</span></div></div>
+                <p className="landing-registration-note">Registro en 2 pasos: datos de la empresa y cuenta de Dirección.</p>
+                <div className="landing-audience"><span>Ver por responsabilidad</span><div><a href="#direccion">Dirección</a><a href="#campo">Campo</a><a href="#administracion">Administración</a></div></div>
               </div>
               <div className="landing-hero-product"><span className="landing-float-label landing-float-one">OBRA <strong>POR PROYECTO</strong></span><span className="landing-float-label landing-float-two">VISTO BUENO <strong>POR RESPONSABLE</strong></span><ProductPreview /></div>
             </div>
@@ -140,7 +140,7 @@ export default function Landing() {
 
           <section className="landing-problem" id="soluciones">
             <div className="landing-container landing-problem-grid">
-              <div><p className="landing-kicker"><span /> LA REALIDAD DE LA OBRA</p><h2>Una obra no debería administrarse entre hojas de cálculo, mensajes y documentos dispersos.</h2><p className="landing-problem-copy">Cuando la información está fragmentada, coordinar proyectos y tomar decisiones se vuelve más complicado.</p></div>
+              <div><h2>Una obra no debería administrarse entre hojas de cálculo, mensajes y documentos dispersos.</h2><p className="landing-problem-copy">Cuando la información está fragmentada, coordinar proyectos y tomar decisiones se vuelve más complicado.</p></div>
               <div className="landing-problem-list">
                 <p><span>01</span> Información distribuida entre distintas herramientas</p><p><span>02</span> Seguimiento manual de proyectos y actividades</p><p><span>03</span> Responsabilidades y avances difíciles de consultar</p><p><span>04</span> Menos visibilidad sobre costos y recursos</p>
               </div>
@@ -149,35 +149,36 @@ export default function Landing() {
 
           <section className="landing-flow-section" id="flujo">
             <div className="landing-container">
-              <div className="landing-section-heading"><div><p className="landing-kicker"><span /> UNA OPERACIÓN CONECTADA</p><h2>Del requerimiento al pago, con control en cada paso.</h2></div><p>La operación conserva su contexto desde la solicitud en obra hasta la cuenta por pagar y el pago en tesorería.</p></div>
-              <ol className="landing-flow" aria-label="Flujo de compra de obra"><li className="landing-flow-track" aria-hidden="true"><span className="landing-flow-progress" /></li>{purchaseFlow.map(({ label, icon: Icon }, index) => <li key={label} className="landing-flow-step"><div className="landing-flow-icon"><Icon className="size-[18px]" /></div><span>{label}</span>{index < purchaseFlow.length - 1 && <ArrowRight className="landing-flow-arrow" aria-hidden="true" />}</li>)}</ol>
-              <div className="landing-flow-note"><ShieldCheck className="size-[18px]" /><p>El visto bueno queda ligado a la operación, junto con el responsable y la obra que la originó.</p></div>
+              <div className="landing-section-heading"><div><h2>Del requerimiento al pago, con control en cada paso.</h2></div><p>Sigue una requisición de material y mira quién participa en cada etapa.</p></div>
+              <div className="landing-flow-example"><span>Ejemplo ilustrativo · Material para obra</span><span>Los permisos de cada empresa determinan quién participa.</span></div>
+              <ol className="landing-flow" aria-label="Ejemplo ilustrativo del flujo de compra de obra"><li className="landing-flow-track" aria-hidden="true"><span className="landing-flow-progress" /></li>{purchaseFlow.map(({ label, owner, icon: Icon }, index) => <li key={label} className="landing-flow-step"><div className="landing-flow-icon"><Icon className="size-[18px]" /></div><span className="landing-flow-label">{label}</span><small>{owner}</small>{index < purchaseFlow.length - 1 && <ArrowRight className="landing-flow-arrow" aria-hidden="true" />}</li>)}</ol>
+              <div className="landing-flow-note"><ShieldCheck className="size-[18px]" /><p>El visto bueno del Supervisor queda ligado a la requisición y a la obra que la originó.</p></div>
             </div>
           </section>
 
           <section className="landing-ecosystem">
             <div className="landing-container">
-              <div className="landing-section-heading"><div><p className="landing-kicker"><span /> HERRAMIENTAS PARA LA OBRA</p><h2>Las herramientas que tu constructora necesita para avanzar.</h2></div><p>Una plataforma que reúne procesos diarios de campo y oficina, organizados alrededor de cada obra.</p></div>
-              <div className="landing-ecosystem-grid">{modules.map(({ icon: Icon, title, detail }, index) => <article key={title} className={`landing-ecosystem-item landing-ecosystem-item-${index + 1}`}><span className="landing-ecosystem-icon"><Icon className="size-5" /></span><h3>{title}</h3><p>{detail}</p>{index === 0 && <span className="landing-ecosystem-index">01 / 06</span>}</article>)}</div>
+              <div className="landing-section-heading"><div><h2>Las herramientas que tu constructora necesita para avanzar.</h2></div><p>Una plataforma que reúne procesos diarios de campo y oficina, organizados alrededor de cada obra.</p></div>
+              <div className="landing-ecosystem-grid">{modules.map(({ icon: Icon, title, detail }, index) => <article key={title} className={`landing-ecosystem-item landing-ecosystem-item-${index + 1}`}><span className="landing-ecosystem-icon"><Icon className="size-5" /></span><h3>{title}</h3><p>{detail}</p></article>)}</div>
             </div>
           </section>
 
           <section className="landing-operations" id="beneficios">
             <div className="landing-container landing-operations-grid">
-              <div className="landing-operations-intro"><p className="landing-kicker"><span /> TRABAJO EN CAMPO Y OFICINA</p><h2>El trabajo cambia según el rol. La información sigue conectada.</h2><p>Una misma obra reúne al equipo de campo, al Supervisor, a Administración y a Dirección, cada quien con sus permisos.</p></div>
+              <div className="landing-operations-intro"><h2>Una obra, tres responsabilidades.</h2><p>Cada perfil participa desde su etapa, con las tareas y permisos que le corresponden.</p></div>
               <div className="landing-operation-list">
-                <article className="landing-operation-item"><span className="landing-operation-icon"><BriefcaseBusiness className="size-5" /></span><div><h3>Varias obras, una misma operación</h3><p>Cada obra conserva su presupuesto, equipo, cliente y contrato. Consulta la operación por proyecto.</p></div></article>
-                <article className="landing-operation-item"><span className="landing-operation-icon"><ShieldCheck className="size-5" /></span><div><h3>Responsables y autorizaciones por rol</h3><p>Dirección, Residente, Auxiliar, Supervisor y Administración trabajan con permisos y responsabilidades claras.</p></div></article>
-                <article className="landing-operation-item"><span className="landing-operation-icon"><Smartphone className="size-5" /></span><div><h3>Captura en obra, seguimiento en oficina</h3><p>El equipo de campo registra desde el celular. Oficina y Dirección revisan la operación desde escritorio.</p></div></article>
+                <article id="direccion" tabIndex={-1} className="landing-operation-item"><span className="landing-operation-icon"><BriefcaseBusiness className="size-5" /></span><div><h3>Dirección · control de todas las obras</h3><p>Abre obras, asigna equipos y consulta la operación corporativa desde un mismo tablero.</p></div></article>
+                <article id="campo" tabIndex={-1} className="landing-operation-item"><span className="landing-operation-icon"><Smartphone className="size-5" /></span><div><h3>Campo · captura y visto bueno en la obra</h3><p>Residente y Auxiliar registran la operación diaria. El Supervisor revisa y autoriza desde la obra.</p></div></article>
+                <article id="administracion" tabIndex={-1} className="landing-operation-item"><span className="landing-operation-icon"><ShieldCheck className="size-5" /></span><div><h3>Administración · de compra a pago</h3><p>Compara cotizaciones, gestiona cuentas por pagar y tramita pagos desde Tesorería.</p></div></article>
               </div>
             </div>
           </section>
 
-          <section className="landing-mexico" id="nosotros">
-            <div className="landing-container landing-mexico-grid"><div><p className="landing-kicker"><span /> CONSTRUIDO ALREDEDOR DE LA OBRA</p><h2>Tecnología pensada para la realidad de las constructoras mexicanas.</h2><p>Una plataforma en español que sigue el orden de trabajo de una constructora: presupuesto por renglón, requisiciones, visto bueno, compras, recepción y pago.</p><a href="#flujo" className="landing-text-link">Ver el flujo de trabajo <ArrowRight className="size-4" /></a></div><div className="landing-mexico-drawing" aria-label="Diagrama de procesos de obra"><div className="landing-drawing-top"><span>BITÁCORA DE OPERACIÓN</span><span>ERP PNF / 001</span></div><div className="landing-drawing-structure"><span className="landing-structure-node">OBRA</span><i /><span className="landing-structure-node">PRESUPUESTO</span><i /><span className="landing-structure-node landing-structure-active">OPERACIÓN</span><i /><span className="landing-structure-node">CIERRE</span></div><div className="landing-drawing-bottom">PRESUPUESTO → REQUISICIÓN → AUTORIZACIÓN → PAGO</div></div></div>
+          <section className="landing-weekly" id="cierre-semanal">
+            <div className="landing-container landing-weekly-grid"><div><h2>El ciclo semanal pone en contexto el trabajo de la obra.</h2><p>Nómina, cierre de almacén y reembolso de caja chica se registran por semana. El condensado compara producción, ingresos y egresos por obra y periodo.</p></div><div className="landing-weekly-drawing" role="img" aria-label="Ciclo semanal: nómina, almacén y caja chica se reúnen en el condensado semanal"><div className="landing-drawing-top"><span>CIERRE SEMANAL</span><span>POR OBRA</span></div><div className="landing-drawing-structure"><span className="landing-structure-node">NÓMINA</span><i /><span className="landing-structure-node">ALMACÉN</span><i /><span className="landing-structure-node">CAJA CHICA</span><i /><span className="landing-structure-node landing-structure-active">CONDENSADO</span></div><div className="landing-drawing-bottom">PRODUCCIÓN · INGRESOS · EGRESOS</div></div></div>
           </section>
 
-          <section className="landing-close" id="demo"><div className="landing-blueprint landing-blueprint-close" aria-hidden="true" /><div className="landing-container landing-close-inner"><div><p className="landing-kicker"><span /> BUILD BEYOND</p><h2>Es momento de construir una operación más organizada.</h2><p>Conoce la plataforma y organiza el equipo, los permisos y la primera obra de tu empresa.</p></div><Button asChild size="lg" className="landing-cta"><Link to="/onboarding">Crear cuenta de empresa <ArrowRight className="ml-2 size-4" /></Link></Button></div></section>
+          <section className="landing-close" id="demo"><div className="landing-blueprint landing-blueprint-close" aria-hidden="true" /><div className="landing-container landing-close-inner"><div><h2>Registra tu empresa y prepara la primera obra.</h2><p>Al entrar al tablero corporativo, podrás abrir una obra y asignarle su equipo.</p></div><Button asChild size="lg" className="landing-cta"><Link to="/onboarding">Crear cuenta de empresa <ArrowRight className="ml-2 size-4" /></Link></Button></div></section>
         </main>
 
         <footer className="landing-footer"><div className="landing-container landing-footer-inner"><Link to="/" className="landing-brand"><Image src="/assets/img/icon-1.png" alt="" width={30} height={30} className="size-[30px] rounded object-contain" /><span><strong>NARANJA FORTE</strong><small>ERP para constructoras</small></span></Link><span>Software de gestión para constructoras mexicanas.</span><div><Link to="/login">Iniciar sesión</Link><Link to="/onboarding">Crear cuenta</Link></div><span>© {new Date().getFullYear()} ERP PNF</span></div></footer>

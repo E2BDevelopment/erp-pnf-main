@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ConfirmDialogProvider } from "@/components/ConfirmDialogProvider";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 /**
@@ -31,10 +32,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={200}>
-        <AuthSyncGate />
-        {children}
-        <LoadingOverlay />
-        <Toaster />
+        <ConfirmDialogProvider>
+          <AuthSyncGate />
+          {children}
+          <LoadingOverlay />
+          <Toaster />
+        </ConfirmDialogProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

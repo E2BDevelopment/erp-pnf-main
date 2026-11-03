@@ -14,9 +14,11 @@ import { useAuthStore } from "@/stores/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useConfirm } from "@/hooks/useConfirm";
 import { Trash2 } from "lucide-react";
 
 export function IdentidadTab() {
+  const confirm = useConfirm();
   const qc = useQueryClient();
   const profile = useAuthStore((s) => s.profile);
   const fetchCfg = useServerFn(getCompanyConfig);
@@ -78,7 +80,15 @@ export function IdentidadTab() {
 
   const handleDelete = async () => {
     if (!cfg.data?.logo_url) return;
-    if (!confirm("¿Eliminar el logo?")) return;
+
+    const confirmed = await confirm({
+      title: "¿Eliminar el logo?",
+      description: "El logo dejará de aparecer en los PDFs generados por la empresa.",
+      confirmLabel: "Eliminar logo",
+      destructive: true,
+    });
+    if (!confirmed) return;
+
     try {
       await supabase.storage.from("company-logos").remove([cfg.data.logo_url]);
       await saveLogo.mutateAsync({ data: { logo_url: null } });

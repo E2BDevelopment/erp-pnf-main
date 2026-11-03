@@ -27,8 +27,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Plus } from "lucide-react";
+import { Check, Trash2, Plus } from "lucide-react";
 import { formatMXN } from "@/lib/format";
+import { siguienteRolEquipo, validarComisionesEquipo, validarEquipoObra } from "@/lib/obra-utils";
 import { PresupuestoModule } from "@/components/presupuesto/PresupuestoModule";
 
 type RolObra = "director" | "residente" | "auxiliar" | "administrativo" | "supervisor";
@@ -38,6 +39,7 @@ type ComisionRow = {
   porcentaje: number;
   base_calculo: "monto_contratado" | "monto_cobrado" | "utilidad";
 };
+type ComisionDraft = Omit<ComisionRow, "porcentaje"> & { porcentaje: string };
 
 const ROLES_OBRA: { value: RolObra; label: string }[] = [
   { value: "residente", label: "Residente" },
@@ -110,7 +112,11 @@ function ConfiguracionObra() {
         )}
         {puedeAsignarTeam && (
           <TabsContent value="comisiones">
-            <ComisionesTab obraId={obraId} initial={cfg.data.comisiones as ComisionRow[]} />
+            <ComisionesTab
+              obraId={obraId}
+              initial={cfg.data.comisiones as ComisionRow[]}
+              team={cfg.data.team as TeamRow[]}
+            />
           </TabsContent>
         )}
       </Tabs>
@@ -304,10 +310,8 @@ function EquipoTab({ obraId, initial }: { obraId: string; initial: TeamRow[] }) 
   const handleSave = () => {
     const limpio = team.filter((t) => !!t.user_id);
     if (limpio.length !== team.length) return toast.error("Selecciona usuario en cada fila");
-    const rs = new Set(limpio.map((t) => t.role));
-    if (!rs.has("residente") || !rs.has("administrativo") || !rs.has("supervisor")) {
-      return toast.error("Mínimo Residente, Administrativo y Supervisor");
-    }
+    const errorEquipo = validarEquipoObra(limpio);
+    if (errorEquipo) return toast.error(errorEquipo);
     m.mutate({ data: { obraId, team: limpio } });
   };
 
@@ -317,13 +321,13 @@ function EquipoTab({ obraId, initial }: { obraId: string; initial: TeamRow[] }) 
         <div>
           <Label>Equipo asignado</Label>
           <p className="text-xs text-muted-foreground mt-1">
-            Mínimo un Residente, un Administrativo y un Supervisor.
+            Mínimo un Residente y un Administrativo (máximo uno de cada uno).
           </p>
         </div>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => setTeam([...team, { user_id: "", role: "residente" }])}
+          onClick={() => setTeam([...team, { user_id: "", role: siguienteRolEquipo(team) }])}
         >
           <Plus className="size-3.5 mr-1" /> Agregar
         </Button>
@@ -363,11 +367,15 @@ function EquipoTab({ obraId, initial }: { obraId: string; initial: TeamRow[] }) 
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {ROLES_OBRA.map((r) => (
-                  <SelectItem key={r.value} value={r.value}>
-                    {r.label}
-                  </SelectItem>
-                ))}
+                {ROLES_OBRA.map((r) => {
+                  const rolUnico = r.value === "residente" || r.value === "administrativo";
+                  const yaAsignado = team.some((t, i) => i !== idx && t.role === r.value);
+                  return (
+                    <SelectItem key={r.value} value={r.value} disabled={rolUnico && yaAsignado}>
+                      {r.label}
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
             <Button
@@ -395,27 +403,66 @@ function EquipoTab({ obraId, initial }: { obraId: string; initial: TeamRow[] }) 
 // Comisiones
 // ============================================================
 
-function ComisionesTab({ obraId, initial }: { obraId: string; initial: ComisionRow[] }) {
+function ComisionesTab({
+  obraId,
+  initial,
+  team,
+}: {
+  obraId: string;
+  initial: ComisionRow[];
+  team: TeamRow[];
+}) {
   const qc = useQueryClient();
   const update = useServerFn(actualizarObraComisiones);
   const fetchUsers = useServerFn(listCompanyUsers);
   const usersQ = useQuery({ queryKey: ["company-users"], queryFn: () => fetchUsers() });
+  const teamIds = new Set(team.map((member) => member.user_id));
+  const usuariosEquipo = (usersQ.data ?? []).filter((user) => teamIds.has(user.id));
 
-  const [comisiones, setComisiones] = useState<ComisionRow[]>(initial);
+  const [comisiones, setComisiones] = useState<ComisionDraft[]>(() =>
+    initial.map((comision) => ({ ...comision, porcentaje: String(comision.porcentaje) })),
+  );
+  const [saveMessage, setSaveMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const updateRow = (idx: number, changes: Partial<ComisionDraft>) => {
+    setComisiones((prev) => prev.map((row, i) => (i === idx ? { ...row, ...changes } : row)));
+    setSaveMessage(null);
+  };
 
   const m = useMutation({
     mutationFn: update,
     onSuccess: () => {
-      toast.success("Comisiones actualizadas");
+      setSaveMessage({ type: "success", text: "Comisiones guardadas" });
       qc.invalidateQueries({ queryKey: ["obra-configuracion", obraId] });
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => setSaveMessage({ type: "error", text: e.message }),
   });
 
   const handleSave = () => {
     const limpio = comisiones.filter((c) => !!c.user_id);
-    if (limpio.length !== comisiones.length) return toast.error("Selecciona usuario en cada fila");
-    m.mutate({ data: { obraId, comisiones: limpio } });
+    if (limpio.length !== comisiones.length) {
+      return setSaveMessage({ type: "error", text: "Selecciona una persona en cada fila." });
+    }
+    if (limpio.some((comision) => comision.porcentaje === "")) {
+      return setSaveMessage({ type: "error", text: "Escribe un porcentaje en cada fila." });
+    }
+    const error = validarComisionesEquipo(team, limpio);
+    if (error) {
+      return setSaveMessage({ type: "error", text: error });
+    }
+    setSaveMessage(null);
+    m.mutate({
+      data: {
+        obraId,
+        comisiones: limpio.map((comision) => ({
+          ...comision,
+          porcentaje: Number(comision.porcentaje),
+        })),
+      },
+    });
   };
 
   return (
@@ -425,9 +472,13 @@ function ComisionesTab({ obraId, initial }: { obraId: string; initial: ComisionR
         <Button
           variant="outline"
           size="sm"
-          onClick={() =>
-            setComisiones([...comisiones, { user_id: "", porcentaje: 0, base_calculo: "utilidad" }])
-          }
+          onClick={() => {
+            setSaveMessage(null);
+            setComisiones([
+              ...comisiones,
+              { user_id: "", porcentaje: "0", base_calculo: "utilidad" },
+            ]);
+          }}
         >
           <Plus className="size-3.5 mr-1" /> Agregar
         </Button>
@@ -436,23 +487,22 @@ function ComisionesTab({ obraId, initial }: { obraId: string; initial: ComisionR
       <div className="space-y-2">
         {comisiones.map((row, idx) => (
           <div key={idx} className="flex gap-2 items-center flex-wrap">
-            <Select
-              value={row.user_id}
-              onValueChange={(v) => {
-                const next = [...comisiones];
-                next[idx] = { ...next[idx], user_id: v };
-                setComisiones(next);
-              }}
-            >
+            <Select value={row.user_id} onValueChange={(v) => updateRow(idx, { user_id: v })}>
               <SelectTrigger className="flex-1 min-w-[160px]">
                 <SelectValue placeholder="Usuario" />
               </SelectTrigger>
               <SelectContent>
-                {(usersQ.data ?? []).map((u) => (
-                  <SelectItem key={u.id} value={u.id}>
-                    {u.nombre_completo || u.email}
-                  </SelectItem>
-                ))}
+                {usuariosEquipo
+                  .filter(
+                    (u) =>
+                      u.id === row.user_id ||
+                      !comisiones.some((comision, i) => i !== idx && comision.user_id === u.id),
+                  )
+                  .map((u) => (
+                    <SelectItem key={u.id} value={u.id}>
+                      {u.nombre_completo || u.email}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
             <Input
@@ -462,20 +512,14 @@ function ComisionesTab({ obraId, initial }: { obraId: string; initial: ComisionR
               step={0.01}
               className="w-24"
               value={row.porcentaje}
-              onChange={(e) => {
-                const next = [...comisiones];
-                next[idx] = { ...next[idx], porcentaje: Number(e.target.value) };
-                setComisiones(next);
-              }}
+              onChange={(e) => updateRow(idx, { porcentaje: e.target.value })}
             />
             <span className="text-xs text-muted-foreground">%</span>
             <Select
               value={row.base_calculo}
-              onValueChange={(v) => {
-                const next = [...comisiones];
-                next[idx] = { ...next[idx], base_calculo: v as ComisionRow["base_calculo"] };
-                setComisiones(next);
-              }}
+              onValueChange={(v) =>
+                updateRow(idx, { base_calculo: v as ComisionRow["base_calculo"] })
+              }
             >
               <SelectTrigger className="w-44">
                 <SelectValue />
@@ -490,7 +534,10 @@ function ComisionesTab({ obraId, initial }: { obraId: string; initial: ComisionR
               variant="ghost"
               size="icon"
               aria-label="Quitar comisión"
-              onClick={() => setComisiones(comisiones.filter((_, i) => i !== idx))}
+              onClick={() => {
+                setSaveMessage(null);
+                setComisiones(comisiones.filter((_, i) => i !== idx));
+              }}
             >
               <Trash2 className="size-4" />
             </Button>
@@ -498,9 +545,29 @@ function ComisionesTab({ obraId, initial }: { obraId: string; initial: ComisionR
         ))}
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div
+          aria-live={saveMessage?.type === "error" ? "assertive" : "polite"}
+          className={
+            saveMessage
+              ? saveMessage.type === "success"
+                ? "inline-flex items-center gap-1.5 rounded-md bg-emerald-100 px-3 py-2 text-sm font-medium text-emerald-800"
+                : "inline-flex items-center rounded-md bg-rose-100 px-3 py-2 text-sm font-medium text-rose-800"
+              : "min-h-5"
+          }
+          role={saveMessage?.type === "error" ? "alert" : "status"}
+        >
+          {saveMessage?.type === "success" && (
+            <Check className="mr-1.5 inline size-4" aria-hidden="true" />
+          )}
+          {saveMessage?.text}
+        </div>
         <Button onClick={handleSave} disabled={m.isPending}>
-          {m.isPending ? "Guardando…" : "Guardar cambios"}
+          {m.isPending
+            ? "Guardando…"
+            : saveMessage?.type === "success"
+              ? "Guardado"
+              : "Guardar cambios"}
         </Button>
       </div>
     </Card>

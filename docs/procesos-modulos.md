@@ -80,7 +80,7 @@ Las funciones de servidor permiten consultar estado de resultados por semana, hi
 
 ### 4.1 Obras y configuración de obra
 
-El Director/usuario autorizado lista obras, consulta el dashboard/resumen de una obra y crea una obra con información general (nombre, tipo, cliente, contrato, ubicación y fechas), presupuesto opcional y equipo. Puede editar datos, actualizar asignaciones del equipo y administrar comisiones de obra. La configuración de obra permite obtener la información y actualizarla según permisos. El equipo funcional mínimo indicado por producto es Residente, Administrativo y Supervisor. Las funciones verifican permisos de creación/edición/asignación; las reglas exactas de obligatoriedad deben contrastarse con el validador actual.
+El Director/usuario autorizado lista obras, consulta el dashboard/resumen de una obra y crea una obra con información general (nombre, tipo, cliente, contrato, ubicación y fechas), presupuesto opcional y equipo. Puede editar datos, actualizar asignaciones del equipo y administrar comisiones de obra. La configuración de obra permite obtener la información y actualizarla según permisos. El equipo funcional mínimo indicado por producto es Residente y Administrativo, con máximo un integrante de cada uno de esos roles por obra. Las funciones verifican permisos de creación/edición/asignación; las reglas exactas de obligatoriedad deben contrastarse con el validador actual.
 
 ### 4.2 Presupuesto y órdenes de cambio
 

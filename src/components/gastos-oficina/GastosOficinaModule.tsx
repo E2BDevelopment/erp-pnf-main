@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useConfirm } from "@/hooks/useConfirm";
 import { TruncatedCell } from "@/components/pagos/TruncatedCell";
 import { formatMXN, formatDate } from "@/lib/format";
 import { useEffectiveRoles } from "@/stores/auth";
@@ -59,6 +60,7 @@ const ESTATUS_LABEL: Record<GastoOficinaEstatus, string> = {
 };
 
 export function GastosOficinaModule() {
+  const confirm = useConfirm();
   const roles = useEffectiveRoles();
   const canApprove = roles.includes("director") || roles.includes("administrativo");
   const qc = useQueryClient();
@@ -107,7 +109,14 @@ export function GastosOficinaModule() {
   };
 
   const handleCancelar = async (id: string) => {
-    if (!confirm("¿Cancelar esta solicitud?")) return;
+    const confirmed = await confirm({
+      title: "¿Cancelar esta solicitud?",
+      description: "La solicitud quedará cancelada y ya no podrá aprobarse.",
+      confirmLabel: "Cancelar solicitud",
+      destructive: true,
+    });
+    if (!confirmed) return;
+
     try {
       await cancelar({ data: { id } });
       toast.success("Solicitud cancelada");

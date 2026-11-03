@@ -34,6 +34,7 @@ import { NuevaRequisicionSheet } from "./NuevaRequisicionSheet";
 import { CotizacionSheet, type CotizacionTab } from "./CotizacionSheet";
 import { useEffectiveRoles } from "@/stores/auth";
 import { usePermisos } from "@/hooks/usePermisos";
+import { useConfirm } from "@/hooks/useConfirm";
 import { formatDate } from "@/lib/format";
 
 interface Props {
@@ -41,6 +42,7 @@ interface Props {
 }
 
 export function RequisicionesModule({ obraId }: Props) {
+  const confirm = useConfirm();
   const roles = useEffectiveRoles();
   void roles;
   const { can } = usePermisos();
@@ -289,10 +291,16 @@ export function RequisicionesModule({ obraId }: Props) {
                                   variant="ghost"
                                   className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity focus-visible:opacity-100"
                                   disabled={eliminarBorrador.isPending}
-                                  onClick={(e) => {
+                                  onClick={async (e) => {
                                     e.stopPropagation();
-                                    if (confirm("¿Eliminar este borrador?"))
-                                      eliminarBorrador.mutate(r.id);
+                                    const confirmed = await confirm({
+                                      title: "¿Eliminar este borrador?",
+                                      description:
+                                        "El borrador y sus partidas se eliminarán permanentemente.",
+                                      confirmLabel: "Eliminar",
+                                      destructive: true,
+                                    });
+                                    if (confirmed) eliminarBorrador.mutate(r.id);
                                   }}
                                   aria-label="Eliminar borrador"
                                 >
@@ -376,10 +384,16 @@ export function RequisicionesModule({ obraId }: Props) {
                             variant="ghost"
                             className="h-8 w-8 p-0 text-destructive"
                             disabled={eliminarBorrador.isPending}
-                            onClick={(e) => {
+                            onClick={async (e) => {
                               e.stopPropagation();
-                              if (confirm("¿Eliminar este borrador?"))
-                                eliminarBorrador.mutate(r.id);
+                              const confirmed = await confirm({
+                                title: "¿Eliminar este borrador?",
+                                description:
+                                  "El borrador y sus partidas se eliminarán permanentemente.",
+                                confirmLabel: "Eliminar",
+                                destructive: true,
+                              });
+                              if (confirmed) eliminarBorrador.mutate(r.id);
                             }}
                             aria-label="Eliminar borrador"
                           >

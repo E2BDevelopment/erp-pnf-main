@@ -140,10 +140,15 @@ function Onboarding() {
           <CardHeader>
             <CardTitle>Registrar empresa</CardTitle>
             <CardDescription>
-              Paso {step} de 2 — {step === 1 ? "Datos de la empresa" : "Cuenta del Propietario"}
+              Paso {step} de 2 — {step === 1 ? "Datos de la empresa" : "Cuenta de Dirección"}
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {step === 1 && (
+              <p className="mb-4 text-sm text-muted-foreground">
+                Estos son los datos de registro de la empresa. En el siguiente paso crearás la cuenta de Dirección; al terminar entrarás al tablero corporativo.
+              </p>
+            )}
             <div ref={paso}>
               {step === 1 ? (
                 <form onSubmit={handleStep1} className="space-y-4">
@@ -233,7 +238,7 @@ function Onboarding() {
                       Atrás
                     </Button>
                     <Button type="submit" className="flex-1" disabled={submitting}>
-                      {submitting ? "Creando…" : "Crear empresa y cuenta"}
+                      {submitting ? "Creando…" : "Crear empresa y cuenta de Dirección"}
                     </Button>
                   </div>
                 </form>
