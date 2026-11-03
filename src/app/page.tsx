@@ -30,13 +30,16 @@ const purchaseFlow = [
   { label: "Pago", owner: "Tesorería", icon: Landmark },
 ];
 
-const modules = [
+const coreModules = [
   { icon: HardHat, title: "Obras y proyectos", detail: "Presupuesto, equipo y operación por obra." },
-  { icon: Users, title: "Personal y asignaciones", detail: "Roles, responsables y permisos configurables." },
   { icon: Wallet, title: "Presupuestos y costos", detail: "Seguimiento por renglón, estimaciones y gastos." },
   { icon: Boxes, title: "Compras y almacén", detail: "De la requisición a la recepción de materiales." },
-  { icon: ReceiptText, title: "Nómina y destajos", detail: "Trabajo contratado ligado al presupuesto, con estimaciones semanales." },
-  { icon: ChartNoAxesCombined, title: "Tesorería y reportes", detail: "Pagos y condensado semanal: producción, ingresos y egresos por obra." },
+];
+
+const supportingModules = [
+  { icon: Users, title: "Personal y asignaciones", detail: "Roles, responsables y permisos configurables." },
+  { icon: ReceiptText, title: "Nómina y trabajo por destajo", detail: "Pago por trabajo realizado, ligado al presupuesto y estimado cada semana." },
+  { icon: ChartNoAxesCombined, title: "Tesorería y reportes", detail: "Pagos y resumen semanal de producción, ingresos y egresos por obra." },
 ];
 
 function ProductPreview() {
@@ -96,7 +99,7 @@ export default function Landing() {
             </Link>
             <nav aria-label="Navegación principal" className="landing-nav">
               <a href="#plataforma" className="landing-nav-link">Plataforma</a>
-              <a href="#soluciones" className="landing-nav-link">Soluciones</a>
+              <Link to="/recorrido" className="landing-nav-link">Recorrido</Link>
               <a href="#beneficios" className="landing-nav-link">Beneficios</a>
               <a href="#cierre-semanal" className="landing-nav-link">Ciclo semanal</a>
             </nav>
@@ -107,7 +110,7 @@ export default function Landing() {
             <details className="landing-mobile-menu">
               <summary aria-label="Abrir menú de navegación"><span /><span /><span /></summary>
               <nav aria-label="Navegación móvil">
-                <a href="#plataforma">Plataforma</a><a href="#soluciones">Soluciones</a><a href="#beneficios">Beneficios</a><a href="#cierre-semanal">Ciclo semanal</a>
+                <a href="#plataforma">Plataforma</a><Link to="/recorrido">Recorrido</Link><a href="#beneficios">Beneficios</a><a href="#cierre-semanal">Ciclo semanal</a>
                 <Link to="/onboarding">Crear cuenta <ArrowRight className="size-4" /></Link>
               </nav>
             </details>
@@ -128,9 +131,9 @@ export default function Landing() {
                 <p className="landing-hero-description">Administra obras, equipos, presupuestos y operaciones desde una plataforma diseñada para las necesidades de las constructoras mexicanas.</p>
                 <div className="landing-hero-actions mt-7 flex flex-wrap items-center gap-3">
                   <Button asChild size="lg" className="landing-cta"><Link to="/onboarding">Crear cuenta de empresa <ArrowRight className="ml-2 size-4" /></Link></Button>
-                  <Button asChild size="lg" variant="outline" className="landing-secondary-cta"><a href="#soluciones">Explorar plataforma</a></Button>
+                  <Button asChild size="lg" variant="outline" className="landing-secondary-cta"><Link to="/recorrido">Ver recorrido de compra</Link></Button>
                 </div>
-                <p className="landing-registration-note">Registro en 2 pasos: datos de la empresa y cuenta de Dirección.</p>
+                <p className="landing-registration-note">Registro en 2 pasos. El RFC identifica a la empresa y forma parte de sus datos de facturación; después creas la cuenta de Dirección.</p>
                 <div className="landing-audience"><span>Ver por responsabilidad</span><div><a href="#direccion">Dirección</a><a href="#campo">Campo</a><a href="#administracion">Administración</a></div></div>
               </div>
               <div className="landing-hero-product"><span className="landing-float-label landing-float-one">OBRA <strong>POR PROYECTO</strong></span><span className="landing-float-label landing-float-two">VISTO BUENO <strong>POR RESPONSABLE</strong></span><ProductPreview /></div>
@@ -158,8 +161,9 @@ export default function Landing() {
 
           <section className="landing-ecosystem">
             <div className="landing-container">
-              <div className="landing-section-heading"><div><h2>Las herramientas que tu constructora necesita para avanzar.</h2></div><p>Una plataforma que reúne procesos diarios de campo y oficina, organizados alrededor de cada obra.</p></div>
-              <div className="landing-ecosystem-grid">{modules.map(({ icon: Icon, title, detail }, index) => <article key={title} className={`landing-ecosystem-item landing-ecosystem-item-${index + 1}`}><span className="landing-ecosystem-icon"><Icon className="size-5" /></span><h3>{title}</h3><p>{detail}</p></article>)}</div>
+              <div className="landing-section-heading"><div><h2>Del presupuesto al material en obra.</h2></div><p>Los procesos principales siguen cada proyecto desde su presupuesto hasta la compra y recepción de materiales.</p></div>
+              <div className="landing-ecosystem-grid">{coreModules.map(({ icon: Icon, title, detail }) => <article key={title} className="landing-ecosystem-item"><span className="landing-ecosystem-icon"><Icon className="size-5" aria-hidden="true" /></span><h3>{title}</h3><p>{detail}</p></article>)}</div>
+              <div className="landing-supporting-modules"><h3>También incluye</h3><ul>{supportingModules.map(({ icon: Icon, title, detail }) => <li key={title}><Icon className="size-5" aria-hidden="true" /><div><h4>{title}</h4><p>{detail}</p></div></li>)}</ul></div>
             </div>
           </section>
 
@@ -175,7 +179,7 @@ export default function Landing() {
           </section>
 
           <section className="landing-weekly" id="cierre-semanal">
-            <div className="landing-container landing-weekly-grid"><div><h2>El ciclo semanal pone en contexto el trabajo de la obra.</h2><p>Nómina, cierre de almacén y reembolso de caja chica se registran por semana. El condensado compara producción, ingresos y egresos por obra y periodo.</p></div><div className="landing-weekly-drawing" role="img" aria-label="Ciclo semanal: nómina, almacén y caja chica se reúnen en el condensado semanal"><div className="landing-drawing-top"><span>CIERRE SEMANAL</span><span>POR OBRA</span></div><div className="landing-drawing-structure"><span className="landing-structure-node">NÓMINA</span><i /><span className="landing-structure-node">ALMACÉN</span><i /><span className="landing-structure-node">CAJA CHICA</span><i /><span className="landing-structure-node landing-structure-active">CONDENSADO</span></div><div className="landing-drawing-bottom">PRODUCCIÓN · INGRESOS · EGRESOS</div></div></div>
+            <div className="landing-container landing-weekly-grid"><div><h2>El ciclo semanal pone en contexto el trabajo de la obra.</h2><p>Nómina, cierre de almacén y reembolso de caja chica se registran por semana. El resumen semanal (condensado) compara producción, ingresos y egresos por obra y periodo.</p></div><div className="landing-weekly-drawing" role="img" aria-label="Ciclo semanal: nómina, almacén y caja chica se reúnen en un resumen por obra"><div className="landing-drawing-top"><span>CIERRE SEMANAL</span><span>POR OBRA</span></div><div className="landing-drawing-structure"><span className="landing-structure-node">NÓMINA</span><i /><span className="landing-structure-node">ALMACÉN</span><i /><span className="landing-structure-node">CAJA CHICA</span><i /><span className="landing-structure-node landing-structure-active">RESUMEN</span></div><div className="landing-drawing-bottom">PRODUCCIÓN · INGRESOS · EGRESOS</div></div></div>
           </section>
 
           <section className="landing-close" id="demo"><div className="landing-blueprint landing-blueprint-close" aria-hidden="true" /><div className="landing-container landing-close-inner"><div><h2>Registra tu empresa y prepara la primera obra.</h2><p>Al entrar al tablero corporativo, podrás abrir una obra y asignarle su equipo.</p></div><Button asChild size="lg" className="landing-cta"><Link to="/onboarding">Crear cuenta de empresa <ArrowRight className="ml-2 size-4" /></Link></Button></div></section>

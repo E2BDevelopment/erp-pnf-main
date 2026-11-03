@@ -188,7 +188,11 @@ function Onboarding() {
                       required
                       maxLength={13}
                       minLength={12}
+                      aria-describedby="rfc-help"
                     />
+                    <p id="rfc-help" className="text-xs leading-relaxed text-muted-foreground">
+                      Identifica a la empresa y forma parte de sus datos de facturación en ERP PNF.
+                    </p>
                   </div>
                   <Button type="submit" className="w-full">
                     Continuar
