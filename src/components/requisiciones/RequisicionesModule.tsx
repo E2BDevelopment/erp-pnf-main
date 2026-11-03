@@ -71,6 +71,7 @@ export function RequisicionesModule({ obraId }: Props) {
     onSuccess: () => {
       toast.success("Borrador eliminado");
       qc.invalidateQueries({ queryKey: ["requisiciones", obraId] });
+      qc.invalidateQueries({ queryKey: ["pendientes"] });
     },
     onError: (e: any) => toast.error(e?.message ?? "Error al eliminar"),
   });

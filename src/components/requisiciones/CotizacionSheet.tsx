@@ -119,6 +119,7 @@ export function CotizacionSheet({
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: ["cotizacion", requisicionId] });
     qc.invalidateQueries({ queryKey: ["requisiciones"] });
+    qc.invalidateQueries({ queryKey: ["pendientes"] });
   };
 
   const enviarMut = useMutation({

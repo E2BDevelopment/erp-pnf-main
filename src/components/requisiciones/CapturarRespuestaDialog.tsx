@@ -149,6 +149,7 @@ export function CapturarRespuestaDialog({ solicitud, open, onOpenChange, requisi
       toast.success("Cotización registrada");
       qc.invalidateQueries({ queryKey: ["solicitudes", requisicionId] });
       qc.invalidateQueries({ queryKey: ["requisiciones"] });
+      qc.invalidateQueries({ queryKey: ["pendientes"] });
       onOpenChange(false);
     },
     onError: (e: any) => toast.error(e?.message ?? "Error"),

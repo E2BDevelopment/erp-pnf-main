@@ -181,6 +181,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
 
   const invalidateLists = () => {
     qc.invalidateQueries({ queryKey: ["requisiciones", obraId] });
+    qc.invalidateQueries({ queryKey: ["pendientes"] });
   };
 
   const mut = useMutation({

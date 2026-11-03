@@ -299,6 +299,7 @@ function NuevaSolicitudForm({
       toast.success("Solicitud creada");
       qc.invalidateQueries({ queryKey: ["solicitudes", requisicionId] });
       qc.invalidateQueries({ queryKey: ["requisiciones"] });
+      qc.invalidateQueries({ queryKey: ["pendientes"] });
       onClose();
     },
     onError: (e: any) => toast.error(e?.message ?? "Error"),
