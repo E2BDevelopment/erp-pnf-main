@@ -33,7 +33,7 @@ export function usePendientes() {
     queryKey: PENDIENTES_KEY,
     queryFn: () => fetchFn() as Promise<PendientesResult>,
     staleTime: Infinity,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 

@@ -136,13 +136,13 @@ export function SolicitarInsumoRapidoDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="__nueva__">{isDirector ? "+ Agregar nueva categoría" : "+ Solicitar categoría nueva"}</SelectItem>
                   <SelectItem value="none">Sin categoría</SelectItem>
                   {categorias.map((c) => (
                     <SelectItem key={c.id} value={c.id} disabled={c.estatus !== "autorizado"}>
                       {c.nombre}{c.estatus === "pendiente" ? " (en espera de autorización)" : c.estatus === "rechazado" ? " (rechazada)" : ""}
                     </SelectItem>
                   ))}
-                  <SelectItem value="__nueva__">{isDirector ? "+ Agregar nueva categoría" : "+ Solicitar categoría nueva"}</SelectItem>
                 </SelectContent>
               </Select>
               {categoriaId === "__nueva__" && <div className="mt-2 space-y-2">

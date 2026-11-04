@@ -1,11 +1,11 @@
 "use client";
 
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Info } from "lucide-react";
+import { ChevronDown, Info } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -35,6 +35,9 @@ const ROLE_LABEL: Record<NotifRole, string> = {
 };
 
 export function NotificacionesTab() {
+  const [modulosAbiertos, setModulosAbiertos] = useState<Set<string>>(
+    () => new Set(MODULOS_NOTIF_ORDEN),
+  );
   const qc = useQueryClient();
   const listFn = useServerFn(listNotificacionPreferencias);
   const setFn = useServerFn(setNotificacionPreferencia);
@@ -91,9 +94,9 @@ export function NotificacionesTab() {
         </AlertDescription>
       </Alert>
 
-      <div className="rounded-md border overflow-x-auto">
+      <div className="max-h-[70vh] rounded-md border overflow-auto [&>div]:overflow-visible">
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky top-0 z-20 bg-background">
             <TableRow>
               <TableHead className="min-w-[280px]">Notificación</TableHead>
               {ROLES.map((r) => (
@@ -104,43 +107,64 @@ export function NotificacionesTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {MODULOS_NOTIF_ORDEN.map((modulo) => (
-              <Fragment key={modulo}>
-                <TableRow className="bg-muted/50 hover:bg-muted/50">
-                  <TableCell
-                    colSpan={1 + ROLES.length}
-                    className="font-semibold text-xs uppercase tracking-wide text-muted-foreground"
-                  >
-                    {modulo}
-                  </TableCell>
-                </TableRow>
-                {CATALOGO_NOTIFICACIONES.filter((n) => n.modulo === modulo).map((n) => (
-                  <TableRow key={n.key}>
-                    <TableCell>
-                      <div className="text-sm">{n.label}</div>
-                      {n.descripcion && (
-                        <div className="text-xs text-muted-foreground">{n.descripcion}</div>
-                      )}
+            {MODULOS_NOTIF_ORDEN.map((modulo) => {
+              const abierto = modulosAbiertos.has(modulo);
+              return (
+                <Fragment key={modulo}>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableCell
+                      colSpan={1 + ROLES.length}
+                      className="p-0 font-semibold text-xs uppercase tracking-wide text-muted-foreground"
+                    >
+                      <button
+                        type="button"
+                        className="flex w-full items-center gap-2 px-2 py-3 text-left hover:text-foreground"
+                        aria-expanded={abierto}
+                        onClick={() =>
+                          setModulosAbiertos((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(modulo)) next.delete(modulo);
+                            else next.add(modulo);
+                            return next;
+                          })
+                        }
+                      >
+                        <ChevronDown
+                          className={`size-4 transition-transform ${abierto ? "" : "-rotate-90"}`}
+                        />
+                        {modulo}
+                      </button>
                     </TableCell>
-                    {ROLES.map((r) => {
-                      const checked = isChecked(r, n.key, n.defaults[r]);
-                      return (
-                        <TableCell key={r} className="text-center">
-                          <Checkbox
-                            checked={checked}
-                            disabled={mut.isPending}
-                            onCheckedChange={(v) =>
-                              mut.mutate({ role: r, tipo: n.key, habilitado: v === true })
-                            }
-                            aria-label={`${ROLE_LABEL[r]} — ${n.label}`}
-                          />
-                        </TableCell>
-                      );
-                    })}
                   </TableRow>
-                ))}
-              </Fragment>
-            ))}
+                  {abierto &&
+                    CATALOGO_NOTIFICACIONES.filter((n) => n.modulo === modulo).map((n) => (
+                      <TableRow key={n.key}>
+                        <TableCell>
+                          <div className="text-sm">{n.label}</div>
+                          {n.descripcion && (
+                            <div className="text-xs text-muted-foreground">{n.descripcion}</div>
+                          )}
+                        </TableCell>
+                        {ROLES.map((r) => {
+                          const checked = isChecked(r, n.key, n.defaults[r]);
+                          return (
+                            <TableCell key={r} className="text-center">
+                              <Checkbox
+                                checked={checked}
+                                disabled={mut.isPending}
+                                onCheckedChange={(v) =>
+                                  mut.mutate({ role: r, tipo: n.key, habilitado: v === true })
+                                }
+                                aria-label={`${ROLE_LABEL[r]} — ${n.label}`}
+                              />
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))}
+                </Fragment>
+              );
+            })}
           </TableBody>
         </Table>
       </div>

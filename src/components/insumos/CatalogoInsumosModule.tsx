@@ -562,8 +562,11 @@ function SolicitarDialog({
   const qc = useQueryClient();
   const defaultUnidad = unidades[0]?.codigo ?? "";
   const [nombre, setNombre] = useState("");
-  const [unidad, setUnidad] = useState<Unidad>(defaultUnidad);
+  const [unidad, setUnidad] = useState<string>(defaultUnidad);
   const [categoriaId, setCategoriaId] = useState<string>("none");
+  const [unidadNueva, setUnidadNueva] = useState("");
+  const [unidadNuevaNombre, setUnidadNuevaNombre] = useState("");
+  const [categoriaNueva, setCategoriaNueva] = useState("");
   const [disponibleRenta, setDisponibleRenta] = useState<boolean>(false);
 
   // Ensure unidad has a valid default when unidades load
@@ -584,6 +587,9 @@ function SolicitarDialog({
       setNombre("");
       setUnidad(defaultUnidad);
       setCategoriaId("none");
+      setUnidadNueva("");
+      setUnidadNuevaNombre("");
+      setCategoriaNueva("");
       setDisponibleRenta(false);
       onOpenChange(false);
     },
@@ -614,6 +620,7 @@ function SolicitarDialog({
                   <SelectValue placeholder="Seleccionar..." />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="__nueva__">{isDirector ? "+ Agregar nueva unidad" : "+ Solicitar unidad nueva"}</SelectItem>
                   {unidades.length === 0 && (
                     <div className="px-2 py-1.5 text-xs text-muted-foreground">
                       Sin unidades. Pide al Director crearlas.
@@ -627,6 +634,19 @@ function SolicitarDialog({
                   ))}
                 </SelectContent>
               </Select>
+              {unidad === "__nueva__" && (
+                <div className="mt-2 space-y-2">
+                  <div>
+                    <Label htmlFor="unidad-nueva-codigo-catalogo" className="text-xs">Código</Label>
+                    <Input id="unidad-nueva-codigo-catalogo" value={unidadNueva} onChange={(e) => setUnidadNueva(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10))} placeholder="Ej. CUB" maxLength={10} />
+                  </div>
+                  <div>
+                    <Label htmlFor="unidad-nueva-nombre-catalogo" className="text-xs">Nombre (opcional)</Label>
+                    <Input id="unidad-nueva-nombre-catalogo" value={unidadNuevaNombre} onChange={(e) => setUnidadNuevaNombre(e.target.value)} placeholder="Ej. Cubeta" maxLength={100} />
+                  </div>
+                  <p className="text-xs text-muted-foreground">{isDirector ? "Se creará autorizada al guardar." : "En espera de autorización."}</p>
+                </div>
+              )}
             </div>
             <div>
               <Label>Categoría</Label>
@@ -635,14 +655,21 @@ function SolicitarDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="__nueva__">{isDirector ? "+ Agregar nueva categoría" : "+ Solicitar categoría nueva"}</SelectItem>
                   <SelectItem value="none">Sin categoría</SelectItem>
                   {categorias.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.nombre}
+                    <SelectItem key={c.id} value={c.id} disabled={c.estatus !== "autorizado"}>
+                      {c.nombre}{c.estatus === "pendiente" ? " (en espera de autorización)" : c.estatus === "rechazado" ? " (rechazada)" : ""}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {categoriaId === "__nueva__" && (
+                <div className="mt-2 space-y-2">
+                  <Input value={categoriaNueva} onChange={(e) => setCategoriaNueva(e.target.value)} placeholder="Nombre de categoría" maxLength={100} />
+                  <p className="text-xs text-muted-foreground">{isDirector ? "Se creará autorizada al guardar." : "En espera de autorización."}</p>
+                </div>
+              )}
             </div>
           </div>
           {isDirector && (
@@ -668,13 +695,15 @@ function SolicitarDialog({
             Cancelar
           </Button>
           <Button
-            disabled={!nombre.trim() || !unidad || mut.isPending}
+            disabled={!nombre.trim() || (!unidad || (unidad === "__nueva__" && !unidadNueva)) || (categoriaId === "__nueva__" && !categoriaNueva.trim()) || mut.isPending}
             onClick={() =>
               mut.mutate({
                 data: {
                   nombre: nombre.trim(),
-                  unidad,
-                  categoriaId: categoriaId === "none" ? null : categoriaId,
+                  unidad: unidad === "__nueva__" ? unidadNueva : unidad,
+                  ...(unidad === "__nueva__" ? { unidadNueva: { codigo: unidadNueva, nombre: unidadNuevaNombre.trim() } } : {}),
+                  categoriaId: categoriaId === "none" || categoriaId === "__nueva__" ? null : categoriaId,
+                  ...(categoriaId === "__nueva__" ? { categoriaNueva: categoriaNueva.trim() } : {}),
                   ...(isDirector ? { disponibleRenta } : {}),
                 },
               })
