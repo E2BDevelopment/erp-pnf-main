@@ -14,7 +14,8 @@ async function validateUnidad(supabase: any, companyId: string, unidad: string) 
     .from("insumo_unidades")
     .select("id", { count: "exact", head: true })
     .eq("company_id", companyId)
-    .eq("codigo", unidad);
+    .eq("codigo", unidad)
+    .eq("estatus", "autorizado");
   if (error) throw new Error(error.message);
   if (!count)
     throw new Error(`Unidad "${unidad}" no existe. Créala desde el catálogo de unidades.`);
@@ -34,6 +35,51 @@ async function getUserCompanyAndDirector(supabase: any, userId: string) {
     .eq("company_id", profile.company_id);
   const isDirector = (roles ?? []).some((r: any) => r.role === "director");
   return { companyId: profile.company_id as string, isDirector };
+}
+
+async function notificarSolicitudCatalogo(
+  supabase: any,
+  companyId: string,
+  userId: string,
+  solicitud: { unidad?: { codigo: string; nombre?: string | null }; categoria?: string },
+) {
+  try {
+    const [{ data: directors }, { data: profile }] = await Promise.all([
+      supabase.from("user_roles").select("user_id").eq("company_id", companyId).eq("role", "director"),
+      supabase.from("profiles").select("nombre_completo").eq("id", userId).maybeSingle(),
+    ]);
+    const recipients = Array.from(
+      new Set<string>(
+        ((directors ?? []) as Array<{ user_id: string }>).map((row) => row.user_id),
+      ),
+    ).filter((id) => id !== userId);
+    if (!recipients.length) return;
+
+    const requested: string[] = [];
+    if (solicitud.unidad) {
+      requested.push(
+        `la unidad ${solicitud.unidad.codigo}${solicitud.unidad.nombre ? ` — ${solicitud.unidad.nombre}` : ""}`,
+      );
+    }
+    if (solicitud.categoria) requested.push(`la categoría ${solicitud.categoria}`);
+    const who = profile?.nombre_completo ?? "Un usuario";
+    const subject = requested.length > 1 ? "Nuevas solicitudes de catálogo" : "Nueva solicitud de catálogo";
+    const message = `${who} solicita autorización para ${requested.join(" y ")}.`;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("notificaciones").insert(
+      recipients.map((uid) => ({
+        user_id: uid,
+        company_id: companyId,
+        tipo: "insumo_catalogo_solicitado",
+        titulo: subject,
+        mensaje: message,
+        link: "/app/catalogos/insumos",
+      })),
+    );
+    if (error) console.error("[notificaciones] insumo_catalogo_solicitado", error.message);
+  } catch (error: any) {
+    console.error("[notificaciones] insumo_catalogo_solicitado", error?.message);
+  }
 }
 
 const CODIGO_REGEX = /^[A-Z0-9]{2,5}-\d{3,6}$/;
@@ -73,7 +119,7 @@ export const listInsumos = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z
       .object({
-        estatus: z.enum(["autorizado", "pendiente"]).optional(),
+        estatus: z.enum(["autorizado", "pendiente", "rechazado"]).optional(),
         categoriaId: z.string().uuid().nullable().optional(),
         unidad: unidadSchema.optional(),
         search: z.string().trim().max(200).optional(),
@@ -164,10 +210,15 @@ export const getMetricasInsumos = createServerFn({ method: "GET" })
 export const listCategorias = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
+    const { supabase, userId } = context;
+    const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
+    let query = supabase
       .from("insumo_categorias")
-      .select("id, nombre")
+      .select("id, nombre, prefijo, estatus")
+      .eq("company_id", companyId)
       .order("nombre");
+    if (!isDirector) query = query.eq("estatus", "autorizado");
+    const { data, error } = await query;
     if (error) throw new Error(error.message);
     return data ?? [];
   });
@@ -180,6 +231,8 @@ export const solicitarInsumo = createServerFn({ method: "POST" })
         nombre: z.string().trim().min(1).max(200),
         unidad: unidadSchema,
         categoriaId: z.string().uuid().nullable(),
+        unidadNueva: z.object({ codigo: unidadSchema, nombre: z.string().trim().max(100).nullable().optional() }).optional(),
+        categoriaNueva: z.string().trim().min(1).max(100).optional(),
         disponibleRenta: z.boolean().optional(),
       })
       .parse(d),
@@ -187,7 +240,24 @@ export const solicitarInsumo = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
-    await validateUnidad(supabase, companyId, data.unidad);
+    let categoriaId = data.categoriaId;
+    if (data.unidadNueva) {
+      const { error } = await supabase.from("insumo_unidades").insert({ company_id: companyId, codigo: data.unidadNueva.codigo, nombre: data.unidadNueva.nombre || null, estatus: isDirector ? "autorizado" : "pendiente", solicitado_por: userId, ...(isDirector ? { autorizado_por: userId, autorizado_at: new Date().toISOString() } : {}) });
+      if (error && error.code !== "23505") throw new Error(error.message);
+      if (error?.code === "23505") throw new Error("Esa unidad ya está registrada o pendiente de autorización");
+    }
+    if (data.categoriaNueva) {
+      const prefijo = await prefijoUnico(supabase, companyId, derivarPrefijo(data.categoriaNueva));
+      const { data: categoria, error } = await supabase.from("insumo_categorias").insert({ company_id: companyId, nombre: data.categoriaNueva, prefijo, estatus: isDirector ? "autorizado" : "pendiente", solicitado_por: userId, ...(isDirector ? { autorizado_por: userId, autorizado_at: new Date().toISOString() } : {}) }).select("id").single();
+      if (error) throw new Error(error.code === "23505" ? "Esa categoría ya está registrada o pendiente de autorización" : error.message);
+      categoriaId = categoria.id;
+    }
+    if (categoriaId) {
+      const { count, error } = await supabase.from("insumo_categorias").select("id", { count: "exact", head: true }).eq("id", categoriaId).eq("company_id", companyId).eq("estatus", "autorizado");
+      if (error) throw new Error(error.message);
+      if (!count && !data.categoriaNueva) throw new Error("La categoría no está autorizada");
+    }
+    if (!data.unidadNueva || isDirector) await validateUnidad(supabase, companyId, data.unidad);
     const row: {
       company_id: string;
       categoria_id: string | null;
@@ -200,7 +270,7 @@ export const solicitarInsumo = createServerFn({ method: "POST" })
       disponible_renta?: boolean;
     } = {
       company_id: companyId,
-      categoria_id: data.categoriaId,
+      categoria_id: categoriaId,
       nombre: data.nombre,
       unidad: data.unidad,
       solicitado_por: userId,
@@ -217,6 +287,12 @@ export const solicitarInsumo = createServerFn({ method: "POST" })
       .select("id, estatus")
       .single();
     if (error) throw new Error(error.message);
+    if (!isDirector && (data.unidadNueva || data.categoriaNueva)) {
+      await notificarSolicitudCatalogo(supabase, companyId, userId, {
+        ...(data.unidadNueva ? { unidad: data.unidadNueva } : {}),
+        ...(data.categoriaNueva ? { categoria: data.categoriaNueva } : {}),
+      });
+    }
     return {
       ok: true,
       id: inserted?.id as string | undefined,
@@ -276,17 +352,29 @@ export const autorizarInsumo = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { isDirector } = await getUserCompanyAndDirector(supabase, userId);
+    const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
     if (!isDirector) throw new Error("Solo el Director puede autorizar");
-    const { error } = await supabase
+    const { data: insumo } = await supabase.from("insumos").select("unidad, categoria_id").eq("id", data.id).eq("company_id", companyId).maybeSingle();
+    if (!insumo) throw new Error("Insumo no encontrado");
+    await validateUnidad(supabase, companyId, insumo.unidad);
+    if (insumo.categoria_id) {
+      const { data: categoria } = await supabase.from("insumo_categorias").select("estatus").eq("id", insumo.categoria_id).eq("company_id", companyId).maybeSingle();
+      if (categoria?.estatus !== "autorizado") throw new Error("Autoriza primero la categoría asociada");
+    }
+    const { data: updated, error } = await supabase
       .from("insumos")
       .update({
         estatus: "autorizado",
         autorizado_por: userId,
         autorizado_at: new Date().toISOString(),
       })
-      .eq("id", data.id);
+      .eq("id", data.id)
+      .eq("company_id", companyId)
+      .eq("estatus", "pendiente")
+      .select("id")
+      .maybeSingle();
     if (error) throw new Error(error.message);
+    if (!updated) throw new Error("El insumo ya no está pendiente de autorización");
     return { ok: true };
   });
 
@@ -295,10 +383,18 @@ export const rechazarInsumo = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { isDirector } = await getUserCompanyAndDirector(supabase, userId);
+    const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
     if (!isDirector) throw new Error("Solo el Director puede rechazar");
-    const { error } = await supabase.from("insumos").delete().eq("id", data.id);
+    const { data: rejected, error } = await supabase
+      .from("insumos")
+      .update({ estatus: "rechazado" })
+      .eq("id", data.id)
+      .eq("company_id", companyId)
+      .eq("estatus", "pendiente")
+      .select("id")
+      .maybeSingle();
     if (error) throw new Error(error.message);
+    if (!rejected) throw new Error("El insumo ya no está pendiente de autorización");
     return { ok: true };
   });
 
@@ -599,10 +695,15 @@ export const importarInsumos = createServerFn({ method: "POST" })
 export const listUnidades = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
+    const { supabase, userId } = context;
+    const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
+    let query = supabase
       .from("insumo_unidades")
-      .select("id, codigo, nombre")
+      .select("id, codigo, nombre, estatus")
+      .eq("company_id", companyId)
       .order("codigo");
+    if (!isDirector) query = query.eq("estatus", "autorizado");
+    const { data, error } = await query;
     if (error) throw new Error(error.message);
     return data ?? [];
   });
@@ -620,7 +721,7 @@ export const crearUnidad = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
-    if (!isDirector) throw new Error("Solo el Director puede crear unidades");
+    if (!isDirector) throw new Error("Solo el Director puede crear unidades desde el catálogo");
     const { error } = await supabase.from("insumo_unidades").insert({
       company_id: companyId,
       codigo: data.codigo,
@@ -630,6 +731,36 @@ export const crearUnidad = createServerFn({ method: "POST" })
       if (error.code === "23505") throw new Error(`La unidad "${data.codigo}" ya existe`);
       throw new Error(error.message);
     }
+    return { ok: true };
+  });
+
+export const revisarUnidad = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), aprobar: z.boolean() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
+    if (!isDirector) throw new Error("Solo el Director puede revisar unidades");
+    if (!data.aprobar) {
+      const { error } = await supabase.from("insumo_unidades").delete().eq("id", data.id).eq("company_id", companyId).eq("estatus", "pendiente");
+      if (error) throw new Error(error.message);
+    } else {
+      const { error } = await supabase.from("insumo_unidades").update({ estatus: "autorizado", autorizado_por: userId, autorizado_at: new Date().toISOString() }).eq("id", data.id).eq("company_id", companyId);
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+export const revisarCategoria = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), aprobar: z.boolean() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
+    if (!isDirector) throw new Error("Solo el Director puede revisar categorías");
+    const { error } = await supabase.from("insumo_categorias").update(data.aprobar ? { estatus: "autorizado", autorizado_por: userId, autorizado_at: new Date().toISOString() } : { estatus: "rechazado", autorizado_por: userId, autorizado_at: new Date().toISOString() }).eq("id", data.id).eq("company_id", companyId).eq("estatus", "pendiente");
+    if (error) throw new Error(error.message);
+    if (!data.aprobar) await supabase.from("insumos").update({ categoria_id: null }).eq("company_id", companyId).eq("categoria_id", data.id);
     return { ok: true };
   });
 

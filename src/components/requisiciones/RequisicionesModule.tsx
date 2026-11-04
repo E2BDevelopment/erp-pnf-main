@@ -233,7 +233,7 @@ export function RequisicionesModule({ obraId }: Props) {
                                 <span className="text-xs text-muted-foreground">
                                   {items.length} {items.length === 1 ? "insumo" : "insumos"}
                                   {items[0]?.insumo?.nombre && (
-                                    <> · <span className="truncate">{items[0].insumo.nombre}{items.length > 1 ? ` +${items.length - 1}` : ""}</span></>
+                                    <> · <span className="truncate">{items[0].insumo.nombre}{items[0].insumo.estatus === "pendiente" ? " (en espera de autorización)" : items[0].insumo.estatus === "rechazado" ? " (rechazado)" : ""}{items.length > 1 ? ` +${items.length - 1}` : ""}</span></>
                                   )}
                                 </span>
                               )}
@@ -430,6 +430,8 @@ export function RequisicionesModule({ obraId }: Props) {
                             <strong>{Number(it.cantidad)}</strong> {it.insumo?.unidad}
                             <span className="text-muted-foreground">·</span>
                             <span className="truncate max-w-[140px]">{it.insumo?.nombre}</span>
+                            {it.insumo?.estatus === "pendiente" && <span className="text-amber-700">(en espera de autorización)</span>}
+                            {it.insumo?.estatus === "rechazado" && <span className="text-destructive">(rechazado)</span>}
                             {it.fecha_requerida && (
                               <>
                                 <span className="text-muted-foreground">·</span>

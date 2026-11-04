@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "@/lib/navigation";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery } from "@tanstack/react-query";
@@ -8,13 +8,15 @@ import { listObras } from "@/lib/api-client/obras.functions";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, HardHat } from "lucide-react";
+import { Plus, HardHat, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { usePermisos } from "@/hooks/usePermisos";
 import { PendientesBadge } from "@/components/PendientesBadge";
 import { useTotalPendientesObra } from "@/hooks/usePendientes";
 import { useStagger } from "@/components/anim/useStagger";
 
 function ObrasPage() {
+  const [busqueda, setBusqueda] = useState("");
   const fetchObras = useServerFn(listObras);
   const { data: obras, isLoading } = useQuery({
     queryKey: ["obras"],
@@ -22,6 +24,14 @@ function ObrasPage() {
   });
   const { can } = usePermisos();
   const puedeCrearObra = can("obras.crear");
+  const obrasFiltradas = useMemo(() => {
+    const termino = busqueda.trim().toLocaleLowerCase();
+    if (!termino) return obras ?? [];
+    return (obras ?? []).filter((obra) =>
+      [obra.nombre, obra.cliente?.razon_social, obra.numero_contrato, obra.unidad_negocio?.nombre]
+        .some((valor) => valor?.toLocaleLowerCase().includes(termino)),
+    );
+  }, [obras, busqueda]);
 
   /** Cada tarjeta es una obra a la que se entra: entran escalonadas. */
   const rejilla = useRef<HTMLDivElement>(null);
@@ -68,11 +78,32 @@ function ObrasPage() {
             </p>
           </Card>
         ) : (
-          <div ref={rejilla} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {obras.map((o) => (
-              <ObraCard key={o.id} obra={o} />
-            ))}
-          </div>
+          <>
+            <div className="relative max-w-md">
+              <Search aria-hidden="true" className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="search"
+                aria-label="Buscar obras"
+                placeholder="Buscar por obra, cliente o contrato..."
+                value={busqueda}
+                onChange={(event) => setBusqueda(event.target.value)}
+                className="pl-9"
+              />
+            </div>
+            {obrasFiltradas.length === 0 ? (
+              <Card className="p-10 text-center border-dashed">
+                <Search className="size-8 mx-auto text-muted-foreground" />
+                <p className="mt-3 font-medium">No se encontraron obras</p>
+                <p className="text-sm text-muted-foreground mt-1">Prueba con otro nombre, cliente o contrato.</p>
+              </Card>
+            ) : (
+              <div ref={rejilla} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {obrasFiltradas.map((o) => (
+                  <ObraCard key={o.id} obra={o} />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </section>
     </div>

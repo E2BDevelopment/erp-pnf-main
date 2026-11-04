@@ -16,6 +16,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { runWithAuditContext } from "@/lib/audit-context.server";
 
 export type AuthClaims = {
   sub?: string;
@@ -82,10 +83,15 @@ export class ServerFnBuilder<TData = undefined, TResult = unknown> {
         Object.assign(context, await mw.run());
       }
       const data = this.validator ? this.validator(input?.data) : (input?.data as TData);
-      return (await this.handlerFn!({
-        data,
-        context: context as ServerFnContext,
-      })) as TResult2;
+      const serverContext = context as ServerFnContext;
+      return runWithAuditContext(
+        {
+          actorUserId: serverContext.userId,
+          companyId:
+            typeof context.companyId === "string" ? context.companyId : null,
+        },
+        () => this.handlerFn!({ data, context: serverContext }) as Promise<TResult2>,
+      );
     };
 
     const callable = (async (input?: { data?: unknown }) => execute(input)) as ServerFn<

@@ -52,10 +52,17 @@ export const requireSupabaseAuth: ServerFnMiddleware = {
       throw new Error("Unauthorized: No user ID found in token");
     }
 
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("company_id")
+      .eq("id", data.claims.sub)
+      .maybeSingle();
+
     return {
       supabase,
       userId: data.claims.sub,
       claims: data.claims,
+      companyId: profile?.company_id ?? null,
     };
   },
 };

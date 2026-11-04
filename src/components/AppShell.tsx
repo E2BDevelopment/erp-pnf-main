@@ -30,6 +30,7 @@ import {
   ListTodo,
   BarChart3,
   LayoutDashboard,
+  ClipboardClock,
   AlertCircle,
   Search,
   User,
@@ -108,6 +109,7 @@ const SEGMENT_TITLES: Record<string, string> = {
   equipo: "Equipo",
   notificaciones: "Notificaciones",
   "mi-cuenta": "Mi cuenta",
+  auditoria: "Bitácora de auditoría",
   presupuesto: "Presupuesto",
   estimaciones: "Estimaciones",
   "ordenes-cambio": "Órdenes de cambio",
@@ -318,6 +320,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     if (!obraId) return [];
     return [
       {
+        to: `/app/obras/${obraId}/requisiciones`,
+        label: "Requisiciones",
+        icon: ClipboardList,
+        pendientes: obraPendientes["requisiciones"],
+      },
+      {
+        to: `/app/obras/${obraId}/almacen-obra`,
+        label: "Almacén",
+        icon: Warehouse,
+        pendientes: obraPendientes["almacen-obra"],
+      },
+      {
+        to: `/app/obras/${obraId}/gastos-obra`,
+        label: "Gastos",
+        icon: Banknote,
+        pendientes: obraPendientes["gastos-obra"],
+      },
+      {
+        to: `/app/obras/${obraId}/tareas`,
+        label: "Tareas",
+        icon: ListTodo,
+        pendientes: obraPendientes["tareas"],
+      },
+      {
         to: `/app/obras/${obraId}/presupuesto`,
         label: "Presupuesto",
         icon: Receipt,
@@ -328,12 +354,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         label: "Estimaciones",
         icon: BarChart3,
         pendientes: obraPendientes["estimaciones"],
-      },
-      {
-        to: `/app/obras/${obraId}/requisiciones`,
-        label: "Requisiciones",
-        icon: ClipboardList,
-        pendientes: obraPendientes["requisiciones"],
       },
       {
         to: `/app/obras/${obraId}/nomina`,
@@ -354,12 +374,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         pendientes: obraPendientes["subcontratos"],
       },
       {
-        to: `/app/obras/${obraId}/almacen-obra`,
-        label: "Almacén",
-        icon: Warehouse,
-        pendientes: obraPendientes["almacen-obra"],
-      },
-      {
         to: `/app/obras/${obraId}/rentas`,
         label: "Rentas",
         icon: Truck,
@@ -376,18 +390,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         label: "Caja chica",
         icon: Coins,
         pendientes: obraPendientes["caja-chica"],
-      },
-      {
-        to: `/app/obras/${obraId}/gastos-obra`,
-        label: "Gastos de obra",
-        icon: Banknote,
-        pendientes: obraPendientes["gastos-obra"],
-      },
-      {
-        to: `/app/obras/${obraId}/tareas`,
-        label: "Tareas",
-        icon: ListTodo,
-        pendientes: obraPendientes["tareas"],
       },
       ...(puedeConfigurarObra
         ? [
@@ -417,7 +419,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       ...(puedeCrearObra
         ? [{ to: "/app/obras/nueva", label: "Nueva obra", icon: HardHat, exact: true }]
         : []),
-      ...(director ? [{ to: "/app/configuracion", label: "Configuración", icon: Settings }] : []),
+      ...(director
+        ? [
+            { to: "/app/configuracion", label: "Configuración", icon: Settings },
+            { to: "/app/auditoria", label: "Auditoría", icon: ClipboardClock },
+          ]
+        : []),
     ];
     secciones.push({ label: "Corporativo", items: corporativo });
 
@@ -581,12 +588,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   height={32}
                   decoding="async"
                   onError={() => setLogoFailed(true)}
-                  className="h-8 w-auto max-w-[160px] object-contain"
+                  className="h-8 w-auto max-w-[112px] object-contain md:max-w-[160px]"
                 />
               ) : (
                 <>
-                  <Building2 className="size-5 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">ERP PNF</span>
+                  <Image
+                    src="/assets/img/icon-1.png"
+                    alt="Naranja Forte"
+                    width={28}
+                    height={28}
+                    className="size-7 object-contain md:hidden"
+                  />
+                  <span className="hidden items-center gap-2 md:flex">
+                    <Building2 className="size-5 text-muted-foreground" aria-hidden />
+                    <span className="text-sm font-medium text-foreground">ERP PNF</span>
+                  </span>
                 </>
               )}
             </Link>

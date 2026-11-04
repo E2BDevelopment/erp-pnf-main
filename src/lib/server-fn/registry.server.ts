@@ -2,6 +2,7 @@
 // This module is only imported from the RPC route handler (server side).
 
 import * as m_api_almacen_functions from "@/lib/api/almacen.functions";
+import * as m_api_auditoria_functions from "@/lib/api/auditoria.functions";
 import * as m_api_auth_functions from "@/lib/api/auth.functions";
 import * as m_api_caja_chica_functions from "@/lib/api/caja-chica.functions";
 import * as m_api_clientes_functions from "@/lib/api/clientes.functions";
@@ -51,6 +52,7 @@ export const registry: Record<string, { __execute: (input?: { data?: unknown }) 
   "api/almacen.functions.resolverSolicitudDesbloqueo": m_api_almacen_functions.resolverSolicitudDesbloqueo,
   "api/almacen.functions.listHistorialSemanas": m_api_almacen_functions.listHistorialSemanas,
   "api/almacen.functions.getSemana": m_api_almacen_functions.getSemana,
+  "api/auditoria.functions.getAuditLog": m_api_auditoria_functions.getAuditLog,
   "api/auth.functions.getSessionContext": m_api_auth_functions.getSessionContext,
   "api/auth.functions.completeOnboarding": m_api_auth_functions.completeOnboarding,
   "api/auth.functions.updateMyProfile": m_api_auth_functions.updateMyProfile,
@@ -182,6 +184,8 @@ export const registry: Record<string, { __execute: (input?: { data?: unknown }) 
   "api/insumos.functions.importarInsumos": m_api_insumos_functions.importarInsumos,
   "api/insumos.functions.listUnidades": m_api_insumos_functions.listUnidades,
   "api/insumos.functions.crearUnidad": m_api_insumos_functions.crearUnidad,
+  "api/insumos.functions.revisarUnidad": m_api_insumos_functions.revisarUnidad,
+  "api/insumos.functions.revisarCategoria": m_api_insumos_functions.revisarCategoria,
   "api/insumos.functions.editarUnidad": m_api_insumos_functions.editarUnidad,
   "api/insumos.functions.eliminarUnidad": m_api_insumos_functions.eliminarUnidad,
   "api/nominas.functions.getNominaAccess": m_api_nominas_functions.getNominaAccess,

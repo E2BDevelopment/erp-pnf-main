@@ -43,6 +43,11 @@ export function MobileBottomBar({
   label = "Navegación",
 }: Props) {
   const scroll = variant === "scroll";
+  const activeItem = items.find((item) => isActive(item, pathname));
+  const primerosItems = items.slice(0, 3);
+  const visibleItems = scroll
+    ? [...primerosItems, ...(activeItem && !primerosItems.includes(activeItem) ? [activeItem] : [])]
+    : items;
 
   return (
     <nav
@@ -53,10 +58,10 @@ export function MobileBottomBar({
         <div
           className={cn(
             "flex flex-1 items-stretch",
-            scroll && "overflow-x-auto overflow-y-hidden overscroll-x-contain",
+            scroll && "min-w-0",
           )}
         >
-          {items.map((it) => {
+          {visibleItems.map((it) => {
             const Icon = it.icon;
             const active = isActive(it, pathname);
             return (
@@ -67,7 +72,7 @@ export function MobileBottomBar({
                 title={it.pendientes ? `${it.pendientes} pendientes por atender` : undefined}
                 className={cn(
                   "flex flex-col items-center justify-center gap-1 leading-none transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none",
-                  scroll ? "w-[4.5rem] shrink-0 text-[11px]" : "flex-1 text-[11px]",
+                  scroll ? "min-w-0 flex-1 px-1 text-[10px]" : "flex-1 text-[11px]",
                   active ? "text-primary-ink" : "text-muted-foreground",
                 )}
               >

@@ -4,6 +4,7 @@
 // For user-authenticated queries (with RLS), use the auth middleware instead.
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
+import { getAuditContext } from "@/lib/audit-context.server";
 
 function createSupabaseAdminClient() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -20,6 +21,19 @@ function createSupabaseAdminClient() {
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    global: {
+      fetch: (input, init) => {
+        const audit = getAuditContext();
+        if (!audit) return fetch(input, init);
+
+        const headers = new Headers(input instanceof Request ? input.headers : undefined);
+        new Headers(init?.headers).forEach((value, key) => headers.set(key, value));
+        headers.set("x-audit-actor-id", audit.actorUserId);
+        if (audit.companyId) headers.set("x-audit-company-id", audit.companyId);
+
+        return fetch(input, { ...init, headers });
+      },
+    },
     auth: {
       storage: undefined,
       persistSession: false,

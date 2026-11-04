@@ -77,6 +77,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
     id: string;
     nombre: string;
     unidad: string;
+    estatus?: string;
     categoria?: { id: string; nombre: string } | null;
   }>;
 
@@ -106,6 +107,8 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
   const [categoriaId, setCategoriaId] = useState("all");
   const [solicitarForIdx, setSolicitarForIdx] = useState<number | null>(null);
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
+  const [pendingInsumos, setPendingInsumos] = useState<Array<{ id: string; nombre: string; unidad: string; estatus: string; categoria: { id: string; nombre: string } | null }>>([]);
+  const insumosDisponibles = [...insumos, ...pendingInsumos.filter((p) => !insumos.some((i) => i.id === p.id))];
 
   const insumosFiltrados = useMemo(() => {
     const norm = (value: string) =>
@@ -114,7 +117,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
         .normalize("NFD")
         .replace(/\p{Diacritic}/gu, "");
     const term = norm(buscarInsumo.trim());
-    return insumos
+    return insumosDisponibles
       .filter(
         (ins) =>
           categoriaId === "all" ||
@@ -128,12 +131,12 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
       .sort((a, b) =>
         a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base", numeric: true }),
       );
-  }, [insumos, buscarInsumo, categoriaId]);
+  }, [insumosDisponibles, buscarInsumo, categoriaId]);
 
   const bloquesPorCategoria = useMemo(() => {
     const groups = new Map<string, Array<{ bloque: Bloque; index: number; nombre: string }>>();
     bloques.forEach((bloque, index) => {
-      const insumo = insumos.find((item) => item.id === bloque.insumo_id);
+      const insumo = insumosDisponibles.find((item) => item.id === bloque.insumo_id);
       const categoria = insumo?.categoria?.nombre ?? "Sin categoría";
       const group = groups.get(categoria) ?? [];
       group.push({ bloque, index, nombre: insumo?.nombre ?? "Insumo" });
@@ -142,7 +145,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
     return [...groups.entries()].sort(([a], [b]) =>
       a.localeCompare(b, "es", { sensitivity: "base" }),
     );
-  }, [bloques, insumos]);
+  }, [bloques, insumosDisponibles]);
 
   // Reset y carga del borrador cuando abre
   useEffect(() => {
@@ -151,12 +154,14 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
     if (!borradorId) {
       setBloques([]);
       setNotas("");
+      setPendingInsumos([]);
       return;
     }
     fetchBorrador({ data: { id: borradorId } })
       .then((r: any) => {
         setNotas(r.notas ?? "");
         const items = (r.items ?? []) as Array<any>;
+        setPendingInsumos(items.filter((it) => it.insumo && it.insumo.estatus !== "autorizado").map((it) => ({ ...it.insumo, categoria: it.insumo.categoria ?? null })));
         if (items.length === 0) {
           setBloques([]);
         } else {
@@ -342,6 +347,8 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                       <p className="truncate text-sm font-medium">{insumo.nombre}</p>
                       <p className="truncate text-xs text-muted-foreground">
                         {insumo.categoria?.nombre ?? "Sin categoría"} · {insumo.unidad}
+                        {insumo.estatus === "pendiente" && <span className="text-amber-700"> · (en espera de autorización)</span>}
+                        {insumo.estatus === "rechazado" && <span className="text-destructive"> · (rechazado)</span>}
                       </p>
                     </div>
                     <Button
@@ -388,7 +395,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                   <div className="divide-y rounded-md border">
                     {items.map(({ bloque: b, index: i, nombre }) => {
                       const expanded = expandedItemId === b.insumo_id;
-                      const insumoSel = insumos.find((x) => x.id === b.insumo_id);
+                      const insumoSel = insumosDisponibles.find((x) => x.id === b.insumo_id);
                       return (
                         <div key={b.insumo_id}>
                           <div className="flex min-h-11 items-center gap-2 px-2">
@@ -404,6 +411,8 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                                 <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                               )}
                               <span className="truncate text-sm font-medium">{nombre}</span>
+                              {insumoSel?.estatus === "pendiente" && <span className="shrink-0 text-xs text-amber-700">(en espera de autorización)</span>}
+                              {insumoSel?.estatus === "rechazado" && <span className="shrink-0 text-xs text-destructive">(rechazado)</span>}
                               <span className="shrink-0 text-xs text-muted-foreground">
                                 {b.cantidad
                                   ? `${b.cantidad} ${insumoSel?.unidad ?? ""}`
@@ -505,6 +514,11 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
         </div>
 
         <div className="flex flex-col gap-2 border-t bg-background px-6 py-3 sm:flex-row sm:justify-end">
+          {mut.error && (
+            <p role="alert" className="mr-auto self-center text-sm text-destructive">
+              {mut.error instanceof Error ? mut.error.message : "No se pudo enviar la requisición."}
+            </p>
+          )}
           <Button
             variant="outline"
             className="w-full sm:w-auto"
@@ -531,8 +545,12 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
         categorias={categorias}
         unidades={unidades}
         isDirector={isDirector}
-        onCreated={(newId) => {
+        onCreated={(newId, pending) => {
           qc.invalidateQueries({ queryKey: ["insumos"] });
+          if (newId && pending) {
+            const categoria = pending.categoria ? { id: `pending-${newId}`, nombre: pending.categoria } : null;
+            setPendingInsumos((items) => [...items.filter((item) => item.id !== newId), { id: newId, nombre: pending.nombre, unidad: pending.unidad, categoria, estatus: "pendiente" }]);
+          }
           if (newId && solicitarForIdx === -1) {
             agregarInsumo(newId);
           } else if (newId && solicitarForIdx !== null) {

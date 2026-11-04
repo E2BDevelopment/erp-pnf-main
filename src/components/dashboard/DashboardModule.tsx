@@ -214,13 +214,28 @@ export function DashboardModule() {
 
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
-        gsap.from("[data-panel]", {
-          autoAlpha: 0,
-          y: 4,
-          duration: MOTION.entrada,
-          ease: "power2.out",
-          stagger: 0.04,
+        const tl = gsap.timeline({
+          defaults: { duration: MOTION.entrada, ease: "power2.out" },
         });
+
+        tl.addLabel("estado")
+          .from("[data-motion='status']", { autoAlpha: 0, y: 8 }, "estado")
+          .addLabel("metricas", "<0.08")
+          .from("[data-motion='metrics'] > *", {
+            autoAlpha: 0,
+            y: 10,
+            stagger: 0.045,
+          }, "metricas")
+          .addLabel("pendientes", "<0.08")
+          .from("[data-motion='pending']", { autoAlpha: 0, x: -8 }, "pendientes")
+          .addLabel("analisis", "<0.08")
+          .from("[data-motion='analysis'] > *", {
+            autoAlpha: 0,
+            y: 8,
+            stagger: 0.06,
+          }, "analisis")
+          .addLabel("cartera", "<0.08")
+          .from("[data-motion='portfolio']", { autoAlpha: 0, y: 8 }, "cartera");
       });
       return () => mm.revert();
     },
@@ -299,6 +314,7 @@ export function DashboardModule() {
             return (
               <Card
                 data-panel
+                data-motion="status"
                 className={`p-3.5 sm:p-4 border transition-colors ${
                   tieneAlertas
                     ? "border-amber-500/40 bg-amber-500/5 dark:bg-amber-500/10"
@@ -379,6 +395,7 @@ export function DashboardModule() {
 
           <div
             data-panel
+            data-motion="metrics"
             className={`grid gap-3 sm:grid-cols-2 ${
               esAdmin && data.cxp ? "xl:grid-cols-5" : "xl:grid-cols-4"
             }`}
@@ -390,7 +407,27 @@ export function DashboardModule() {
             {esAdmin && data.cxp && <KpiPorPagar cxp={data.cxp} />}
           </div>
 
-          <div data-panel className="grid gap-4 lg:grid-cols-3">
+          <div data-panel data-motion="pending">
+            <PendientesPanel
+              titulo={esAdmin ? "Espera visto bueno" : "Pendientes en tus obras"}
+              descripcion={
+                esAdmin
+                  ? "Documentos que no avanzan hasta que alguien los autorice."
+                  : "Lo que tienes por capturar o corregir en cada obra."
+              }
+              filas={filasPendientes}
+              vacio={
+                esAdmin
+                  ? "Nada espera autorización. Todo al día."
+                  : "No tienes pendientes de captura en tus obras."
+              }
+              cargando={pendientesQ.isLoading}
+              error={pendientesQ.isError}
+              onRetry={() => void pendientesQ.refetch()}
+            />
+          </div>
+
+          <div data-panel data-motion="analysis" className="grid gap-4 lg:grid-cols-3">
             <Card className="p-4 lg:col-span-2">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
@@ -490,29 +527,15 @@ export function DashboardModule() {
             </Card>
           </div>
 
-          <CarteraTable obras={data.obras} pendientes={obraCounts} />
-
-          <div data-panel className={`grid gap-4 ${esAdmin && data.cxp ? "lg:grid-cols-2" : ""}`}>
-            <PendientesPanel
-              titulo={esAdmin ? "Espera visto bueno" : "Pendientes en tus obras"}
-              descripcion={
-                esAdmin
-                  ? "Documentos que no avanzan hasta que alguien los autorice."
-                  : "Lo que tienes por capturar o corregir en cada obra."
-              }
-              filas={filasPendientes}
-              vacio={
-                esAdmin
-                  ? "Nada espera autorización. Todo al día."
-                  : "No tienes pendientes de captura en tus obras."
-              }
-              cargando={pendientesQ.isLoading}
-              error={pendientesQ.isError}
-              onRetry={() => void pendientesQ.refetch()}
-            />
-
-            {esAdmin && data.cxp && <CxPPanel cxp={data.cxp} tesoreria={data.tesoreria} />}
+          <div data-motion="portfolio">
+            <CarteraTable obras={data.obras} pendientes={obraCounts} />
           </div>
+
+          {esAdmin && data.cxp && (
+            <div data-panel data-motion="portfolio">
+              <CxPPanel cxp={data.cxp} tesoreria={data.tesoreria} />
+            </div>
+          )}
         </>
       )}
     </div>
@@ -683,7 +706,61 @@ function CarteraTable({
         </Button>
       </div>
 
-      <div className="overflow-x-auto">
+      <ul className="divide-y divide-border md:hidden">
+        {obras.map((obra) => {
+          const counts = pendientes[obra.id] ?? {};
+          const totalPendientes = Object.values(counts).reduce((acc, n) => acc + (n ?? 0), 0);
+          return (
+            <li key={obra.id} className="px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <Link
+                    to="/app/obras/$obraId"
+                    params={{ obraId: obra.id }}
+                    className="block truncate text-sm font-medium underline-offset-4 hover:underline"
+                  >
+                    {obra.nombre}
+                  </Link>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {obra.cliente ?? "Sin cliente"}
+                    {obra.unidad_negocio ? ` · ${obra.unidad_negocio}` : ""}
+                    {!obra.activa ? " · Terminada" : ""}
+                  </p>
+                </div>
+                {totalPendientes > 0 ? (
+                  <Link
+                    to="/app/obras/$obraId"
+                    params={{ obraId: obra.id }}
+                    className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm text-primary-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label={`${totalPendientes} pendientes en ${obra.nombre}`}
+                  >
+                    <PendientesBadge count={totalPendientes} />
+                    <span className="text-xs">Pendientes</span>
+                  </Link>
+                ) : null}
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <Avance obra={obra} />
+                </div>
+                <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                  Estimado {formatMXN(obra.estimado)}
+                </span>
+              </div>
+            </li>
+          );
+        })}
+        <li className="flex items-center justify-between bg-muted/30 px-4 py-3 text-xs">
+          <span className="font-medium">Total</span>
+          <span className="tabular-nums text-muted-foreground">
+            {totalContratado > 0
+              ? `${((totalEstimado / totalContratado) * 100).toFixed(1)}% global`
+              : "Sin presupuesto"}
+          </span>
+        </li>
+      </ul>
+
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[620px] text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs text-muted-foreground">

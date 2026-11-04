@@ -26,10 +26,10 @@ Los nombres concretos de estado pueden variar entre entidades. En términos gene
 
 **Objetivo:** expresar una necesidad de materiales/insumos de una obra y darle seguimiento hasta surtido o compra.
 
-1. El usuario abre la requisición del contexto de la obra, consulta requisiciones propias/asignadas y revisa detalle, partidas, cantidades y recepciones relacionadas.
-2. Puede crear una requisición, agregar insumos, guardar una captura como borrador y posteriormente enviarla. El servidor valida el contexto de obra y el permiso de creación.
+1. El usuario abre la requisición dentro de una obra y consulta solicitudes, partidas, cantidades, estatus y recepciones vinculadas. La navegación contextual de obra también ofrece accesos rápidos a Requisiciones, Almacén, Gastos y Tareas con sus contadores de pendientes.
+2. Puede crear una requisición, agregar insumos, guardar una captura como borrador y posteriormente enviarla. La requisición identifica al creador y la obra; el servidor valida el contexto, el permiso y que el borrador siga siendo editable por quien lo creó.
 3. El Supervisor revisa la solicitud y puede aprobarla o rechazarla. Una requisición puede cancelarse conforme a las reglas de su estado.
-4. El área administrativa gestiona solicitudes de cotización para requisiciones aprobadas, captura propuestas de proveedores y arma paquetes comparativos.
+4. El área administrativa gestiona solicitudes de cotización para requisiciones aprobadas, captura propuestas de proveedores y arma paquetes comparativos. La ruta administrativa global `/app/admin/requisiciones` sigue siendo un marcador; el flujo operativo está en la ruta de cada obra.
 5. A partir de una propuesta elegida se genera una orden de compra (OC), se envía al flujo de autorización de Supervisor y puede autorizarse, rechazarse/cancelarse o reabrirse según el estado.
 6. La OC autorizada puede enviarse al proveedor. El almacén registra las recepciones parciales o completas y las partidas recibidas se vinculan con la requisición/OC.
 7. La obligación resultante pasa a Cuentas por pagar y después a Tesorería para registrar uno o más pagos.
@@ -42,7 +42,7 @@ El Administrativo obtiene las SC asociadas a la requisición, crea/edita/elimina
 
 ### 2.3 Almacén central
 
-La ruta administrativa `/app/admin/almacen-central` está conectada actualmente a un marcador (“Próximamente”), no al módulo de recepciones operativo. La API de almacén, sin embargo, implementa operaciones de recepción y cierre semanal para el almacén asociado a obra:
+La ruta administrativa `/app/admin/almacen-central` está conectada actualmente a un marcador (“Próximamente”), no al módulo de recepciones operativo. El módulo de almacén disponible desde la obra usa la API de recepción y cierre semanal:
 
 1. Lista OCs pendientes de recibir y obtiene el detalle de una OC para captura.
 2. Registra recepciones vinculadas a la OC y sus renglones.
@@ -190,7 +190,7 @@ El catálogo permite listar/buscar, consultar ficha, crear, editar, autorizar y 
 
 ### 6.4 Insumos
 
-Permite buscar y filtrar el catálogo, consultar métricas/categorías/unidades y solicitar altas. Un insumo puede editarse y luego autorizarse o rechazarse. Se administran categorías y unidades (alta, edición y eliminación con restricciones). Se consulta historial de precios e importación masiva desde archivo; las requisiciones seleccionan sus insumos del catálogo. Validar el formato admitido por el importador antes de documentar una plantilla definitiva.
+Permite buscar y filtrar el catálogo por estatus, consultar métricas, categorías, unidades e historial de precios, además de importar insumos desde archivo. Las solicitudes de alta pueden proponer también una categoría y/o unidad nuevas; estas quedan pendientes de autorización del Director. El Director administra categorías y unidades y revisa solicitudes pendientes. Los insumos conservan estatus autorizado, pendiente o rechazado: los rechazados permanecen en el catálogo y no se pueden enviar en una requisición; el borrador debe quitar el insumo rechazado antes de enviarse. La autorización valida que la unidad y categoría asociadas estén autorizadas. Las requisiciones muestran el estatus del insumo para orientar la captura.
 
 ### 6.5 Unidades de negocio
 
@@ -236,11 +236,19 @@ Las funciones de pendientes agregan elementos por módulo para mostrar badges de
 
 Se consultan notificaciones propias, se marca una notificación o todas como leídas y se configuran preferencias. Se muestran mediante campana/listado. La notificación comunica que hay una acción o cambio; no autoriza por sí misma la operación.
 
+### Bitácora de auditoría
+
+La ruta `/app/auditoria` está disponible para el Director real de la empresa (la vista temporal de otro rol no concede acceso). Antes de cada consulta se vuelve a validar la contraseña de la cuenta. La bitácora muestra cambios registrados por empresa, en orden descendente, con actor, fecha, tabla, operación (creación, edición o eliminación), identificador del registro y campos afectados. Permite filtrar por operación y nombre de tabla, paginar en bloques de 50 y bloquear/cerrar la consulta para limpiar el resultado y la contraseña de la pantalla. El registro se genera en base de datos para cambios en tablas públicas de negocio; no representa un historial de lecturas ni garantiza por sí solo una explicación semántica de cada cambio.
+
+### Navegación y búsqueda
+
+La lista de obras permite buscar por nombre de obra, cliente, número de contrato o unidad de negocio, y presenta un estado vacío cuando no hay coincidencias. En escritorio el menú lateral agrupa los módulos administrativos por Compras, Dinero, Obra y Operación; en móvil usa una barra inferior contextual y un panel con el menú completo. Los accesos y badges de pendientes dependen del perfil y permisos vigentes.
+
 ## 9. Módulos o rutas actualmente incompletos
 
-Algunas rutas administrativas están registradas en navegación pero siguen renderizando `ModulePlaceholder` (“Próximamente”) en `src/app/(authenticated)/app/admin/[...slug]/AdminModuleView.tsx`. En el momento de elaborar este documento esto incluye Requisiciones administrativas, Almacén central, Destajos, Subcontratos, Rentas y Tareas. Puede haber lógica de servidor y componentes más completos en sus rutas de obra, aunque la pantalla administrativa global no esté conectada. No describirlas como vistas administrativas terminadas sin verificar la ruta desplegada.
+Algunas rutas administrativas están registradas en navegación pero siguen renderizando `ModulePlaceholder` (“Próximamente”) en `src/app/(authenticated)/app/admin/[...slug]/AdminModuleView.tsx`. En la versión del repositorio revisada esto incluye Requisiciones administrativas, Almacén central, Destajos, Subcontratos, Rentas y Tareas. Puede haber lógica de servidor y vistas funcionales en rutas de obra, aunque la pantalla administrativa global no esté conectada; el estado de una ruta no debe inferirse a partir de que exista su API o componente.
 
-La ruta `/app/admin/gasolinas`, `/app/admin/caja-chica`, `/app/admin/nomina`, `/app/admin/cuentas-por-pagar`, `/app/admin/tesoreria`, `/app/admin/contabilidad`, `/app/admin/gastos-oficina` y `/app/admin/condensado-semanal` sí conectan con sus módulos/componentes correspondientes. La navegación corporativa también incluye dashboard, obras, nueva obra, catálogos, equipo, configuración, notificaciones y cuenta.
+La ruta `/app/admin/gasolinas`, `/app/admin/caja-chica`, `/app/admin/nomina`, `/app/admin/cuentas-por-pagar`, `/app/admin/tesoreria`, `/app/admin/contabilidad`, `/app/admin/gastos-oficina` y `/app/admin/condensado-semanal` sí conectan con sus módulos/componentes correspondientes. El catálogo de subcontratistas `/app/catalogos/subcontratistas` también permanece como marcador. La navegación corporativa incluye dashboard, obras (con búsqueda), nueva obra, catálogos, equipo, configuración, auditoría (solo Director), notificaciones y cuenta.
 
 ## 10. Matriz breve de trazabilidad de código
 
@@ -263,6 +271,7 @@ La ruta `/app/admin/gasolinas`, `/app/admin/caja-chica`, `/app/admin/nomina`, `/
 | Catálogos | `src/components/clientes/`, `terceros/`, `trabajadores/`, `insumos/` | funciones homónimas en `src/lib/api/` |
 | Tareas | `src/components/tareas/` | `src/lib/api/tareas.functions.ts` |
 | Notificaciones/pendientes | `src/components/notificaciones/`, `src/components/NotificacionesBell.tsx` | `notificaciones.functions.ts`, `pendientes.functions.ts` |
+| Bitácora de auditoría | `src/app/(authenticated)/app/auditoria/page.tsx` | `src/lib/api/auditoria.functions.ts`, `src/lib/audit-context.server.ts`, migraciones de `audit_log` |
 | Administración de empresa | `src/components/configuracion/`, `src/components/equipo/` | `company.functions.ts`, `team.functions.ts`, `permisos.functions.ts` |
 
 ## 11. Puntos que requieren confirmación funcional antes de documentación normativa
@@ -273,5 +282,6 @@ La ruta `/app/admin/gasolinas`, `/app/admin/caja-chica`, `/app/admin/nomina`, `/
 4. Fórmulas oficiales de estimación, destajo, subcontrato, CxP, saldos de caja chica y reportes contables.
 5. Reglas de cancelación, reapertura, eliminación y auditoría requeridas por la operación.
 6. Diferencia operativa y alcance entre “almacén central” y almacén semanal de obra, y disponibilidad real de la pantalla central.
-7. Qué módulos se consideran productivos frente a los que aún están conectados a placeholder.
+7. Qué módulos se consideran productivos frente a los que aún están conectados a placeholder, revisando cada ruta publicada.
+8. Retención, exportación y política de acceso operativo a la bitácora; la interfaz actual ofrece consulta filtrada y paginada, sin exportación documentada.
 

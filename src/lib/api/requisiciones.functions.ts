@@ -32,7 +32,7 @@ export const listRequisiciones = createServerFn({ method: "POST" })
     let q = supabase
       .from("requisiciones")
       .select(
-        "id, folio, estatus, notas, created_at, creado_por, items:requisicion_insumos(id, cantidad, fecha_requerida, nota, insumo:insumos(id, nombre, unidad))",
+        "id, folio, estatus, notas, created_at, creado_por, items:requisicion_insumos(id, cantidad, fecha_requerida, nota, insumo:insumos(id, nombre, unidad, estatus))",
       )
       .eq("obra_id", data.obraId)
       .order("created_at", { ascending: false });
@@ -537,6 +537,17 @@ export const enviarBorradorRequisicion = createServerFn({ method: "POST" })
     if (existing.creado_por !== userId) throw new Error("Solo el creador puede enviar");
     if (existing.estatus !== "borrador") throw new Error("Ya no es un borrador");
 
+    const { data: rechazados, error: rechazadosErr } = await supabase
+      .from("insumos")
+      .select("nombre")
+      .eq("company_id", existing.company_id)
+      .eq("estatus", "rechazado")
+      .in("id", data.insumos.map((item) => item.insumo_id));
+    if (rechazadosErr) throw new Error(rechazadosErr.message);
+    if (rechazados?.length) {
+      throw new Error(`Quita de la requisición el insumo rechazado: ${rechazados[0].nombre}.`);
+    }
+
     const { data: folioData, error: folioErr } = await supabase.rpc("siguiente_folio_requisicion", {
       _company_id: existing.company_id,
     });
@@ -554,7 +565,7 @@ export const enviarBorradorRequisicion = createServerFn({ method: "POST" })
     const { error: itemsErr } = await supabase.from("requisicion_insumos").insert(items);
     if (itemsErr) throw new Error(itemsErr.message);
 
-    const { error: updErr } = await supabase
+    const { data: updatedReq, error: updErr } = await supabase
       .from("requisiciones")
       .update({
         folio: folioData as string,
@@ -562,8 +573,11 @@ export const enviarBorradorRequisicion = createServerFn({ method: "POST" })
         enviada_at: new Date().toISOString(),
         notas: data.notas ?? null,
       })
-      .eq("id", data.borradorId);
+      .eq("id", data.borradorId)
+      .select("id")
+      .maybeSingle();
     if (updErr) throw new Error(updErr.message);
+    if (!updatedReq) throw new Error("No se pudo enviar la requisición. Verifica que aún sea tu borrador.");
 
     await notificarRequisicionEnviada(supabase, {
       requisicionId: data.borradorId,
@@ -602,7 +616,7 @@ export const getBorradorRequisicion = createServerFn({ method: "POST" })
     const { data: req, error } = await supabase
       .from("requisiciones")
       .select(
-        "id, obra_id, estatus, notas, creado_por, items:requisicion_insumos(id, insumo_id, cantidad, fecha_requerida, nota)",
+        "id, obra_id, estatus, notas, creado_por, items:requisicion_insumos(id, insumo_id, cantidad, fecha_requerida, nota, insumo:insumos(id, nombre, unidad, estatus, categoria:insumo_categorias(id, nombre)))",
       )
       .eq("id", data.id)
       .maybeSingle();

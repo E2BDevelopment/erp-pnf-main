@@ -70,6 +70,8 @@ import {
   crearUnidad,
   editarUnidad,
   eliminarUnidad,
+  revisarUnidad,
+  revisarCategoria,
 } from "@/lib/api-client/insumos.functions";
 import { ImportarInsumosDialog } from "./ImportarInsumosDialog";
 
@@ -99,7 +101,7 @@ export function CatalogoInsumosModule() {
   const director = checkDirector(roles);
   const qc = useQueryClient();
 
-  const [tab, setTab] = useState<"autorizado" | "pendiente">("autorizado");
+  const [tab, setTab] = useState<"autorizado" | "pendiente" | "rechazado">("autorizado");
   const [search, setSearch] = useState("");
   const [categoriaId, setCategoriaId] = useState<string>("all");
   const [unidad, setUnidad] = useState<string>("all");
@@ -271,6 +273,7 @@ export function CatalogoInsumosModule() {
                   </Badge>
                 )}
               </TabsTrigger>
+              <TabsTrigger value="rechazado">Rechazados</TabsTrigger>
             </TabsList>
 
             <TabsContent value="autorizado" className="mt-4">
@@ -433,6 +436,42 @@ export function CatalogoInsumosModule() {
                           <Badge variant="secondary">Pendiente</Badge>
                         )}
                       </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+
+            <TabsContent value="rechazado" className="mt-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead>Unidad</TableHead>
+                    <TableHead>Categoría</TableHead>
+                    <TableHead>Solicitado por</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Estado</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(insumosQ.data ?? []).length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
+                        No hay insumos rechazados con esos filtros.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  {(insumosQ.data ?? []).map((i: any) => (
+                    <TableRow key={i.id}>
+                      <TableCell className="max-w-[240px] font-medium">
+                        <TruncatedCell>{i.nombre}</TruncatedCell>
+                      </TableCell>
+                      <TableCell><Badge variant="outline">{i.unidad}</Badge></TableCell>
+                      <TableCell>{i.categoria?.nombre ?? "Sin categoría"}</TableCell>
+                      <TableCell>{i.solicitante?.nombre_completo ?? i.solicitante?.email ?? "—"}</TableCell>
+                      <TableCell>{new Date(i.created_at).toLocaleDateString("es-MX")}</TableCell>
+                      <TableCell><Badge variant="destructive">Rechazado</Badge></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -704,6 +743,11 @@ function CategoriasDialog({
     },
     onError: (e: any) => toast.error(e.message),
   });
+  const revisarMut = useMutation({
+    mutationFn: useServerFn(revisarCategoria),
+    onSuccess: () => { toast.success("Solicitud de categoría revisada"); invalidate(); },
+    onError: (e: any) => toast.error(e.message),
+  });
 
   const prefijoAuto = nueva.trim() ? derivarPrefijoUI(nueva.trim()) : "";
 
@@ -815,10 +859,14 @@ function CategoriasDialog({
                 ) : (
                   <>
                     <span className="flex-1 text-sm">{c.nombre}</span>
+                    {c.estatus === "pendiente" && <Badge variant="secondary">En espera de autorización</Badge>}
                     <Badge variant="outline" className="font-mono">
                       {c.prefijo ?? "—"}
                     </Badge>
-                    <Button
+                    {c.estatus === "pendiente" ? <>
+                      <Button size="sm" onClick={() => revisarMut.mutate({ data: { id: c.id, aprobar: true } })}><Check className="size-4 mr-1" /> Autorizar</Button>
+                      <Button size="sm" variant="outline" onClick={() => revisarMut.mutate({ data: { id: c.id, aprobar: false } })}><X className="size-4 mr-1" /> Rechazar</Button>
+                    </> : <Button
                       size="icon"
                       variant="ghost"
                       aria-label={`Editar categoría ${c.nombre}`}
@@ -827,7 +875,7 @@ function CategoriasDialog({
                       }
                     >
                       <Pencil />
-                    </Button>
+                    </Button>}
                     <Button
                       size="icon"
                       variant="ghost"
@@ -1089,6 +1137,11 @@ function UnidadesDialog({
     },
     onError: (e: any) => toast.error(e.message),
   });
+  const revisarMut = useMutation({
+    mutationFn: useServerFn(revisarUnidad),
+    onSuccess: () => { toast.success("Solicitud de unidad revisada"); invalidate(); },
+    onError: (e: any) => toast.error(e.message),
+  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -1201,7 +1254,11 @@ function UnidadesDialog({
                       {u.codigo}
                     </Badge>
                     <span className="flex-1 text-sm text-muted-foreground">{u.nombre ?? "—"}</span>
-                    <Button
+                    {u.estatus === "pendiente" && <Badge variant="secondary">En espera de autorización</Badge>}
+                    {u.estatus === "pendiente" ? <>
+                      <Button size="sm" onClick={() => revisarMut.mutate({ data: { id: u.id, aprobar: true } })}><Check className="size-4 mr-1" /> Autorizar</Button>
+                      <Button size="sm" variant="outline" onClick={() => revisarMut.mutate({ data: { id: u.id, aprobar: false } })}><X className="size-4 mr-1" /> Rechazar</Button>
+                    </> : <Button
                       size="icon"
                       variant="ghost"
                       aria-label={`Editar unidad ${u.codigo}`}
@@ -1210,7 +1267,7 @@ function UnidadesDialog({
                       }
                     >
                       <Pencil />
-                    </Button>
+                    </Button>}
                     <Button
                       size="icon"
                       variant="ghost"

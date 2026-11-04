@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          actor_user_id: string | null
+          company_id: string | null
+          id: number
+          new_data: Json | null
+          occurred_at: string
+          old_data: Json | null
+          operation: string
+          record_id: Json | null
+          schema_name: string
+          table_name: string
+          transaction_id: number
+        }
+        Insert: {
+          actor_user_id?: string | null
+          company_id?: string | null
+          id?: never
+          new_data?: Json | null
+          occurred_at?: string
+          old_data?: Json | null
+          operation: string
+          record_id?: Json | null
+          schema_name: string
+          table_name: string
+          transaction_id?: number
+        }
+        Update: {
+          actor_user_id?: string | null
+          company_id?: string | null
+          id?: never
+          new_data?: Json | null
+          occurred_at?: string
+          old_data?: Json | null
+          operation?: string
+          record_id?: Json | null
+          schema_name?: string
+          table_name?: string
+          transaction_id?: number
+        }
+        Relationships: []
+      }
       almacen_movimientos_semana: {
         Row: {
           created_at: string
@@ -1328,6 +1370,10 @@ export type Database = {
           id: string
           nombre: string
           prefijo: string
+          estatus: string
+          solicitado_por: string | null
+          autorizado_por: string | null
+          autorizado_at: string | null
         }
         Insert: {
           company_id: string
@@ -1335,6 +1381,10 @@ export type Database = {
           id?: string
           nombre: string
           prefijo: string
+          estatus?: string
+          solicitado_por?: string | null
+          autorizado_por?: string | null
+          autorizado_at?: string | null
         }
         Update: {
           company_id?: string
@@ -1342,6 +1392,10 @@ export type Database = {
           id?: string
           nombre?: string
           prefijo?: string
+          estatus?: string
+          solicitado_por?: string | null
+          autorizado_por?: string | null
+          autorizado_at?: string | null
         }
         Relationships: []
       }
@@ -1352,6 +1406,10 @@ export type Database = {
           created_at: string
           id: string
           nombre: string | null
+          estatus: string
+          solicitado_por: string | null
+          autorizado_por: string | null
+          autorizado_at: string | null
         }
         Insert: {
           codigo: string
@@ -1359,6 +1417,10 @@ export type Database = {
           created_at?: string
           id?: string
           nombre?: string | null
+          estatus?: string
+          solicitado_por?: string | null
+          autorizado_por?: string | null
+          autorizado_at?: string | null
         }
         Update: {
           codigo?: string
@@ -1366,6 +1428,10 @@ export type Database = {
           created_at?: string
           id?: string
           nombre?: string | null
+          estatus?: string
+          solicitado_por?: string | null
+          autorizado_por?: string | null
+          autorizado_at?: string | null
         }
         Relationships: []
       }
@@ -4637,7 +4703,7 @@ export type Database = {
         | "pagada"
         | "cancelada"
       gasto_oficina_tipo: "nomina_oficina" | "servicio" | "papeleria" | "otro"
-      insumo_estatus: "autorizado" | "pendiente"
+      insumo_estatus: "autorizado" | "pendiente" | "rechazado"
       nomina_estatus: "borrador" | "cerrada" | "pagada"
       nomina_oficina_periodicidad: "semanal" | "quincenal" | "mensual"
       oc_estatus:
@@ -4904,7 +4970,7 @@ export const Constants = {
         "cancelada",
       ],
       gasto_oficina_tipo: ["nomina_oficina", "servicio", "papeleria", "otro"],
-      insumo_estatus: ["autorizado", "pendiente"],
+      insumo_estatus: ["autorizado", "pendiente", "rechazado"],
       nomina_estatus: ["borrador", "cerrada", "pagada"],
       nomina_oficina_periodicidad: ["semanal", "quincenal", "mensual"],
       oc_estatus: [

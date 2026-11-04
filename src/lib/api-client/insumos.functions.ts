@@ -22,5 +22,7 @@ export const getHistorialPrecios = clientFn<typeof Impl.getHistorialPrecios>("ap
 export const importarInsumos = clientFn<typeof Impl.importarInsumos>("api/insumos.functions.importarInsumos");
 export const listUnidades = clientFn<typeof Impl.listUnidades>("api/insumos.functions.listUnidades");
 export const crearUnidad = clientFn<typeof Impl.crearUnidad>("api/insumos.functions.crearUnidad");
+export const revisarUnidad = clientFn<typeof Impl.revisarUnidad>("api/insumos.functions.revisarUnidad");
+export const revisarCategoria = clientFn<typeof Impl.revisarCategoria>("api/insumos.functions.revisarCategoria");
 export const editarUnidad = clientFn<typeof Impl.editarUnidad>("api/insumos.functions.editarUnidad");
 export const eliminarUnidad = clientFn<typeof Impl.eliminarUnidad>("api/insumos.functions.eliminarUnidad");
