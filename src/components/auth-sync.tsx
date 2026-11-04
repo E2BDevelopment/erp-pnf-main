@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSessionContext } from "@/lib/api-client/auth.functions";
+import { shouldRefreshAuthRoute } from "@/lib/auth/should-refresh-auth-route";
 import { useAuthStore } from "@/stores/auth";
 
 /**
@@ -58,7 +59,11 @@ export function AuthSync() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // Supabase también emite SIGNED_IN al recuperar una sesión al volver al
+      // primer plano; si el usuario no cambió, no hace falta refrescar la ruta.
+      if (!shouldRefreshAuthRoute(event, session?.user.id ?? null, useAuthStore.getState().userId))
+        return;
       if (!session) {
         reset();
         router.refresh();

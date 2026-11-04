@@ -14,6 +14,7 @@ import {
   Save,
   PackagePlus,
   ShoppingCart,
+  ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -107,8 +108,21 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
   const [categoriaId, setCategoriaId] = useState("all");
   const [solicitarForIdx, setSolicitarForIdx] = useState<number | null>(null);
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
-  const [pendingInsumos, setPendingInsumos] = useState<Array<{ id: string; nombre: string; unidad: string; estatus: string; categoria: { id: string; nombre: string } | null }>>([]);
-  const insumosDisponibles = [...insumos, ...pendingInsumos.filter((p) => !insumos.some((i) => i.id === p.id))];
+  const [pendingInsumos, setPendingInsumos] = useState<
+    Array<{
+      id: string;
+      nombre: string;
+      unidad: string;
+      estatus: string;
+      categoria: { id: string; nombre: string } | null;
+    }>
+  >([]);
+  const [mobileStep, setMobileStep] = useState(0);
+  const [attemptedDetails, setAttemptedDetails] = useState(false);
+  const insumosDisponibles = [
+    ...insumos,
+    ...pendingInsumos.filter((p) => !insumos.some((i) => i.id === p.id)),
+  ];
 
   const insumosFiltrados = useMemo(() => {
     const norm = (value: string) =>
@@ -150,6 +164,8 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
   // Reset y carga del borrador cuando abre
   useEffect(() => {
     if (!open) return;
+    setMobileStep(0);
+    setAttemptedDetails(false);
     setCurrentBorradorId(borradorId ?? null);
     if (!borradorId) {
       setBloques([]);
@@ -161,7 +177,11 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
       .then((r: any) => {
         setNotas(r.notas ?? "");
         const items = (r.items ?? []) as Array<any>;
-        setPendingInsumos(items.filter((it) => it.insumo && it.insumo.estatus !== "autorizado").map((it) => ({ ...it.insumo, categoria: it.insumo.categoria ?? null })));
+        setPendingInsumos(
+          items
+            .filter((it) => it.insumo && it.insumo.estatus !== "autorizado")
+            .map((it) => ({ ...it.insumo, categoria: it.insumo.categoria ?? null })),
+        );
         if (items.length === 0) {
           setBloques([]);
         } else {
@@ -276,7 +296,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[min(90dvh,900px)] max-w-6xl flex-col gap-0 overflow-hidden p-0">
+      <DialogContent className="flex h-dvh max-h-dvh w-screen max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 sm:h-[min(90dvh,900px)] sm:max-h-[min(90dvh,900px)] sm:w-full sm:max-w-6xl sm:rounded-lg">
         <DialogHeader className="border-b px-6 py-4 pr-12">
           <DialogTitle>
             {currentBorradorId ? "Editar borrador de requisición" : "Nueva requisición"}
@@ -286,9 +306,30 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
           </p>
         </DialogHeader>
 
+        <div className="border-b px-4 py-3 md:hidden">
+          <div className="mb-2 flex items-center justify-between text-sm">
+            <span className="font-semibold">
+              {mobileStep === 0
+                ? "Agregar insumos"
+                : mobileStep === 1
+                  ? "Completar cantidades"
+                  : "Revisar requisición"}
+            </span>
+            <span className="text-muted-foreground">Paso {mobileStep + 1} de 3</span>
+          </div>
+          <div className="flex gap-1.5" aria-hidden="true">
+            {[0, 1, 2].map((step) => (
+              <div
+                key={step}
+                className={`h-1 flex-1 rounded-full ${step <= mobileStep ? "bg-primary" : "bg-muted"}`}
+              />
+            ))}
+          </div>
+        </div>
+
         <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto md:grid-cols-[minmax(0,1.1fr)_minmax(340px,0.9fr)] md:overflow-hidden">
           <section
-            className="flex min-h-[320px] flex-col border-b md:min-h-0 md:border-b-0 md:border-r"
+            className={`${mobileStep === 0 ? "flex" : "hidden"} min-h-0 flex-col border-b md:flex md:min-h-0 md:border-b-0 md:border-r`}
             aria-label="Catálogo de insumos"
           >
             <div className="space-y-3 border-b bg-background p-4">
@@ -304,7 +345,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                   />
                 </div>
                 <Select value={categoriaId} onValueChange={setCategoriaId}>
-                  <SelectTrigger className="w-[150px] shrink-0">
+                  <SelectTrigger className="h-11 w-[130px] shrink-0 md:h-9 md:w-[150px]">
                     <SelectValue placeholder="Categoría" />
                   </SelectTrigger>
                   <SelectContent>
@@ -321,7 +362,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
               <Button
                 type="button"
                 variant="outline"
-                className="w-full justify-start"
+                className="h-11 w-full justify-start md:h-9"
                 onClick={() => setSolicitarForIdx(-1)}
               >
                 <PackagePlus className="mr-2 size-4" /> Solicitar insumo
@@ -341,20 +382,24 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                 return (
                   <div
                     key={insumo.id}
-                    className="flex items-center gap-3 rounded-md border-b p-3 last:border-0 hover:bg-muted/40"
+                    className="flex min-h-16 items-center gap-3 rounded-md border-b p-3 last:border-0 hover:bg-muted/40 md:min-h-0"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium">{insumo.nombre}</p>
                       <p className="truncate text-xs text-muted-foreground">
                         {insumo.categoria?.nombre ?? "Sin categoría"} · {insumo.unidad}
-                        {insumo.estatus === "pendiente" && <span className="text-amber-700"> · (en espera de autorización)</span>}
-                        {insumo.estatus === "rechazado" && <span className="text-destructive"> · (rechazado)</span>}
+                        {insumo.estatus === "pendiente" && (
+                          <span className="text-amber-700"> · (en espera de autorización)</span>
+                        )}
+                        {insumo.estatus === "rechazado" && (
+                          <span className="text-destructive"> · (rechazado)</span>
+                        )}
                       </p>
                     </div>
                     <Button
                       type="button"
-                      size="sm"
                       variant={agregado ? "secondary" : "outline"}
+                      className="h-11 shrink-0 md:h-8"
                       disabled={agregado}
                       onClick={() => agregarInsumo(insumo.id)}
                     >
@@ -367,7 +412,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
           </section>
 
           <section
-            className="flex min-h-[320px] flex-col md:min-h-0"
+            className={`${mobileStep === 1 ? "flex" : "hidden"} min-h-0 flex-col md:flex md:min-h-0`}
             aria-label="Carrito de insumos"
           >
             <div className="flex items-center justify-between border-b px-4 py-3">
@@ -396,6 +441,11 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                     {items.map(({ bloque: b, index: i, nombre }) => {
                       const expanded = expandedItemId === b.insumo_id;
                       const insumoSel = insumosDisponibles.find((x) => x.id === b.insumo_id);
+                      const faltaCantidad = !(Number(b.cantidad) > 0);
+                      const faltaFecha = !b.fecha_requerida;
+                      const faltantes = [faltaCantidad && "cantidad", faltaFecha && "fecha"].filter(
+                        Boolean,
+                      );
                       return (
                         <div key={b.insumo_id}>
                           <div className="flex min-h-11 items-center gap-2 px-2">
@@ -411,8 +461,16 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                                 <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                               )}
                               <span className="truncate text-sm font-medium">{nombre}</span>
-                              {insumoSel?.estatus === "pendiente" && <span className="shrink-0 text-xs text-amber-700">(en espera de autorización)</span>}
-                              {insumoSel?.estatus === "rechazado" && <span className="shrink-0 text-xs text-destructive">(rechazado)</span>}
+                              {insumoSel?.estatus === "pendiente" && (
+                                <span className="shrink-0 text-xs text-amber-700">
+                                  (en espera de autorización)
+                                </span>
+                              )}
+                              {insumoSel?.estatus === "rechazado" && (
+                                <span className="shrink-0 text-xs text-destructive">
+                                  (rechazado)
+                                </span>
+                              )}
                               <span className="shrink-0 text-xs text-muted-foreground">
                                 {b.cantidad
                                   ? `${b.cantidad} ${insumoSel?.unidad ?? ""}`
@@ -434,21 +492,45 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                               <Trash2 className="size-4" />
                             </Button>
                           </div>
+                          {attemptedDetails && faltantes.length > 0 && !expanded && (
+                            <p role="alert" className="px-3 pb-3 text-sm text-destructive">
+                              Falta {faltantes.join(" y ")}.
+                            </p>
+                          )}
                           {expanded && (
                             <div className="grid grid-cols-1 gap-2 border-t bg-muted/20 p-3 sm:grid-cols-[1fr_1.4fr]">
                               <div className="space-y-0.5">
-                                <Label className="text-[11px]">Cantidad</Label>
+                                <Label htmlFor={`cantidad-${i}`} className="text-xs md:text-[11px]">
+                                  Cantidad (obligatoria)
+                                </Label>
                                 <Input
+                                  id={`cantidad-${i}`}
                                   type="number"
                                   min="0"
                                   step="0.01"
-                                  className="h-8 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  aria-invalid={attemptedDetails && faltaCantidad}
+                                  aria-describedby={
+                                    attemptedDetails && faltaCantidad
+                                      ? `cantidad-error-${i}`
+                                      : undefined
+                                  }
+                                  className={`h-11 text-base md:h-8 md:text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${attemptedDetails && faltaCantidad ? "border-destructive" : ""}`}
                                   value={b.cantidad}
                                   onChange={(e) => updateBloque(i, { cantidad: e.target.value })}
                                 />
+                                {attemptedDetails && faltaCantidad && (
+                                  <p
+                                    id={`cantidad-error-${i}`}
+                                    className="text-xs text-destructive"
+                                  >
+                                    Ingresa una cantidad mayor a cero.
+                                  </p>
+                                )}
                               </div>
                               <div className="space-y-0.5">
-                                <Label className="text-[11px]">Fecha requerida</Label>
+                                <Label className="text-xs md:text-[11px]">
+                                  Fecha requerida (obligatoria)
+                                </Label>
                                 <Popover
                                   open={openFechaIdx === i}
                                   onOpenChange={(v) => setOpenFechaIdx(v ? i : null)}
@@ -457,9 +539,16 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                                     <Button
                                       variant="outline"
                                       className={cn(
-                                        "h-8 w-full justify-start px-2 text-left text-xs font-normal",
+                                        "h-11 w-full justify-start px-2 text-left text-sm font-normal md:h-8 md:text-xs",
                                         !b.fecha_requerida && "text-muted-foreground",
+                                        attemptedDetails && faltaFecha && "border-destructive",
                                       )}
+                                      aria-invalid={attemptedDetails && faltaFecha}
+                                      aria-describedby={
+                                        attemptedDetails && faltaFecha
+                                          ? `fecha-error-${i}`
+                                          : undefined
+                                      }
                                     >
                                       <CalendarIcon className="mr-1.5 size-3.5" />
                                       {b.fecha_requerida
@@ -482,6 +571,11 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                                     />
                                   </PopoverContent>
                                 </Popover>
+                                {attemptedDetails && faltaFecha && (
+                                  <p id={`fecha-error-${i}`} className="text-xs text-destructive">
+                                    Selecciona la fecha en que se necesita.
+                                  </p>
+                                )}
                               </div>
                               <div className="space-y-0.5 sm:col-span-2">
                                 <Label className="text-[11px]">Nota (opcional)</Label>
@@ -501,7 +595,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                 </details>
               ))}
             </div>
-            <div className="space-y-1 border-t p-4">
+            <div className="hidden space-y-1 border-t p-4 md:block">
               <Label>Notas generales</Label>
               <Textarea
                 rows={2}
@@ -511,9 +605,76 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
               />
             </div>
           </section>
+
+          <section
+            className={`${mobileStep === 2 ? "flex" : "hidden"} min-h-0 flex-col overflow-y-auto p-4 md:hidden`}
+            aria-label="Revisión de requisición"
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-base font-semibold">Tu requisición</h2>
+              <span className="text-sm text-muted-foreground">
+                {bloques.length} {bloques.length === 1 ? "insumo" : "insumos"}
+              </span>
+            </div>
+            {bloques.length === 0 ? (
+              <p className="rounded-md border border-dashed p-5 text-center text-sm text-muted-foreground">
+                Agrega al menos un insumo para continuar.
+              </p>
+            ) : (
+              <div className="divide-y rounded-md border">
+                {bloques.map((bloque) => {
+                  const insumo = insumosDisponibles.find((item) => item.id === bloque.insumo_id);
+                  return (
+                    <div
+                      key={bloque.insumo_id}
+                      className="flex items-start justify-between gap-3 p-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="font-medium">{insumo?.nombre ?? "Insumo"}</p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {bloque.cantidad
+                            ? `${bloque.cantidad} ${insumo?.unidad ?? ""}`
+                            : "Cantidad pendiente"}
+                          {bloque.fecha_requerida
+                            ? ` · ${format(bloque.fecha_requerida, "dd/MM/yyyy")}`
+                            : " · Fecha pendiente"}
+                        </p>
+                        {bloque.nota && (
+                          <p className="mt-1 text-sm text-muted-foreground">{bloque.nota}</p>
+                        )}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="min-h-11 min-w-11 shrink-0"
+                        onClick={() => {
+                          setMobileStep(1);
+                          setExpandedItemId(bloque.insumo_id);
+                        }}
+                        aria-label={`Editar ${insumo?.nombre ?? "insumo"}`}
+                      >
+                        Editar
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            <div className="mt-5 space-y-2">
+              <Label htmlFor="mobile-notas">Notas generales</Label>
+              <Textarea
+                id="mobile-notas"
+                rows={3}
+                value={notas}
+                onChange={(e) => setNotas(e.target.value)}
+                placeholder="Observaciones para administración…"
+                className="text-base"
+              />
+            </div>
+          </section>
         </div>
 
-        <div className="flex flex-col gap-2 border-t bg-background px-6 py-3 sm:flex-row sm:justify-end">
+        <div className="hidden flex-col gap-2 border-t bg-background px-6 py-3 sm:flex-row sm:justify-end md:flex">
           {mut.error && (
             <p role="alert" className="mr-auto self-center text-sm text-destructive">
               {mut.error instanceof Error ? mut.error.message : "No se pudo enviar la requisición."}
@@ -536,6 +697,58 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
             {mut.isPending ? "Enviando…" : "Enviar requisición"}
           </Button>
         </div>
+        <div className="flex items-center gap-2 border-t bg-background p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
+          {mobileStep > 0 ? (
+            <Button
+              type="button"
+              variant="outline"
+              className="h-12 min-w-12 px-3"
+              onClick={() => setMobileStep((step) => step - 1)}
+              aria-label="Regresar"
+            >
+              <ArrowLeft className="size-4" />
+            </Button>
+          ) : null}
+          <Button
+            variant="outline"
+            className="h-12 flex-1"
+            disabled={guardar.isPending || mut.isPending}
+            onClick={() => guardar.mutate()}
+          >
+            <Save className="mr-1 size-4" />
+            {guardar.isPending ? "Guardando…" : "Guardar borrador"}
+          </Button>
+          {mobileStep < 2 ? (
+            <Button
+              className="h-12 flex-1"
+              disabled={mobileStep === 0 && bloques.length === 0}
+              onClick={() => {
+                if (mobileStep === 0 && bloques[0]) setExpandedItemId(bloques[0].insumo_id);
+                if (mobileStep === 1) {
+                  setAttemptedDetails(true);
+                  const incompleto = bloques.find(
+                    (bloque) => !(Number(bloque.cantidad) > 0) || !bloque.fecha_requerida,
+                  );
+                  if (incompleto) {
+                    setExpandedItemId(incompleto.insumo_id);
+                    return;
+                  }
+                }
+                setMobileStep((step) => step + 1);
+              }}
+            >
+              Continuar
+            </Button>
+          ) : (
+            <Button
+              className="h-12 flex-1"
+              disabled={mut.isPending || guardar.isPending}
+              onClick={() => mut.mutate()}
+            >
+              {mut.isPending ? "Enviando…" : "Enviar requisición"}
+            </Button>
+          )}
+        </div>
       </DialogContent>
       <SolicitarInsumoRapidoDialog
         open={solicitarForIdx !== null}
@@ -548,8 +761,19 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
         onCreated={(newId, pending) => {
           qc.invalidateQueries({ queryKey: ["insumos"] });
           if (newId && pending) {
-            const categoria = pending.categoria ? { id: `pending-${newId}`, nombre: pending.categoria } : null;
-            setPendingInsumos((items) => [...items.filter((item) => item.id !== newId), { id: newId, nombre: pending.nombre, unidad: pending.unidad, categoria, estatus: "pendiente" }]);
+            const categoria = pending.categoria
+              ? { id: `pending-${newId}`, nombre: pending.categoria }
+              : null;
+            setPendingInsumos((items) => [
+              ...items.filter((item) => item.id !== newId),
+              {
+                id: newId,
+                nombre: pending.nombre,
+                unidad: pending.unidad,
+                categoria,
+                estatus: "pendiente",
+              },
+            ]);
           }
           if (newId && solicitarForIdx === -1) {
             agregarInsumo(newId);

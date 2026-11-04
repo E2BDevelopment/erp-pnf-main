@@ -61,4 +61,26 @@ test.describe("autenticación y navegación por rol", () => {
     await page.goto("/app/dashboard");
     await page.waitForURL("**/login", { timeout: 30_000 });
   });
+
+  test("recuperar una sesión al volver a la ventana no refresca la ruta", async ({ page }) => {
+    await login(page, DEMO_USERS.director);
+
+    const routeRefresh = page.waitForRequest(
+      (request) => request.headers()["rsc"] === "1" && !request.headers()["next-router-prefetch"],
+      { timeout: 3_000 },
+    );
+    await page.evaluate(() => {
+      let visibilityState: DocumentVisibilityState = "hidden";
+      Object.defineProperty(document, "visibilityState", {
+        configurable: true,
+        get: () => visibilityState,
+      });
+      document.dispatchEvent(new Event("visibilitychange"));
+      visibilityState = "visible";
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+
+    await expect(routeRefresh).rejects.toThrow();
+    await expect(page.getByRole("heading", { name: "Dashboard", level: 1 })).toBeVisible();
+  });
 });

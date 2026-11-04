@@ -1,3 +1,20 @@
+# ERP PNF
+
+ERP PNF is a Spanish-language ERP for Mexican construction companies.
+
+## Project guidance
+
+- Read [PRODUCT.md](PRODUCT.md) for product rules, roles, and domain vocabulary.
+- Read [DESIGN.md](DESIGN.md) before changing visual design or UI patterns.
+- Keep business authorization on the server and preserve company-level data isolation.
+
+## Commands
+
+- `npm run dev` — start the app
+- `npm run typecheck` — check TypeScript
+- `npm test` — run unit and other Vitest suites
+- `npm run build` — create a production build
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know
