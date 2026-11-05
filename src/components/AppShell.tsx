@@ -7,16 +7,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@/lib/server-fn/client";
 import { getCompanyConfig, getCompanyLogoSignedUrl } from "@/lib/api-client/company.functions";
 import { getObraDashboard } from "@/lib/api-client/obras.functions";
-import { listSwitchableUsers, impersonateUser } from "@/lib/api-client/dev-switch.functions";
 import {
   Building2,
   BookOpen,
   Settings,
   LogOut,
-  ChevronDown,
   HardHat,
   FileText,
-  Check,
   Receipt,
   Banknote,
   ClipboardList,
@@ -40,11 +37,8 @@ import {
   useAuthStore,
   useEffectiveRoles,
   useEffectiveIsDirector,
-  useRealIsDirector,
-  type AppRole,
 } from "@/stores/auth";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ADMIN_GROUPS } from "@/lib/modules";
@@ -85,14 +79,6 @@ const normalizar = (valor: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
-
-const ROLE_LABELS: Record<AppRole, string> = {
-  director: "Director",
-  residente: "Residente",
-  auxiliar: "Auxiliar",
-  administrativo: "Administrativo",
-  supervisor: "Supervisor",
-};
 
 /** Título de pestaña por segmento de ruta: sin esto, cuatro obras son cuatro pestañas iguales. */
 const SEGMENT_TITLES: Record<string, string> = {
@@ -136,8 +122,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const profile = useAuthStore((s) => s.profile);
-  const assumedRole = useAuthStore((s) => s.assumedRole);
-  const setAssumedRole = useAuthStore((s) => s.setAssumedRole);
   const reset = useAuthStore((s) => s.reset);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const params = useParams({ strict: false }) as { obraId?: string };
@@ -147,8 +131,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [logoFailed, setLogoFailed] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [navQuery, setNavQuery] = useState("");
-  /** La suplantación de otro usuario es una herramienta de demostración, no del producto. */
-  const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
   const fetchCfg = useServerFn(getCompanyConfig);
   const signFn = useServerFn(getCompanyLogoSignedUrl);
@@ -164,7 +146,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   /** El nombre real de la constructora, no la categoría del producto. */
   const nombreEmpresa = cfg.data?.razon_social ?? cfg.data?.nombre_completo ?? null;
 
-  const realDirector = useRealIsDirector();
   const effRoles = useEffectiveRoles();
   const director = useEffectiveIsDirector();
   const showAdmin = director || effRoles.includes("administrativo");
@@ -265,20 +246,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { can: canPerm, isLoading: permisosLoading } = usePermisos();
   const puedeCrearObra = canPerm("obras.crear");
 
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["role_permissions"] });
-    queryClient.invalidateQueries({ queryKey: ["obras"] });
-  }, [assumedRole, profile?.id, queryClient]);
   const puedeConfigurarObra = canPerm("obras.editar") || canPerm("obras.asignar_team");
-
-  const switchRole = (role: AppRole | null) => {
-    setAssumedRole(role);
-    queryClient.invalidateQueries({ queryKey: ["role_permissions"] });
-    queryClient.invalidateQueries({ queryKey: ["obras"] });
-    queryClient.invalidateQueries({ queryKey: ["pendientes"] });
-    queryClient.invalidateQueries({ queryKey: ["notificaciones"] });
-    navigate({ to: "/app/dashboard" });
-  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -611,8 +579,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3">
             <NotificacionesBell />
 
-            {demoMode && realDirector && <DevUserSwitcher />}
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-11 gap-2 md:h-8">
@@ -647,30 +613,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   Mi cuenta
                 </DropdownMenuItem>
 
-                {realDirector && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
-                      Ver como
-                    </DropdownMenuLabel>
-                    {assumedRole ? (
-                      <DropdownMenuItem onClick={() => switchRole(null)}>
-                        <Check className="size-4 mr-2" />
-                        Volver a Director
-                      </DropdownMenuItem>
-                    ) : (
-                      (["residente", "supervisor", "administrativo", "auxiliar"] as AppRole[]).map(
-                        (role) => (
-                          <DropdownMenuItem key={role} onClick={() => switchRole(role)}>
-                            <span className="w-4" aria-hidden />
-                            {ROLE_LABELS[role]}
-                          </DropdownMenuItem>
-                        ),
-                      )
-                    )}
-                  </>
-                )}
-
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setLogoutOpen(true)}>
                   <LogOut className="size-4 mr-2" />
@@ -680,21 +622,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
           </div>
         </header>
-
-        {assumedRole && (
-          <div className="border-b border-border bg-muted/40">
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 md:px-6 lg:px-8">
-              <p className="text-xs text-foreground">
-                Estás viendo el sistema como{" "}
-                <span className="font-semibold">{ROLE_LABELS[assumedRole]}</span>. Lo que registres
-                queda a tu nombre de Director.
-              </p>
-              <Button variant="outline" size="sm" onClick={() => switchRole(null)}>
-                Volver a mi rol
-              </Button>
-            </div>
-          </div>
-        )}
 
         <main
           ref={mainCom}
@@ -835,100 +762,3 @@ const NavItem = memo(function NavItem({
     </Link>
   );
 });
-function DevUserSwitcher() {
-  const profile = useAuthStore((s) => s.profile);
-  const reset = useAuthStore((s) => s.reset);
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const listFn = useServerFn(listSwitchableUsers);
-  const impersonateFn = useServerFn(impersonateUser);
-  const [switching, setSwitching] = useState(false);
-
-  const users = useQuery({
-    queryKey: ["dev-switchable-users"],
-    queryFn: () => listFn(),
-    staleTime: 60_000,
-  });
-
-  const onPick = async (userId: string) => {
-    if (switching) return;
-    setSwitching(true);
-    try {
-      const { token_hash } = await impersonateFn({ data: { userId } });
-      await supabase.auth.signOut();
-      reset();
-      const { error } = await supabase.auth.verifyOtp({ type: "magiclink", token_hash });
-      if (error) throw error;
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["role_permissions"] }),
-        queryClient.invalidateQueries({ queryKey: ["dev-switchable-users"] }),
-        queryClient.invalidateQueries({ queryKey: ["obras"] }),
-        queryClient.invalidateQueries({ queryKey: ["pendientes"] }),
-        queryClient.invalidateQueries({ queryKey: ["notificaciones"] }),
-      ]);
-      queryClient.clear();
-      navigate({ to: "/app/dashboard", replace: true });
-      window.location.reload();
-    } catch (e) {
-      toast.error("No se pudo cambiar de usuario", {
-        description: e instanceof Error ? e.message : String(e),
-      });
-    } finally {
-      setSwitching(false);
-    }
-  };
-
-  const currentLabel = profile?.nombre_completo || profile?.email || "Usuario";
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-11 gap-2 text-muted-foreground md:h-8"
-          title="Herramienta de demostración: cambiar de usuario"
-        >
-          <span className="text-xs font-medium">Demo</span>
-          <span className="hidden sm:inline truncate max-w-[140px]">{currentLabel}</span>
-          <ChevronDown className="size-3" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="max-h-[70vh] overflow-y-auto w-72">
-        <DropdownMenuLabel>Cambiar de usuario (demostración)</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {users.isLoading && (
-          <div className="px-3 py-2 text-xs text-muted-foreground">Cargando…</div>
-        )}
-        {(
-          users.data as
-            | Array<{
-                id: string;
-                nombre_completo: string | null;
-                email: string | null;
-                roles: string[];
-              }>
-            | undefined
-        )?.map((u) => {
-          const isCurrent = u.id === profile?.id;
-          return (
-            <DropdownMenuItem
-              key={u.id}
-              disabled={isCurrent || switching}
-              onClick={() => onPick(u.id)}
-              className="flex flex-col items-start gap-0.5"
-            >
-              <span className="text-sm">
-                {u.nombre_completo || u.email}
-                {isCurrent && <span className="ml-2 text-xs text-muted-foreground">(actual)</span>}
-              </span>
-              <span className="text-[11px] text-muted-foreground">
-                {u.roles.length > 0 ? u.roles.join(", ") : "sin rol"}
-              </span>
-            </DropdownMenuItem>
-          );
-        })}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}

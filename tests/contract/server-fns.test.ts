@@ -20,7 +20,6 @@ function sourceFiles(): string[] {
     .map((name) => resolve(apiDir, name));
 
   files.push(
-    resolve(SRC, "lib/dev-switch.functions.ts"),
     resolve(SRC, "lib/contabilidad/balance.functions.ts"),
   );
   return files;

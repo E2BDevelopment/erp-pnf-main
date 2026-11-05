@@ -172,22 +172,6 @@ describe("lecturas por rol", () => {
 });
 
 describe("permisos de servidor", () => {
-  it("un residente no puede listar usuarios suplantables", async () => {
-    const response = await rpc("dev-switch.functions.listSwitchableUsers", {}, residente.token);
-    expect(response.status).toBe(500);
-    expect(response.error).toContain("Solo el Director puede cambiar de usuario");
-  });
-
-  it("el director sí puede listar usuarios suplantables", async () => {
-    const response = await rpc<unknown[]>(
-      "dev-switch.functions.listSwitchableUsers",
-      {},
-      director.token,
-    );
-    expect(response.status).toBe(200);
-    expect((response.data ?? []).length).toBeGreaterThanOrEqual(6);
-  });
-
   it("un residente no puede crear obras", async () => {
     const response = await rpc(
       "api/obras.functions.crearObra",

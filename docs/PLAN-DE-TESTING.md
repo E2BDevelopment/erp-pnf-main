@@ -192,9 +192,9 @@ verificando contrato HTTP, sesión, roles y lecturas.
 | Contrato HTTP | 5 | Sin token → 401; token inválido → 401; función inexistente → 404; UUID inválido → 400; body sin `{ data }` → 400 |
 | Sesión y contexto | 2 | `getSessionContext` devuelve perfil y rol correctos para director y residente |
 | Lecturas por rol | 7 | Director ve ambas obras; residente y residente2 solo la suya; dashboard propio; dashboard de ambas para director; dashboard de empresa con serie semanal; catálogos |
-| Permisos de servidor | 4 | Residente no lista usuarios suplantables ni crea obras; director sí; residente2 no debería leer otra obra (fallo esperado SEC-03) |
+| Permisos de servidor | 2 | Residente no puede crear obras; residente2 no debería leer otra obra (fallo esperado SEC-03) |
 
-**Resultado:** **17 pass + 1 fallo esperado** (residente2 leyendo obra ajena).
+**Resultado:** **15 pass + 1 fallo esperado** (residente2 leyendo obra ajena).
 
 **Criterio de salida:** todos los códigos HTTP y lecturas por rol deben coincidir con el
 contrato; los fallos esperados deben estar vinculados a un hallazgo abierto.
@@ -377,7 +377,7 @@ Contraseña común: **`Demo1234!`**
 
 | Usuario | Rol | Uso principal |
 |---|---|---|
-| `director@demo.pnf` | director | Acceso total, ambas obras, contabilidad, suplantación |
+| `director@demo.pnf` | director | Acceso total, ambas obras y contabilidad |
 | `residente@demo.pnf` | residente | Solo obra Residencial |
 | `residente2@demo.pnf` | residente | Solo obra Ampliación |
 | `auxiliar@demo.pnf` | auxiliar | Pruebas de permisos y RLS |
@@ -491,11 +491,10 @@ npm run demo:verify
 | `permisos/require.ts` | 100% | 87.5% | 100% | 100% |
 | `permisos/catalogo.ts` | 100% | — | 100% | 100% |
 | `balance.functions.ts` | 0% | 0% | 0% | 0% |
-| `dev-switch.functions.ts` | 0% | 0% | 0% | 0% |
 | `solicitud-cotizacion-pdf.ts` | 0% | 0% | 0% | 0% |
 
 **Interpretación:** la cobertura global es baja porque el alcance de V8 incluye algunos
-archivos de server functions (`balance`, `dev-switch`), PDF y catálogos que no se ejercitan
+archivos de server functions (`balance`), PDF y catálogos que no se ejercitan
 desde unitarias. Las utilidades que sí se probaron tienen cobertura alta (varias al 100%).
 El porcentaje global no debe usarse solo como gate; conviene fijar umbrales por carpeta.
 

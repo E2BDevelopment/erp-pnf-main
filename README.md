@@ -144,7 +144,7 @@ Tareas
 
 Catálogos
 
-DIRECTOR — acceso total a todos los módulos de todos los perfiles. Puede asumir temporalmente el rol de Residente, Administrativo o Supervisor para modificar información de cualquier proceso dentro de cualquier obra.
+DIRECTOR — acceso total a todos los módulos de todas las obras. Para operar como otro perfil, inicia sesión con la cuenta de ese perfil.
 
 INSTRUCCIONES DE CONSTRUCCIÓN Crear únicamente la estructura de navegación y los módulos de cada perfil como placeholders — pantallas con el nombre del módulo y un mensaje "Próximamente". No desarrollar la lógica interna de ningún módulo todavía. Los módulos se diseñarán y desarrollarán a detalle en iteraciones posteriores.
 

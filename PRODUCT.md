@@ -10,7 +10,7 @@ web
 
 Cinco perfiles dentro de una constructora mexicana. Un usuario puede tener más de un rol.
 
-- **Director** — dueño o dirección general. Registra la empresa, abre obras, asigna equipo y tiene acceso total a todos los módulos de todas las obras. Puede asumir temporalmente el rol de Residente, Administrativo o Supervisor para operar cualquier proceso. Su trabajo es de dirección: vistas corporativas, desktop-first.
+- **Director** — dueño o dirección general. Registra la empresa, abre obras, asigna equipo y tiene acceso total a todos los módulos de todas las obras. Para operar como otro perfil, inicia sesión con la cuenta de ese perfil. Su trabajo es de dirección: vistas corporativas, desktop-first.
 - **Residente** — encargado de la obra, presente en campo. Registra la operación diaria (estimaciones, requisiciones, asistencia, destajos, gasolinas, caja chica, almacén de obra) desde el celular en la obra. Responde por la ejecución de su obra.
 - **Auxiliar** — apoya al Residente en captura y registro. Accede a los mismos módulos, pero todo lo que registra requiere el visto bueno del Residente antes de subir al Supervisor.
 - **Administrativo** — oficina. Cotiza materiales, arma comparativas, genera órdenes de compra y tramita pagos; lleva cuentas por pagar, tesorería, almacén central y gastos de oficina.
@@ -40,7 +40,7 @@ El producto empieza como herramienta interna de una constructora y está constru
 - **Cadena documental de compra.** Requisición de obra → visto bueno del Supervisor → solicitud y comparativa de cotizaciones → orden de compra → recepción en almacén → cuenta por pagar → pago en tesorería.
 - **Datos de la obra.** Nombre, tipo (Industrial, Comercial, Residencial, Infraestructura, Vivienda en serie, Urbanización), cliente, número de contrato, ubicación, fecha de inicio y fecha de terminación.
 - **Equipo mínimo por obra.** Para poder operar, el Director asigna al menos un Residente y un Administrativo. Solo puede haber un Residente y un Administrativo por obra.
-- **Autorización configurable.** Cada empresa ajusta qué rol puede ejecutar cada acción; el Director siempre puede. Las acciones sensibles se validan también en el servidor, no solo en la navegación.
+- **Autorización configurable.** Cada empresa ajusta qué rol puede ejecutar cada acción. Dirección tiene acceso total mientras opera con su propio rol; al seleccionar temporalmente otro rol, aplican los permisos de ese rol hasta que regresa al suyo. Las acciones sensibles se validan también en el servidor, no solo en la navegación.
 - **Documentos que entran y salen.** El presupuesto autorizado se carga desde Excel (`.xlsx`) o se anexa en PDF; las solicitudes de cotización se emiten en PDF; los catálogos de insumos se importan y exportan en Excel.
 - **Avisos dentro del producto.** Notificaciones y contadores de pendientes por módulo avisan lo que espera autorización o captura.
 
@@ -57,7 +57,7 @@ El producto empieza como herramienta interna de una constructora y está constru
 - Administrativo (y Dirección): requisiciones, cuentas por pagar, tesorería, catálogos, almacén central, gastos de oficina, nómina, destajos, subcontratos, rentas, gasolinas, caja chica, tareas, más contabilidad y condensado semanal.
 - El Supervisor autoriza desde la obra; no existe una pantalla separada de supervisión.
 
-**Controles ya vigentes.** Rutas y acciones se filtran por perfil y por permiso configurable por empresa (`role_permissions`); el Director siempre puede. Las acciones sensibles se validan en el servidor con `requirePermission`, y el aislamiento por empresa se refuerza con RLS en la base de datos.
+**Controles ya vigentes.** Rutas y acciones se filtran por el perfil de la sesión y por permiso configurable por empresa (`role_permissions`); las acciones sensibles se validan en el servidor con `requirePermission`, y el aislamiento por empresa se refuerza con RLS en la base de datos.
 
 **Restricciones técnicas.** Next.js 16 (App Router), React 19, Tailwind CSS 4, Supabase para autenticación, PostgreSQL y almacenamiento, Zustand para estado global, TanStack Query para datos de servidor. La lógica de negocio vive en server functions (`src/lib/api/*.functions.ts`) con fachadas generadas; las operaciones que saltan RLS (onboarding, equipo, cambio de rol) usan la service role key solo en servidor. Módulos de obra mobile-first; vistas corporativas y administrativas desktop-first.
 

@@ -4,7 +4,7 @@ import type { AppRole } from "@/stores/auth";
 
 /**
  * Enforcement server-side de permisos por rol.
- * - Lee los roles REALES del usuario (ignora rol asumido, que sólo aplica a UI).
+ * - Lee los roles asociados al usuario autenticado.
  * - Director bypasea sin consultar overrides.
  * - Lanza si el usuario no tiene el permiso.
  */

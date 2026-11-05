@@ -38,7 +38,6 @@ import * as m_api_trabajadores_functions from "@/lib/api/trabajadores.functions"
 import * as m_api_unidades_negocio_functions from "@/lib/api/unidades-negocio.functions";
 import * as m_api_vales_gasolina_functions from "@/lib/api/vales-gasolina.functions";
 import * as m_contabilidad_balance_functions from "@/lib/contabilidad/balance.functions";
-import * as m_dev_switch_functions from "@/lib/dev-switch.functions";
 
 export const registry: Record<string, { __execute: (input?: { data?: unknown }) => Promise<unknown> }> = {
   "api/almacen.functions.listOCsPorRecibir": m_api_almacen_functions.listOCsPorRecibir,
@@ -345,6 +344,4 @@ export const registry: Record<string, { __execute: (input?: { data?: unknown }) 
   "api/vales-gasolina.functions.pagarValesGasolina": m_api_vales_gasolina_functions.pagarValesGasolina,
   "contabilidad/balance.functions.getBalanceGeneral": m_contabilidad_balance_functions.getBalanceGeneral,
   "contabilidad/balance.functions.getDetalleCuenta": m_contabilidad_balance_functions.getDetalleCuenta,
-  "dev-switch.functions.listSwitchableUsers": m_dev_switch_functions.listSwitchableUsers,
-  "dev-switch.functions.impersonateUser": m_dev_switch_functions.impersonateUser,
 };

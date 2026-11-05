@@ -9,7 +9,7 @@ import { useEffectiveRoles, useRealIsDirector } from "@/stores/auth";
 
 /**
  * Fuente de verdad en cliente para permisos por rol.
- * `can(actionKey)` evalúa contra los roles efectivos (respeta rol asumido del director).
+ * `can(actionKey)` evalúa contra los roles de la sesión.
  */
 export function usePermisos() {
   const listFn = useServerFn(listRolePermissions);

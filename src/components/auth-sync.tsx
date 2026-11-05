@@ -41,12 +41,7 @@ export function AuthSync() {
           profile: ctx.profile,
           roles: ctx.roles,
         });
-        // Si el usuario ya no es director, limpiar cualquier rol asumido persistido.
-        if (!ctx.roles.includes("director")) {
-          useAuthStore.getState().setAssumedRole(null);
-        }
         queryClient.invalidateQueries({ queryKey: ["role_permissions"] });
-        queryClient.invalidateQueries({ queryKey: ["dev-switchable-users"] });
         queryClient.invalidateQueries({ queryKey: ["obras"] });
       } catch (error) {
         console.error("session sync failed", error);

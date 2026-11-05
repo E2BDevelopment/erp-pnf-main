@@ -8,7 +8,7 @@ ERP PNF organiza la operación por empresa y obra. La obra es el contexto de pre
 
 ### Perfiles y autorización
 
-- **Director:** acceso global y posibilidad de asumir temporalmente la vista de otro perfil. Las acciones realizadas mientras asume un rol de forma interna siguen quedando atribuidas a su usuario Director; la suplantación de usuarios completos solo existe como herramienta de demostración cuando el modo demo está activo.
+- **Director:** acceso global a todos los módulos de todas las obras. Cada perfil entra con su propia cuenta.
 - **Residente:** operación cotidiana de obra y captura de solicitudes, avances y consumos.
 - **Auxiliar:** captura de obra sujeta a revisión conforme a la configuración y al flujo del módulo.
 - **Supervisor:** revisa y autoriza operaciones de obra que requieren visto bueno.

@@ -23,7 +23,7 @@ function walk(dir) {
 const files = walk(srcDir);
 
 const isImplementationModule = (rel) =>
-  /^src[\\/]lib[\\/](api[\\/][^\\/]+\.functions\.ts|contabilidad[\\/][^\\/]+\.functions\.ts|dev-switch\.functions\.ts)$/.test(
+  /^src[\\/]lib[\\/](api[\\/][^\\/]+\.functions\.ts|contabilidad[\\/][^\\/]+\.functions\.ts)$/.test(
     rel,
   );
 
@@ -66,10 +66,6 @@ for (const file of files) {
     source = source.replace(
       /from\s+["']@\/lib\/api\/([a-z0-9-]+)\.functions["']/g,
       'from "@/lib/api-client/$1.functions"',
-    );
-    source = source.replace(
-      /from\s+["']@\/lib\/dev-switch\.functions["']/g,
-      'from "@/lib/api-client/dev-switch.functions"',
     );
     source = source.replace(
       /from\s+["']@\/lib\/contabilidad\/balance\.functions["']/g,
