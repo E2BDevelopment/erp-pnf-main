@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -216,21 +216,33 @@ export function CatalogoTerceroModule() {
         </div>
         <div className="flex items-center gap-2">
           {canManage && (
-            <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
-              <TabsList className="h-8">
-                <TabsTrigger value="todos" className="text-xs h-6 px-2">
-                  Todos
-                </TabsTrigger>
-                <TabsTrigger value="pendientes" className="text-xs h-6 px-2">
-                  Pendientes
-                  {pendientesCount > 0 && (
-                    <Badge className="ml-1.5 h-4 px-1 bg-amber-100 text-amber-800 hover:bg-amber-100 text-xs">
-                      {pendientesCount}
-                    </Badge>
-                  )}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <ToggleGroup
+              type="single"
+              value={tab}
+              aria-label="Filtrar proveedores y contratistas por autorización"
+              className="inline-flex h-8 rounded-lg bg-muted p-1 text-muted-foreground"
+              onValueChange={(v) => {
+                if (v) setTab(v as typeof tab);
+              }}
+            >
+              <ToggleGroupItem
+                value="todos"
+                className="text-xs h-6 px-2 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow"
+              >
+                Todos
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="pendientes"
+                className="text-xs h-6 px-2 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow"
+              >
+                Pendientes
+                {pendientesCount > 0 && (
+                  <Badge className="ml-1.5 h-4 px-1 bg-amber-100 text-amber-800 hover:bg-amber-100 text-xs">
+                    {pendientesCount}
+                  </Badge>
+                )}
+              </ToggleGroupItem>
+            </ToggleGroup>
           )}
           {canRequest && (
             <Button
@@ -246,10 +258,11 @@ export function CatalogoTerceroModule() {
       </div>
 
       {/* Filters */}
-      <Card className="p-3 flex flex-wrap sm:flex-nowrap items-center gap-2">
+      <Card className="p-3 flex flex-wrap lg:flex-nowrap items-center gap-2">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
+            aria-label="Buscar proveedores y contratistas por nombre o RFC"
             placeholder="Buscar por nombre o RFC…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -257,7 +270,10 @@ export function CatalogoTerceroModule() {
           />
         </div>
         <Select value={catFiltro} onValueChange={(v) => setCatFiltro(v as typeof catFiltro)}>
-          <SelectTrigger className="w-36 h-8 text-xs shrink-0">
+          <SelectTrigger
+            aria-label="Categoría de proveedor o contratista"
+            className="w-36 h-8 text-xs shrink-0"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -271,7 +287,7 @@ export function CatalogoTerceroModule() {
           value={personaFiltro}
           onValueChange={(v) => setPersonaFiltro(v as typeof personaFiltro)}
         >
-          <SelectTrigger className="w-36 h-8 text-xs shrink-0">
+          <SelectTrigger aria-label="Tipo de persona" className="w-36 h-8 text-xs shrink-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -281,7 +297,7 @@ export function CatalogoTerceroModule() {
           </SelectContent>
         </Select>
         <Select value={docFiltro} onValueChange={(v) => setDocFiltro(v as typeof docFiltro)}>
-          <SelectTrigger className="w-40 h-8 text-xs shrink-0">
+          <SelectTrigger aria-label="Estado de documentos" className="w-40 h-8 text-xs shrink-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -507,5 +523,3 @@ export function CatalogoTerceroModule() {
     </div>
   );
 }
-
-

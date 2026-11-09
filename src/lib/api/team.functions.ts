@@ -1,10 +1,25 @@
-import { createServerFn } from "@/lib/server-fn";
+import { createServerFn, type ServerFnContext } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const ROLES = ["director", "residente", "auxiliar", "administrativo", "supervisor"] as const;
-const roleEnum = z.enum(ROLES);
+const roleEnum = z.union([z.enum(ROLES), z.string().uuid()]);
+
+async function resolveRole(supabase: ServerFnContext["supabase"], companyId: string, role: string) {
+  if (ROLES.includes(role as (typeof ROLES)[number])) {
+    return { role: role as (typeof ROLES)[number], custom_role_id: null };
+  }
+  const { data, error } = await supabase
+    .from("company_roles")
+    .select("id, base_role")
+    .eq("id", role)
+    .eq("company_id", companyId)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Rol no válido para esta empresa");
+  return { role: data.base_role as (typeof ROLES)[number], custom_role_id: data.id as string };
+}
 
 /** Verify the caller is a Director of their own company. Returns companyId. */
 
@@ -47,14 +62,14 @@ export const listTeamMembers = createServerFn({ method: "GET" })
 
     const { data: roles, error: rolesError } = await supabase
       .from("user_roles")
-      .select("user_id, role")
+      .select("user_id, role, custom_role_id")
       .eq("company_id", profile.company_id);
     if (rolesError) throw new Error(rolesError.message);
 
     const rolesByUser = new Map<string, string[]>();
     for (const r of roles ?? []) {
       const arr = rolesByUser.get(r.user_id) ?? [];
-      arr.push(r.role);
+      arr.push(r.custom_role_id ?? r.role);
       rolesByUser.set(r.user_id, arr);
     }
 
@@ -78,6 +93,8 @@ export const inviteTeamMember = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const companyId = await requireDirector(supabase, userId);
 
+    const assignment = await resolveRole(supabase, companyId, data.role);
+
     // Create the auth user with confirmed email (no email sent).
     const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
@@ -100,7 +117,7 @@ export const inviteTeamMember = createServerFn({ method: "POST" })
     // Insert single role row.
     const { error: rolesErr } = await supabaseAdmin
       .from("user_roles")
-      .insert({ user_id: newUserId, company_id: companyId, role: data.role });
+      .insert({ user_id: newUserId, company_id: companyId, ...assignment });
     if (rolesErr) throw new Error(rolesErr.message);
 
     return { userId: newUserId };
@@ -118,6 +135,16 @@ export const updateMemberRole = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const companyId = await requireDirector(supabase, userId);
 
+    const assignment = await resolveRole(supabase, companyId, data.role);
+    const { data: member, error: memberError } = await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .eq("id", data.user_id)
+      .eq("company_id", companyId)
+      .maybeSingle();
+    if (memberError) throw new Error(memberError.message);
+    if (!member) throw new Error("El usuario no pertenece a esta empresa");
+
     if (data.user_id === userId && data.role !== "director") {
       throw new Error("No puedes quitarte el rol de Director");
     }
@@ -131,7 +158,7 @@ export const updateMemberRole = createServerFn({ method: "POST" })
 
     const { error: insErr } = await supabaseAdmin
       .from("user_roles")
-      .insert({ user_id: data.user_id, company_id: companyId, role: data.role });
+      .insert({ user_id: data.user_id, company_id: companyId, ...assignment });
     if (insErr) throw new Error(insErr.message);
 
     return { ok: true };
@@ -155,7 +182,8 @@ export const removeMember = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin
       .from("profiles")
       .update({ company_id: null })
-      .eq("id", data.user_id);
+      .eq("id", data.user_id)
+      .eq("company_id", companyId);
     if (error) throw new Error(error.message);
 
     return { ok: true };

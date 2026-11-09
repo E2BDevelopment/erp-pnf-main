@@ -39,7 +39,10 @@ export function SolicitarInsumoRapidoDialog({
   categorias: Array<{ id: string; nombre: string; estatus?: string }>;
   unidades: Array<{ id: string; codigo: string; nombre?: string; estatus?: string }>;
   isDirector: boolean;
-  onCreated: (newId?: string, pending?: { nombre: string; unidad: string; categoria: string | null }) => void;
+  onCreated: (
+    newId?: string,
+    pending?: { nombre: string; unidad: string; categoria: string | null },
+  ) => void;
   disponibleRenta?: boolean;
 }) {
   const solicitar = useServerFn(solicitarInsumo);
@@ -69,11 +72,19 @@ export function SolicitarInsumoRapidoDialog({
           ? "Insumo creado y autorizado."
           : "Solicitud enviada. Un Director revisará tu solicitud.",
       );
-      onCreated(r?.id, isDirector ? undefined : {
-        nombre,
-        unidad: unidad === "__nueva__" ? unidadNueva : unidad,
-        categoria: categoriaId === "__nueva__" ? categoriaNueva : categorias.find((c) => c.id === categoriaId)?.nombre ?? null,
-      });
+      onCreated(
+        r?.id,
+        isDirector
+          ? undefined
+          : {
+              nombre,
+              unidad: unidad === "__nueva__" ? unidadNueva : unidad,
+              categoria:
+                categoriaId === "__nueva__"
+                  ? categoriaNueva
+                  : (categorias.find((c) => c.id === categoriaId)?.nombre ?? null),
+            },
+      );
     },
     onError: (e: any) => toast.error(e.message),
   });
@@ -91,18 +102,28 @@ export function SolicitarInsumoRapidoDialog({
         </DialogHeader>
         <div className="space-y-3">
           <div>
-            <Label>Nombre</Label>
-            <Input value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={200} />
+            <Label htmlFor="solicitar-insumo-rapido-dialog-nombre">Nombre</Label>
+            <Input
+              id="solicitar-insumo-rapido-dialog-nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              maxLength={200}
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Unidad</Label>
+              <Label htmlFor="solicitar-insumo-rapido-dialog-unidad">Unidad</Label>
               <Select value={unidad} onValueChange={setUnidad}>
-                <SelectTrigger>
+                <SelectTrigger id="solicitar-insumo-rapido-dialog-unidad">
                   <SelectValue placeholder="Seleccionar..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__nueva__">{isDirector ? "+ Agregar nueva unidad" : "+ Solicitar unidad nueva"}</SelectItem>
+                  <SelectItem
+                    value="__nueva__"
+                    className="mb-1 cursor-pointer bg-accent font-semibold text-primary-ink focus:bg-primary/20 focus:text-primary-ink"
+                  >
+                    {isDirector ? "+ Agregar nueva unidad" : "+ Solicitar unidad nueva"}
+                  </SelectItem>
                   {unidades.length === 0 && (
                     <div className="px-2 py-1.5 text-xs text-muted-foreground">
                       Sin unidades. Pide al Director crearlas.
@@ -117,38 +138,89 @@ export function SolicitarInsumoRapidoDialog({
                   ))}
                 </SelectContent>
               </Select>
-              {unidad === "__nueva__" && <div className="mt-2 space-y-2">
-                <div>
-                  <Label htmlFor="unidad-nueva-codigo" className="text-xs">Código</Label>
-                  <Input id="unidad-nueva-codigo" value={unidadNueva} onChange={(e) => setUnidadNueva(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10))} placeholder="Ej. CUB" maxLength={10} />
+              {unidad === "__nueva__" && (
+                <div className="mt-2 space-y-2">
+                  <div>
+                    <Label htmlFor="unidad-nueva-codigo" className="text-xs">
+                      Código
+                    </Label>
+                    <Input
+                      id="unidad-nueva-codigo"
+                      value={unidadNueva}
+                      onChange={(e) =>
+                        setUnidadNueva(
+                          e.target.value
+                            .toUpperCase()
+                            .replace(/[^A-Z0-9]/g, "")
+                            .slice(0, 10),
+                        )
+                      }
+                      placeholder="Ej. CUB"
+                      maxLength={10}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="unidad-nueva-nombre" className="text-xs">
+                      Nombre (opcional)
+                    </Label>
+                    <Input
+                      id="unidad-nueva-nombre"
+                      value={unidadNuevaNombre}
+                      onChange={(e) => setUnidadNuevaNombre(e.target.value)}
+                      placeholder="Ej. Cubeta"
+                      maxLength={100}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {isDirector
+                      ? "Se creará autorizada al guardar."
+                      : "(en espera de autorización)"}
+                  </p>
                 </div>
-                <div>
-                  <Label htmlFor="unidad-nueva-nombre" className="text-xs">Nombre (opcional)</Label>
-                  <Input id="unidad-nueva-nombre" value={unidadNuevaNombre} onChange={(e) => setUnidadNuevaNombre(e.target.value)} placeholder="Ej. Cubeta" maxLength={100} />
-                </div>
-                <p className="text-xs text-muted-foreground">{isDirector ? "Se creará autorizada al guardar." : "(en espera de autorización)"}</p>
-              </div>}
+              )}
             </div>
             <div>
-              <Label>Categoría</Label>
+              <Label htmlFor="solicitar-insumo-rapido-dialog-categoria">Categoría</Label>
               <Select value={categoriaId} onValueChange={setCategoriaId}>
-                <SelectTrigger>
+                <SelectTrigger id="solicitar-insumo-rapido-dialog-categoria">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__nueva__">{isDirector ? "+ Agregar nueva categoría" : "+ Solicitar categoría nueva"}</SelectItem>
+                  <SelectItem
+                    value="__nueva__"
+                    className="mb-1 cursor-pointer bg-accent font-semibold text-primary-ink focus:bg-primary/20 focus:text-primary-ink"
+                  >
+                    {isDirector ? "+ Agregar nueva categoría" : "+ Solicitar categoría nueva"}
+                  </SelectItem>
                   <SelectItem value="none">Sin categoría</SelectItem>
                   {categorias.map((c) => (
                     <SelectItem key={c.id} value={c.id} disabled={c.estatus !== "autorizado"}>
-                      {c.nombre}{c.estatus === "pendiente" ? " (en espera de autorización)" : c.estatus === "rechazado" ? " (rechazada)" : ""}
+                      {c.nombre}
+                      {c.estatus === "pendiente"
+                        ? " (en espera de autorización)"
+                        : c.estatus === "rechazado"
+                          ? " (rechazada)"
+                          : ""}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {categoriaId === "__nueva__" && <div className="mt-2 space-y-2">
-                <Input value={categoriaNueva} onChange={(e) => setCategoriaNueva(e.target.value)} placeholder="Nombre de categoría" maxLength={100} />
-                <p className="text-xs text-muted-foreground">{isDirector ? "Se creará autorizada al guardar." : "(en espera de autorización)"}</p>
-              </div>}
+              {categoriaId === "__nueva__" && (
+                <div className="mt-2 space-y-2">
+                  <Input
+                    aria-label="Nombre de categoría nueva"
+                    value={categoriaNueva}
+                    onChange={(e) => setCategoriaNueva(e.target.value)}
+                    placeholder="Nombre de categoría"
+                    maxLength={100}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {isDirector
+                      ? "Se creará autorizada al guardar."
+                      : "(en espera de autorización)"}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2 pt-1">
@@ -164,14 +236,23 @@ export function SolicitarInsumoRapidoDialog({
             Cancelar
           </Button>
           <Button
-            disabled={!nombre.trim() || (!unidad || (unidad === "__nueva__" && !unidadNueva)) || (categoriaId === "__nueva__" && !categoriaNueva.trim()) || mut.isPending}
+            disabled={
+              !nombre.trim() ||
+              !unidad ||
+              (unidad === "__nueva__" && !unidadNueva) ||
+              (categoriaId === "__nueva__" && !categoriaNueva.trim()) ||
+              mut.isPending
+            }
             onClick={() =>
               mut.mutate({
                 data: {
                   nombre: nombre.trim(),
                   unidad: unidad === "__nueva__" ? unidadNueva : unidad,
-                  ...(unidad === "__nueva__" ? { unidadNueva: { codigo: unidadNueva, nombre: unidadNuevaNombre.trim() } } : {}),
-                  categoriaId: categoriaId === "none" || categoriaId === "__nueva__" ? null : categoriaId,
+                  ...(unidad === "__nueva__"
+                    ? { unidadNueva: { codigo: unidadNueva, nombre: unidadNuevaNombre.trim() } }
+                    : {}),
+                  categoriaId:
+                    categoriaId === "none" || categoriaId === "__nueva__" ? null : categoriaId,
                   ...(categoriaId === "__nueva__" ? { categoriaNueva: categoriaNueva.trim() } : {}),
                   disponibleRenta: disponibleRenta ?? false,
                 },

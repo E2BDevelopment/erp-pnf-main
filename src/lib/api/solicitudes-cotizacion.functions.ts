@@ -86,7 +86,10 @@ export const crearSolicitud = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "cotizaciones.gestionar");
+    await requirePermission(supabase, userId, "cotizaciones.gestionar", {
+      table: "requisiciones",
+      id: data.requisicionId,
+    });
     const { companyId } = await getCtx(supabase, userId);
 
     const { data: req } = await supabase
@@ -141,7 +144,10 @@ export const actualizarSolicitud = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "cotizaciones.gestionar");
+    await requirePermission(supabase, userId, "cotizaciones.gestionar", {
+      table: "cotizacion_solicitudes",
+      id: data.solicitudId,
+    });
 
     const { data: sc } = await supabase
       .from("cotizacion_solicitudes")
@@ -182,7 +188,10 @@ export const eliminarSolicitud = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ solicitudId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "cotizaciones.gestionar");
+    await requirePermission(supabase, userId, "cotizaciones.gestionar", {
+      table: "cotizacion_solicitudes",
+      id: data.solicitudId,
+    });
     const { data: sc } = await supabase
       .from("cotizacion_solicitudes")
       .select("id, estatus, requisicion_id")
@@ -205,7 +214,10 @@ export const marcarSCEnviada = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ solicitudId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "cotizaciones.gestionar");
+    await requirePermission(supabase, userId, "cotizaciones.gestionar", {
+      table: "cotizacion_solicitudes",
+      id: data.solicitudId,
+    });
     const { data: sc } = await supabase
       .from("cotizacion_solicitudes")
       .select("id, estatus")
@@ -234,7 +246,10 @@ export const capturarRespuesta = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "cotizaciones.gestionar");
+    await requirePermission(supabase, userId, "cotizaciones.gestionar", {
+      table: "cotizacion_solicitudes",
+      id: data.solicitudId,
+    });
     const { data: sc } = await supabase
       .from("cotizacion_solicitudes")
       .select("id, estatus, requisicion_id")
@@ -280,7 +295,10 @@ export const descartarSolicitud = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ solicitudId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "cotizaciones.gestionar");
+    await requirePermission(supabase, userId, "cotizaciones.gestionar", {
+      table: "cotizacion_solicitudes",
+      id: data.solicitudId,
+    });
     const { data: sc } = await supabase
       .from("cotizacion_solicitudes")
       .select("id, requisicion_id")

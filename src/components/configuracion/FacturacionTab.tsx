@@ -135,8 +135,9 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
       }}
     >
       <div>
-        <Label>Tipo de persona</Label>
+        <Label id="facturacion-tipo-persona">Tipo de persona</Label>
         <RadioGroup
+          aria-labelledby="facturacion-tipo-persona"
           value={f.tipo_persona}
           onValueChange={(v) =>
             setF((p) => ({ ...p, tipo_persona: v as TipoPersona, regimen_fiscal: "" }))
@@ -154,8 +155,11 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
 
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <Label>{f.tipo_persona === "moral" ? "Razón social *" : "Nombre completo *"}</Label>
+          <Label htmlFor="facturacion-tab-f-razon-social">
+            {f.tipo_persona === "moral" ? "Razón social *" : "Nombre completo *"}
+          </Label>
           <Input
+            id="facturacion-tab-f-razon-social"
             value={f.razon_social}
             onChange={(e) => set("razon_social", e.target.value)}
             required
@@ -163,16 +167,18 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
         </div>
         {f.tipo_persona === "moral" && (
           <div>
-            <Label>Nombre comercial</Label>
+            <Label htmlFor="facturacion-tab-nombre-comercial">Nombre comercial</Label>
             <Input
+              id="facturacion-tab-nombre-comercial"
               value={f.nombre_completo}
               onChange={(e) => set("nombre_completo", e.target.value)}
             />
           </div>
         )}
         <div>
-          <Label>RFC *</Label>
+          <Label htmlFor="facturacion-tab-rfc">RFC *</Label>
           <Input
+            id="facturacion-tab-rfc"
             value={f.rfc}
             onChange={(e) => set("rfc", e.target.value.toUpperCase())}
             maxLength={13}
@@ -181,8 +187,9 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
         </div>
         {f.tipo_persona === "fisica" && (
           <div>
-            <Label>CURP</Label>
+            <Label htmlFor="facturacion-tab-curp">CURP</Label>
             <Input
+              id="facturacion-tab-curp"
               value={f.curp}
               onChange={(e) => set("curp", e.target.value.toUpperCase())}
               maxLength={18}
@@ -190,9 +197,9 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
           </div>
         )}
         <div className="min-w-0 sm:col-span-2">
-          <Label>Régimen fiscal</Label>
+          <Label htmlFor="facturacion-tab-regimen-fiscal">Régimen fiscal</Label>
           <Select value={f.regimen_fiscal} onValueChange={(v) => set("regimen_fiscal", v)}>
-            <SelectTrigger>
+            <SelectTrigger id="facturacion-tab-regimen-fiscal">
               <SelectValue placeholder="Selecciona régimen" />
             </SelectTrigger>
             <SelectContent>
@@ -210,19 +217,25 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
         <h3 className="text-sm font-medium">Dirección fiscal</h3>
         <div className="grid sm:grid-cols-4 gap-4">
           <div className="sm:col-span-2">
-            <Label>Calle</Label>
-            <Input value={f.calle} onChange={(e) => set("calle", e.target.value)} />
+            <Label htmlFor="facturacion-tab-calle">Calle</Label>
+            <Input
+              id="facturacion-tab-calle"
+              value={f.calle}
+              onChange={(e) => set("calle", e.target.value)}
+            />
           </div>
           <div>
-            <Label>Núm. exterior</Label>
+            <Label htmlFor="facturacion-tab-num-exterior">Núm. exterior</Label>
             <Input
+              id="facturacion-tab-num-exterior"
               value={f.numero_exterior}
               onChange={(e) => set("numero_exterior", e.target.value)}
             />
           </div>
           <div>
-            <Label>Núm. interior</Label>
+            <Label htmlFor="facturacion-tab-num-interior">Núm. interior</Label>
             <Input
+              id="facturacion-tab-num-interior"
               value={f.numero_interior}
               onChange={(e) => set("numero_interior", e.target.value)}
             />
@@ -230,17 +243,25 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
         </div>
         <div className="grid sm:grid-cols-3 gap-4">
           <div>
-            <Label>Colonia</Label>
-            <Input value={f.colonia} onChange={(e) => set("colonia", e.target.value)} />
+            <Label htmlFor="facturacion-tab-colonia">Colonia</Label>
+            <Input
+              id="facturacion-tab-colonia"
+              value={f.colonia}
+              onChange={(e) => set("colonia", e.target.value)}
+            />
           </div>
           <div>
-            <Label>Municipio / Alcaldía</Label>
-            <Input value={f.municipio} onChange={(e) => set("municipio", e.target.value)} />
+            <Label htmlFor="facturacion-tab-municipio-alcaldia">Municipio / Alcaldía</Label>
+            <Input
+              id="facturacion-tab-municipio-alcaldia"
+              value={f.municipio}
+              onChange={(e) => set("municipio", e.target.value)}
+            />
           </div>
           <div>
-            <Label>Estado</Label>
+            <Label htmlFor="facturacion-tab-estado">Estado</Label>
             <Select value={f.estado} onValueChange={(v) => set("estado", v)}>
-              <SelectTrigger>
+              <SelectTrigger id="facturacion-tab-estado">
                 <SelectValue placeholder="Selecciona estado" />
               </SelectTrigger>
               <SelectContent>
@@ -253,8 +274,9 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
             </Select>
           </div>
           <div>
-            <Label>Código postal</Label>
+            <Label htmlFor="facturacion-tab-codigo-postal">Código postal</Label>
             <Input
+              id="facturacion-tab-codigo-postal"
               value={f.codigo_postal}
               onChange={(e) => set("codigo_postal", e.target.value)}
               maxLength={5}
@@ -267,12 +289,17 @@ export const FacturacionTab = forwardRef<FacturacionTabHandle>(function Facturac
         <h3 className="text-sm font-medium">Registros patronales</h3>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <Label>Registro IMSS</Label>
-            <Input value={f.registro_imss} onChange={(e) => set("registro_imss", e.target.value)} />
+            <Label htmlFor="facturacion-tab-registro-imss">Registro IMSS</Label>
+            <Input
+              id="facturacion-tab-registro-imss"
+              value={f.registro_imss}
+              onChange={(e) => set("registro_imss", e.target.value)}
+            />
           </div>
           <div>
-            <Label>Registro INFONAVIT</Label>
+            <Label htmlFor="facturacion-tab-registro-infonavit">Registro INFONAVIT</Label>
             <Input
+              id="facturacion-tab-registro-infonavit"
               value={f.registro_infonavit}
               onChange={(e) => set("registro_infonavit", e.target.value)}
             />

@@ -7,55 +7,33 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
-      audit_log: {
-        Row: {
-          actor_user_id: string | null
-          company_id: string | null
-          id: number
-          new_data: Json | null
-          occurred_at: string
-          old_data: Json | null
-          operation: string
-          record_id: Json | null
-          schema_name: string
-          table_name: string
-          transaction_id: number
-        }
-        Insert: {
-          actor_user_id?: string | null
-          company_id?: string | null
-          id?: never
-          new_data?: Json | null
-          occurred_at?: string
-          old_data?: Json | null
-          operation: string
-          record_id?: Json | null
-          schema_name: string
-          table_name: string
-          transaction_id?: number
-        }
-        Update: {
-          actor_user_id?: string | null
-          company_id?: string | null
-          id?: never
-          new_data?: Json | null
-          occurred_at?: string
-          old_data?: Json | null
-          operation?: string
-          record_id?: Json | null
-          schema_name?: string
-          table_name?: string
-          transaction_id?: number
-        }
-        Relationships: []
-      }
       almacen_movimientos_semana: {
         Row: {
           created_at: string
@@ -68,6 +46,7 @@ export type Database = {
           updated_at: string
           utilizado: number
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           id?: string
@@ -116,6 +95,7 @@ export type Database = {
           precio_unitario: number
           recepcion_id: string
         }
+        ComputedFields: never
         Insert: {
           cantidad: number
           created_at?: string
@@ -164,6 +144,7 @@ export type Database = {
           recibido_por: string
           sin_remision: boolean
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -217,6 +198,7 @@ export type Database = {
           solicitado_por: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -281,6 +263,7 @@ export type Database = {
           semana_fin: string
           semana_inicio: string
         }
+        ComputedFields: never
         Insert: {
           cerrada_at?: string | null
           cerrada_por?: string | null
@@ -322,6 +305,7 @@ export type Database = {
           tipo_movimiento: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           asiento_id: string
           company_id: string
@@ -364,6 +348,49 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          actor_user_id: string | null
+          company_id: string | null
+          id: number
+          new_data: Json | null
+          occurred_at: string
+          old_data: Json | null
+          operation: string
+          record_id: Json | null
+          schema_name: string
+          table_name: string
+          transaction_id: number
+        }
+        ComputedFields: never
+        Insert: {
+          actor_user_id?: string | null
+          company_id?: string | null
+          id?: never
+          new_data?: Json | null
+          occurred_at?: string
+          old_data?: Json | null
+          operation: string
+          record_id?: Json | null
+          schema_name: string
+          table_name: string
+          transaction_id?: number
+        }
+        Update: {
+          actor_user_id?: string | null
+          company_id?: string | null
+          id?: never
+          new_data?: Json | null
+          occurred_at?: string
+          old_data?: Json | null
+          operation?: string
+          record_id?: Json | null
+          schema_name?: string
+          table_name?: string
+          transaction_id?: number
+        }
+        Relationships: []
+      }
       caja_chica_asignaciones: {
         Row: {
           activo: boolean
@@ -377,6 +404,7 @@ export type Database = {
           residente_id: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           activo?: boolean
           asignado_por: string
@@ -428,6 +456,7 @@ export type Database = {
           solicitado_por: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -510,6 +539,7 @@ export type Database = {
           tipo_comprobante: Database["public"]["Enums"]["caja_chica_gasto_tipo_comprobante"]
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           comprobante_reclasificado_at?: string | null
@@ -593,6 +623,7 @@ export type Database = {
           solicitado_por: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -665,7 +696,7 @@ export type Database = {
           creado_por: string | null
           created_at: string
           curp: string | null
-          datos_contacto: Json
+          datos_contacto: NonNullable<Json>
           direccion_fiscal: string | null
           estado: string | null
           estatus_autorizacion: string
@@ -682,6 +713,7 @@ export type Database = {
           telefono: string | null
           tipo_persona: Database["public"]["Enums"]["tipo_persona"]
         }
+        ComputedFields: never
         Insert: {
           banco?: string | null
           beneficiario?: string | null
@@ -699,7 +731,7 @@ export type Database = {
           creado_por?: string | null
           created_at?: string
           curp?: string | null
-          datos_contacto?: Json
+          datos_contacto?: NonNullable<Json>
           direccion_fiscal?: string | null
           estado?: string | null
           estatus_autorizacion?: string
@@ -733,7 +765,7 @@ export type Database = {
           creado_por?: string | null
           created_at?: string
           curp?: string | null
-          datos_contacto?: Json
+          datos_contacto?: NonNullable<Json>
           direccion_fiscal?: string | null
           estado?: string | null
           estatus_autorizacion?: string
@@ -768,7 +800,7 @@ export type Database = {
           colonia: string | null
           created_at: string
           curp: string | null
-          datos_facturacion: Json
+          datos_facturacion: NonNullable<Json>
           estado: string | null
           id: string
           logo_url: string | null
@@ -786,6 +818,7 @@ export type Database = {
           updated_at: string
           zona_horaria: string
         }
+        ComputedFields: never
         Insert: {
           calle?: string | null
           capital_social?: number
@@ -793,7 +826,7 @@ export type Database = {
           colonia?: string | null
           created_at?: string
           curp?: string | null
-          datos_facturacion?: Json
+          datos_facturacion?: NonNullable<Json>
           estado?: string | null
           id?: string
           logo_url?: string | null
@@ -818,7 +851,7 @@ export type Database = {
           colonia?: string | null
           created_at?: string
           curp?: string | null
-          datos_facturacion?: Json
+          datos_facturacion?: NonNullable<Json>
           estado?: string | null
           id?: string
           logo_url?: string | null
@@ -838,6 +871,81 @@ export type Database = {
         }
         Relationships: []
       }
+      company_documentos: {
+        Row: {
+          company_id: string
+          created_at: string
+          fecha_vencimiento: string | null
+          id: string
+          nombre_archivo: string
+          tipo: string
+          updated_at: string
+          url: string
+        }
+        ComputedFields: never
+        Insert: {
+          company_id: string
+          created_at?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          nombre_archivo: string
+          tipo: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          nombre_archivo?: string
+          tipo?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_documentos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_roles: {
+        Row: {
+          base_role: Database["public"]["Enums"]["app_role"]
+          company_id: string
+          created_at: string
+          id: string
+          name: string
+        }
+        ComputedFields: never
+        Insert: {
+          base_role: Database["public"]["Enums"]["app_role"]
+          company_id: string
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          base_role?: Database["public"]["Enums"]["app_role"]
+          company_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_roles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cotizacion_paquete_insumos: {
         Row: {
           cantidad: number
@@ -848,6 +956,7 @@ export type Database = {
           precio_unitario: number
           subtotal: number | null
         }
+        ComputedFields: never
         Insert: {
           cantidad: number
           created_at?: string
@@ -855,7 +964,7 @@ export type Database = {
           insumo_id: string
           paquete_id: string
           precio_unitario?: number
-          subtotal?: number | null
+          subtotal?: never
         }
         Update: {
           cantidad?: number
@@ -864,7 +973,7 @@ export type Database = {
           insumo_id?: string
           paquete_id?: string
           precio_unitario?: number
-          subtotal?: number | null
+          subtotal?: never
         }
         Relationships: [
           {
@@ -892,6 +1001,7 @@ export type Database = {
           proveedor_id: string | null
           requisicion_id: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -944,6 +1054,7 @@ export type Database = {
           solicitud_id: string
           subtotal: number | null
         }
+        ComputedFields: never
         Insert: {
           cantidad: number
           created_at?: string
@@ -953,7 +1064,7 @@ export type Database = {
           nota?: string | null
           precio_unitario?: number | null
           solicitud_id: string
-          subtotal?: number | null
+          subtotal?: never
         }
         Update: {
           cantidad?: number
@@ -964,7 +1075,7 @@ export type Database = {
           nota?: string | null
           precio_unitario?: number | null
           solicitud_id?: string
-          subtotal?: number | null
+          subtotal?: never
         }
         Relationships: [
           {
@@ -997,6 +1108,7 @@ export type Database = {
           recibida_at: string | null
           requisicion_id: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           creado_por: string
@@ -1062,6 +1174,7 @@ export type Database = {
           referencia: string | null
           tipo: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           concepto?: string | null
@@ -1125,6 +1238,7 @@ export type Database = {
           tipo: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           activa?: boolean
           banco?: string | null
@@ -1194,6 +1308,7 @@ export type Database = {
           saldo: number | null
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           beneficiario_id: string
           beneficiario_nombre: string
@@ -1215,7 +1330,7 @@ export type Database = {
           obra_id?: string | null
           origen_id?: string | null
           origen_tipo: string
-          saldo?: number | null
+          saldo?: never
           updated_at?: string
         }
         Update: {
@@ -1239,7 +1354,7 @@ export type Database = {
           obra_id?: string | null
           origen_id?: string | null
           origen_tipo?: string
-          saldo?: number | null
+          saldo?: never
           updated_at?: string
         }
         Relationships: [
@@ -1284,6 +1399,7 @@ export type Database = {
           tipo: Database["public"]["Enums"]["gasto_oficina_tipo"]
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           aprobado_at?: string | null
           aprobado_por?: string | null
@@ -1365,73 +1481,75 @@ export type Database = {
       }
       insumo_categorias: {
         Row: {
+          autorizado_at: string | null
+          autorizado_por: string | null
           company_id: string
           created_at: string
+          estatus: string
           id: string
           nombre: string
           prefijo: string
-          estatus: string
           solicitado_por: string | null
-          autorizado_por: string | null
-          autorizado_at: string | null
         }
+        ComputedFields: never
         Insert: {
+          autorizado_at?: string | null
+          autorizado_por?: string | null
           company_id: string
           created_at?: string
+          estatus?: string
           id?: string
           nombre: string
           prefijo: string
-          estatus?: string
           solicitado_por?: string | null
-          autorizado_por?: string | null
-          autorizado_at?: string | null
         }
         Update: {
+          autorizado_at?: string | null
+          autorizado_por?: string | null
           company_id?: string
           created_at?: string
+          estatus?: string
           id?: string
           nombre?: string
           prefijo?: string
-          estatus?: string
           solicitado_por?: string | null
-          autorizado_por?: string | null
-          autorizado_at?: string | null
         }
         Relationships: []
       }
       insumo_unidades: {
         Row: {
+          autorizado_at: string | null
+          autorizado_por: string | null
           codigo: string
           company_id: string
           created_at: string
+          estatus: string
           id: string
           nombre: string | null
-          estatus: string
           solicitado_por: string | null
-          autorizado_por: string | null
-          autorizado_at: string | null
         }
+        ComputedFields: never
         Insert: {
+          autorizado_at?: string | null
+          autorizado_por?: string | null
           codigo: string
           company_id: string
           created_at?: string
+          estatus?: string
           id?: string
           nombre?: string | null
-          estatus?: string
           solicitado_por?: string | null
-          autorizado_por?: string | null
-          autorizado_at?: string | null
         }
         Update: {
+          autorizado_at?: string | null
+          autorizado_por?: string | null
           codigo?: string
           company_id?: string
           created_at?: string
+          estatus?: string
           id?: string
           nombre?: string | null
-          estatus?: string
           solicitado_por?: string | null
-          autorizado_por?: string | null
-          autorizado_at?: string | null
         }
         Relationships: []
       }
@@ -1450,6 +1568,7 @@ export type Database = {
           solicitado_por: string | null
           unidad: string
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -1499,6 +1618,7 @@ export type Database = {
           precio_unitario: number
           proveedor: string | null
         }
+        ComputedFields: never
         Insert: {
           cantidad?: number | null
           created_at?: string
@@ -1542,6 +1662,7 @@ export type Database = {
           trabajador_id: string | null
           trabajador_nombre: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -1612,6 +1733,7 @@ export type Database = {
           total_vales: number
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           creado_por: string
@@ -1663,6 +1785,7 @@ export type Database = {
           pago_id: string | null
           pago_semana_id: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -1735,6 +1858,7 @@ export type Database = {
           updated_at: string
           updated_by: string | null
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -1778,6 +1902,7 @@ export type Database = {
           titulo: string
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -1817,6 +1942,7 @@ export type Database = {
           porcentaje: number
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           base_calculo?: string
           created_at?: string
@@ -1863,6 +1989,7 @@ export type Database = {
           solicitud_notas: string | null
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           creado_por: string
@@ -1931,6 +2058,7 @@ export type Database = {
           renglon_clave: string
           unidad: string | null
         }
+        ComputedFields: never
         Insert: {
           cantidad_ejecutada?: number
           cantidad_vigente?: number
@@ -1991,6 +2119,7 @@ export type Database = {
           semana_inicio: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           amortizacion_anticipo?: number
           autorizada_at?: string | null
@@ -2086,6 +2215,7 @@ export type Database = {
           tipo: Database["public"]["Enums"]["destajo_presupuesto_tipo"]
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -2154,6 +2284,7 @@ export type Database = {
           tipo_movimiento: Database["public"]["Enums"]["presupuesto_movimiento"]
           unidad: string | null
         }
+        ComputedFields: never
         Insert: {
           cantidad?: number | null
           clave: string
@@ -2208,6 +2339,7 @@ export type Database = {
           id: string
           trabajador_id: string
         }
+        ComputedFields: never
         Insert: {
           asignado_at?: string
           asignado_por: string
@@ -2261,6 +2393,7 @@ export type Database = {
           obra_id: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           anticipo_monto?: number
           anticipo_pct?: number
@@ -2332,6 +2465,7 @@ export type Database = {
           renglon_clave: string
           unidad: string | null
         }
+        ComputedFields: never
         Insert: {
           cantidad_ejecutada?: number
           cantidad_vigente?: number
@@ -2382,6 +2516,7 @@ export type Database = {
           semana_inicio: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           cerrada_at?: string | null
           cerrada_por?: string | null
@@ -2423,6 +2558,7 @@ export type Database = {
           insumo_id: string
           precio_unitario: number
         }
+        ComputedFields: never
         Insert: {
           cantidad: number
           created_at?: string
@@ -2482,6 +2618,7 @@ export type Database = {
           tipo_comprobante: Database["public"]["Enums"]["gasto_obra_comprobante"]
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -2578,6 +2715,7 @@ export type Database = {
           nota_extras: string | null
           renglon_id: string
         }
+        ComputedFields: never
         Insert: {
           ajustado_at?: string | null
           ajustado_por?: string | null
@@ -2630,6 +2768,7 @@ export type Database = {
           sueldo_diario_snapshot: number
           trabajador_id: string
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           dias_trabajados?: number
@@ -2682,6 +2821,7 @@ export type Database = {
           semana_inicio: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           cerrada_at?: string | null
           cerrada_por?: string | null
@@ -2732,6 +2872,7 @@ export type Database = {
           tipo_movimiento: Database["public"]["Enums"]["presupuesto_movimiento"]
           unidad: string | null
         }
+        ComputedFields: never
         Insert: {
           cantidad?: number | null
           clave: string
@@ -2798,6 +2939,7 @@ export type Database = {
           tipo: Database["public"]["Enums"]["presupuesto_tipo"]
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -2869,6 +3011,7 @@ export type Database = {
           renta_id: string
           tipo: Database["public"]["Enums"]["renta_evento_tipo"]
         }
+        ComputedFields: never
         Insert: {
           creado_por: string
           created_at?: string
@@ -2918,6 +3061,7 @@ export type Database = {
           referencia: string | null
           renta_id: string
         }
+        ComputedFields: never
         Insert: {
           creado_por: string
           created_at?: string
@@ -2985,6 +3129,7 @@ export type Database = {
           solicitado_por: string
           tarifa_nueva: number | null
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -3062,6 +3207,7 @@ export type Database = {
           tarifa_unitaria: number
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -3086,8 +3232,7 @@ export type Database = {
           numero?: number
           obra_id: string
           periodicidad?:
-            | Database["public"]["Enums"]["renta_periodicidad"]
-            | null
+            Database["public"]["Enums"]["renta_periodicidad"] | null
           periodos_estimados?: number | null
           proveedor_id?: string | null
           rechazado_at?: string | null
@@ -3120,8 +3265,7 @@ export type Database = {
           numero?: number
           obra_id?: string
           periodicidad?:
-            | Database["public"]["Enums"]["renta_periodicidad"]
-            | null
+            Database["public"]["Enums"]["renta_periodicidad"] | null
           periodos_estimados?: number | null
           proveedor_id?: string | null
           rechazado_at?: string | null
@@ -3161,6 +3305,55 @@ export type Database = {
           },
         ]
       }
+      obra_role_permissions: {
+        Row: {
+          action_key: string
+          allowed: boolean
+          company_id: string
+          id: string
+          obra_id: string
+          role: string
+          updated_at: string
+          updated_by: string | null
+        }
+        ComputedFields: never
+        Insert: {
+          action_key: string
+          allowed: boolean
+          company_id: string
+          id?: string
+          obra_id: string
+          role: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          action_key?: string
+          allowed?: boolean
+          company_id?: string
+          id?: string
+          obra_id?: string
+          role?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obra_role_permissions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "obra_role_permissions_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       obra_subcontrato_anticipos: {
         Row: {
           company_id: string
@@ -3181,6 +3374,7 @@ export type Database = {
           subcontrato_id: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           creado_por: string
@@ -3249,6 +3443,7 @@ export type Database = {
           renglon_clave: string
           unidad: string | null
         }
+        ComputedFields: never
         Insert: {
           cantidad_ejecutada?: number
           cantidad_vigente?: number
@@ -3309,6 +3504,7 @@ export type Database = {
           subcontrato_id: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           amortizacion_anticipo?: number
           autorizada_at?: string | null
@@ -3397,6 +3593,7 @@ export type Database = {
           tipo: Database["public"]["Enums"]["destajo_presupuesto_tipo"]
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -3465,6 +3662,7 @@ export type Database = {
           tipo_movimiento: Database["public"]["Enums"]["presupuesto_movimiento"]
           unidad: string | null
         }
+        ComputedFields: never
         Insert: {
           cantidad?: number | null
           clave: string
@@ -3527,6 +3725,7 @@ export type Database = {
           obra_id: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           anticipo_monto?: number
           anticipo_pct?: number
@@ -3600,6 +3799,7 @@ export type Database = {
           titulo: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           asignado_a: string
           company_id: string
@@ -3638,6 +3838,7 @@ export type Database = {
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           id?: string
@@ -3678,6 +3879,7 @@ export type Database = {
           ubicacion: string | null
           unidad_negocio_id: string | null
         }
+        ComputedFields: never
         Insert: {
           cliente_id?: string | null
           company_id: string
@@ -3757,6 +3959,7 @@ export type Database = {
           requisicion_id: string
           total: number
         }
+        ComputedFields: never
         Insert: {
           autorizada_at?: string | null
           autorizada_por?: string | null
@@ -3863,6 +4066,7 @@ export type Database = {
           origen_tipo: string
           referencia: string | null
         }
+        ComputedFields: never
         Insert: {
           cancelado_at?: string | null
           cancelado_por?: string | null
@@ -3940,6 +4144,7 @@ export type Database = {
           id: string
           nombre_completo: string
         }
+        ComputedFields: never
         Insert: {
           company_id?: string | null
           created_at?: string
@@ -3974,6 +4179,7 @@ export type Database = {
           nota: string | null
           requisicion_id: string
         }
+        ComputedFields: never
         Insert: {
           cantidad?: number | null
           created_at?: string
@@ -4032,6 +4238,7 @@ export type Database = {
           rechazada_por: string | null
           rechazo_motivo: string | null
         }
+        ComputedFields: never
         Insert: {
           autorizacion_at?: string | null
           autorizacion_por?: string | null
@@ -4098,15 +4305,16 @@ export type Database = {
           action_key: string
           allowed: boolean
           company_id: string
-          role: Database["public"]["Enums"]["app_role"]
+          role: string
           updated_at: string
           updated_by: string | null
         }
+        ComputedFields: never
         Insert: {
           action_key: string
           allowed: boolean
           company_id: string
-          role: Database["public"]["Enums"]["app_role"]
+          role: string
           updated_at?: string
           updated_by?: string | null
         }
@@ -4114,7 +4322,7 @@ export type Database = {
           action_key?: string
           allowed?: boolean
           company_id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role?: string
           updated_at?: string
           updated_by?: string | null
         }
@@ -4170,6 +4378,7 @@ export type Database = {
           tipo_persona: Database["public"]["Enums"]["tercero_tipo_persona"]
           tipo_trabajos: string | null
         }
+        ComputedFields: never
         Insert: {
           banco?: string | null
           beneficiario?: string | null
@@ -4263,6 +4472,7 @@ export type Database = {
           tipo: Database["public"]["Enums"]["tercero_documento_tipo"]
           url: string
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           fecha_vencimiento?: string | null
@@ -4315,8 +4525,7 @@ export type Database = {
           nombres: string | null
           nss: string | null
           periodicidad_pago:
-            | Database["public"]["Enums"]["nomina_oficina_periodicidad"]
-            | null
+            Database["public"]["Enums"]["nomina_oficina_periodicidad"] | null
           puesto: Database["public"]["Enums"]["trabajador_puesto"] | null
           rfc: string | null
           sexo: Database["public"]["Enums"]["trabajador_sexo"] | null
@@ -4324,9 +4533,9 @@ export type Database = {
           sueldo_periodo: number | null
           telefono: string | null
           tipo_contrato:
-            | Database["public"]["Enums"]["trabajador_tipo_contrato"]
-            | null
+            Database["public"]["Enums"]["trabajador_tipo_contrato"] | null
         }
+        ComputedFields: never
         Insert: {
           apellido_materno?: string | null
           apellido_paterno?: string | null
@@ -4352,8 +4561,7 @@ export type Database = {
           nombres?: string | null
           nss?: string | null
           periodicidad_pago?:
-            | Database["public"]["Enums"]["nomina_oficina_periodicidad"]
-            | null
+            Database["public"]["Enums"]["nomina_oficina_periodicidad"] | null
           puesto?: Database["public"]["Enums"]["trabajador_puesto"] | null
           rfc?: string | null
           sexo?: Database["public"]["Enums"]["trabajador_sexo"] | null
@@ -4361,8 +4569,7 @@ export type Database = {
           sueldo_periodo?: number | null
           telefono?: string | null
           tipo_contrato?:
-            | Database["public"]["Enums"]["trabajador_tipo_contrato"]
-            | null
+            Database["public"]["Enums"]["trabajador_tipo_contrato"] | null
         }
         Update: {
           apellido_materno?: string | null
@@ -4389,8 +4596,7 @@ export type Database = {
           nombres?: string | null
           nss?: string | null
           periodicidad_pago?:
-            | Database["public"]["Enums"]["nomina_oficina_periodicidad"]
-            | null
+            Database["public"]["Enums"]["nomina_oficina_periodicidad"] | null
           puesto?: Database["public"]["Enums"]["trabajador_puesto"] | null
           rfc?: string | null
           sexo?: Database["public"]["Enums"]["trabajador_sexo"] | null
@@ -4398,8 +4604,7 @@ export type Database = {
           sueldo_periodo?: number | null
           telefono?: string | null
           tipo_contrato?:
-            | Database["public"]["Enums"]["trabajador_tipo_contrato"]
-            | null
+            Database["public"]["Enums"]["trabajador_tipo_contrato"] | null
         }
         Relationships: []
       }
@@ -4412,6 +4617,7 @@ export type Database = {
           trabajador_id: string
           url: string
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           fecha_vencimiento?: string | null
@@ -4446,6 +4652,7 @@ export type Database = {
           nombre: string
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
@@ -4474,13 +4681,16 @@ export type Database = {
         Row: {
           company_id: string
           created_at: string
+          custom_role_id: string | null
           id: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           company_id: string
           created_at?: string
+          custom_role_id?: string | null
           id?: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
@@ -4488,6 +4698,7 @@ export type Database = {
         Update: {
           company_id?: string
           created_at?: string
+          custom_role_id?: string | null
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
@@ -4499,6 +4710,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_custom_role_company_fk"
+            columns: ["company_id", "custom_role_id", "role"]
+            isOneToOne: false
+            referencedRelation: "company_roles"
+            referencedColumns: ["company_id", "id", "base_role"]
           },
         ]
       }
@@ -4530,6 +4748,7 @@ export type Database = {
           tipo_combustible: Database["public"]["Enums"]["vale_gasolina_tipo"]
           updated_at: string
         }
+        ComputedFields: never
         Insert: {
           autorizado_at?: string | null
           autorizado_por?: string | null
@@ -4591,11 +4810,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      current_company_id: { Args: never; Returns: string }
+      can_access_obra: { Args: { _obra_id: string }; Returns: boolean }
+      create_company_role: {
+        Args: {
+          _base_role: Database["public"]["Enums"]["app_role"]
+          _defaults: Json
+          _name: string
+        }
+        Returns: string
+      }
+      current_company_id: { Args: Record<PropertyKey, never>; Returns: string }
       devengar_asientos_renta: { Args: { _renta_id: string }; Returns: number }
-      devengar_asientos_rentas_activas: { Args: never; Returns: number }
+      devengar_asientos_rentas_activas: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       generar_periodos_renta: { Args: { _renta_id: string }; Returns: number }
-      generar_periodos_rentas_activas: { Args: never; Returns: number }
+      generar_periodos_rentas_activas: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      has_company_permission: {
+        Args: { _action_key: string; _company_id: string }
+        Returns: boolean
+      }
+      has_obra_permission: {
+        Args: { _action: string; _obra_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _company_id: string
@@ -4606,11 +4848,28 @@ export type Database = {
       }
       is_director_of: { Args: { _company_id: string }; Returns: boolean }
       is_member_of_obra: { Args: { _obra_id: string }; Returns: boolean }
+      is_obra_permission_action: { Args: { _action: string }; Returns: boolean }
       is_residente_de_obra: { Args: { _obra_id: string }; Returns: boolean }
       is_supervisor_de_obra: { Args: { _obra_id: string }; Returns: boolean }
+      obra_permission_defaults: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      obra_permission_override_allows: {
+        Args: { _action: string; _obra_id: string }
+        Returns: boolean
+      }
       recompute_requisicion_estatus: {
         Args: { _req_id: string }
         Returns: undefined
+      }
+      replace_obra_team: {
+        Args: { _obra_id: string; _team: Json }
+        Returns: undefined
+      }
+      resolve_obra_permission_row: {
+        Args: { _path: Json; _row: Json }
+        Returns: string
       }
       siguiente_codigo_insumo: {
         Args: { _categoria_id: string; _company_id: string }
@@ -4651,11 +4910,7 @@ export type Database = {
     Enums: {
       almacen_semana_estatus: "abierta" | "cerrada" | "bloqueada"
       app_role:
-        | "director"
-        | "residente"
-        | "auxiliar"
-        | "administrativo"
-        | "supervisor"
+        "director" | "residente" | "auxiliar" | "administrativo" | "supervisor"
       caja_chica_fondo_estatus:
         | "pendiente"
         | "entregado"
@@ -4664,11 +4919,7 @@ export type Database = {
         | "autorizado"
         | "rechazado"
       caja_chica_gasto_estatus:
-        | "borrador"
-        | "solicitado"
-        | "aprobado"
-        | "rechazado"
-        | "reembolsado"
+        "borrador" | "solicitado" | "aprobado" | "rechazado" | "reembolsado"
       caja_chica_gasto_tipo_comprobante: "factura" | "nota" | "ninguno"
       caja_chica_reembolso_estatus:
         | "solicitado"
@@ -4680,11 +4931,7 @@ export type Database = {
       cxp_estatus: "pendiente" | "parcial" | "pagada" | "cancelada"
       destajo_doc_estatus: "borrador" | "enviado" | "autorizado" | "rechazado"
       destajo_estimacion_estatus:
-        | "borrador"
-        | "cerrada"
-        | "autorizada"
-        | "rechazada"
-        | "pagada"
+        "borrador" | "cerrada" | "autorizada" | "rechazada" | "pagada"
       destajo_presupuesto_tipo: "base" | "adenda"
       estimacion_estatus: "borrador" | "cerrada"
       gasto_obra_comprobante: "factura" | "nota" | "ninguno"
@@ -4716,15 +4963,9 @@ export type Database = {
         | "recibida_parcial"
         | "recibida"
       presupuesto_estatus:
-        | "borrador"
-        | "autorizado"
-        | "solicitada"
-        | "rechazada"
+        "borrador" | "autorizado" | "solicitada" | "rechazada"
       presupuesto_movimiento:
-        | "renglon"
-        | "modificacion"
-        | "adicion"
-        | "eliminacion"
+        "renglon" | "modificacion" | "adicion" | "eliminacion"
       presupuesto_tipo: "base" | "adenda"
       renta_estatus:
         | "borrador"
@@ -4748,19 +4989,13 @@ export type Database = {
       sc_estatus: "borrador" | "enviada" | "recibida" | "descartada"
       tercero_categoria: "proveedor" | "contratista" | "ambos"
       tercero_documento_tipo:
-        | "constancia_fiscal"
-        | "opinion_sat"
-        | "domicilio_fiscal"
-        | "repse"
+        "constancia_fiscal" | "opinion_sat" | "domicilio_fiscal" | "repse"
       tercero_tipo_persona: "moral" | "fisica"
       tipo_persona: "moral" | "fisica"
       trabajador_autorizacion: "autorizado" | "pendiente"
       trabajador_doc_tipo: "ine" | "curp" | "domicilio" | "contrato"
       trabajador_imss_estatus:
-        | "alta_activa"
-        | "sin_alta"
-        | "en_tramite"
-        | "baja"
+        "alta_activa" | "sin_alta" | "en_tramite" | "baja"
       trabajador_puesto:
         | "oficial"
         | "ayudante"
@@ -4771,9 +5006,7 @@ export type Database = {
         | "administrativo"
       trabajador_sexo: "masculino" | "femenino"
       trabajador_tipo_contrato:
-        | "eventual_urbano"
-        | "eventual_campo"
-        | "permanente"
+        "eventual_urbano" | "eventual_campo" | "permanente"
       vale_gasolina_estatus:
         | "pendiente_autorizacion"
         | "autorizado"
@@ -4824,8 +5057,7 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
@@ -4849,8 +5081,7 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
@@ -4874,8 +5105,7 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
   EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
@@ -4907,6 +5137,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       almacen_semana_estatus: ["abierta", "cerrada", "bloqueada"],

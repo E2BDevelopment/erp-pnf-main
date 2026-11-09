@@ -33,11 +33,7 @@ import {
   User,
   type LucideIcon,
 } from "lucide-react";
-import {
-  useAuthStore,
-  useEffectiveRoles,
-  useEffectiveIsDirector,
-} from "@/stores/auth";
+import { useAuthStore, useEffectiveRoles, useEffectiveIsDirector } from "@/stores/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -71,6 +67,7 @@ import {
   moduleKeyFromPath,
 } from "@/hooks/usePendientes";
 import { usePermisos } from "@/hooks/usePermisos";
+import { OBRA_MODULE_PERMISSIONS } from "@/lib/permisos/catalogo";
 import { Flip, gsap, MOTION, MOTION_OK, REDUCED, useGSAP } from "@/lib/anim/gsap";
 
 /** Normaliza para buscar sin acentos: "nomina" encuentra "Nómina". */
@@ -250,6 +247,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    queryClient.clear();
     reset();
     navigate({ to: "/login" });
   };
@@ -368,9 +366,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             } as BottomBarItem,
           ]
         : []),
-    ];
+    ].filter((item) => {
+      const key = OBRA_MODULE_PERMISSIONS[item.to.split("/").at(-1) ?? ""];
+      return !key || canPerm(key);
+    });
     // `obraPendientes` cambia de identidad solo cuando cambian los conteos.
-  }, [obraId, obraPendientes, puedeConfigurarObra]);
+  }, [obraId, obraPendientes, puedeConfigurarObra, canPerm]);
 
   /** Secciones de la navegación, ya filtradas por permisos. */
   const seccionesNav = useMemo(() => {

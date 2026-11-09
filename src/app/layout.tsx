@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { connection } from "next/server";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -29,11 +30,12 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   await connection();
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <html lang="es">
       <body>
-        <Providers>
+        <Providers nonce={nonce}>
           <Suspense fallback={null}>{children}</Suspense>
         </Providers>
       </body>

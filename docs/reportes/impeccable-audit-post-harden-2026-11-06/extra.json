@@ -1,0 +1,107 @@
+[
+  {
+    "name": "config-identidad",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=identidad",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": [
+      {
+        "id": "label",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" accept=\"image/png,image/jpeg...\" type=\"file\">",
+            "target": [
+              ".max-w-xs"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "config-cuentas",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=cuentas",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "config-permisos",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=permisos",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "config-documentacion",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=documentacion",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "config-notificaciones",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=notificaciones",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "editar-unidad-negocio",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=configuracion",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": [
+      {
+        "id": "label",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Edificación Residenc...\">",
+            "target": [
+              "input[value=\"Edificación Residencial\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "confirmar-baja",
+    "url": "http://127.0.0.1:3100/app/equipo",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" class=\"inline-flex items-ce...\">",
+            "target": [
+              ".flex-col-reverse > .bg-primary.text-primary-foreground.hover\\:bg-primary\\/90"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.27 (foreground color: #252a2f, background color: #d96e25, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      }
+    ]
+  }
+]

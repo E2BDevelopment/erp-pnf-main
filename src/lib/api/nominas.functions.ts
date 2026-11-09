@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/permisos/require";
 import { createServerFn } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -104,6 +105,7 @@ export const getOrCreateNomina = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "nomina_obra.generar", data.obraId);
     const { supabase, userId } = context;
     const { companyId, canEdit } = await getAccess(supabase, userId, data.obraId);
     const semana = calcularSemana(data.semanaInicio);
@@ -211,6 +213,10 @@ export const asignarTrabajadores = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "nomina_obra.registrar_asistencia", {
+      table: "obra_nominas",
+      id: data.nominaId,
+    });
     const { supabase, userId } = context;
     const { data: nomina } = await supabase
       .from("obra_nominas")
@@ -280,6 +286,10 @@ export const guardarAsistencia = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "nomina_obra.registrar_asistencia", {
+      table: "obra_nomina_renglones",
+      id: data.renglonId,
+    });
     const { supabase, userId } = context;
 
     const { data: renglon } = await supabase
@@ -357,6 +367,10 @@ export const cerrarNomina = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "nomina_obra.generar", {
+      table: "obra_nominas",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: nomina } = await supabase
       .from("obra_nominas")
@@ -383,6 +397,10 @@ export const eliminarNomina = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "nomina_obra.generar", {
+      table: "obra_nominas",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: nomina } = await supabase
       .from("obra_nominas")
@@ -681,6 +699,10 @@ export const ajustarAsistenciaAdmin = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "nomina_obra.autorizar", {
+      table: "obra_nomina_renglones",
+      id: data.renglonId,
+    });
     const { supabase, userId } = context;
     const companyId = await assertAdmin(supabase, userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -1085,6 +1107,11 @@ export const pagarNominaSemana = createServerFn({ method: "POST" })
       .eq("semana_inicio", data.semanaInicio);
     const arr = (nominas ?? []) as any[];
     if (arr.length === 0) throw new Error("No hay nóminas para esa semana");
+    // Validate every obra before any payment or account movement is written.
+    for (const obraId of new Set<string>(arr.map((n) => n.obra_id))) {
+      await requirePermission(supabase, userId, "nomina_obra.autorizar", obraId);
+      await requirePermission(supabase, userId, "cxp.registrar_pago", obraId);
+    }
     if (arr.some((n) => n.estatus !== "cerrada"))
       throw new Error("Solo nóminas cerradas se pueden pagar");
 

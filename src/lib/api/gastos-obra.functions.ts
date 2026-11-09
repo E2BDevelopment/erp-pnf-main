@@ -128,7 +128,7 @@ export const guardarGastoObra = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { companyId } = await getCtx(supabase, userId);
-    await requirePermission(supabase, userId, "gastos_obra.crear");
+    await requirePermission(supabase, userId, "gastos_obra.crear", data.obraId);
 
     const nowIso = new Date().toISOString();
     const payload: any = {
@@ -219,7 +219,10 @@ export const autorizarGastoObra = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { companyId } = await getCtx(supabase, userId);
-    await requirePermission(supabase, userId, "gastos_obra.autorizar");
+    await requirePermission(supabase, userId, "gastos_obra.autorizar", {
+      table: "obra_gastos_directos",
+      id: data.id,
+    });
 
     const { data: gasto } = await supabase
       .from("obra_gastos_directos")
@@ -304,7 +307,10 @@ export const rechazarGastoObra = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { companyId } = await getCtx(supabase, userId);
-    await requirePermission(supabase, userId, "gastos_obra.autorizar");
+    await requirePermission(supabase, userId, "gastos_obra.autorizar", {
+      table: "obra_gastos_directos",
+      id: data.id,
+    });
 
     const { data: gasto } = await supabase
       .from("obra_gastos_directos")

@@ -1,0 +1,24 @@
+[
+  {
+    "width": 360,
+    "client": 322,
+    "scroll": 322,
+    "sizes": [
+      "24px",
+      "24px",
+      "24px",
+      "24px"
+    ]
+  },
+  {
+    "width": 1440,
+    "client": 631,
+    "scroll": 631,
+    "sizes": [
+      "24px",
+      "24px",
+      "24px",
+      "24px"
+    ]
+  }
+]

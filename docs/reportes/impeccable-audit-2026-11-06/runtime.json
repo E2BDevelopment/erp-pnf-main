@@ -1,0 +1,1333 @@
+[
+  {
+    "name": "landing",
+    "url": "http://localhost:3000/",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "html": "<span>01</span>",
+            "target": [
+              "p:nth-child(1) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9c9b95, background color: #f6f5f1, font size: 8.2pt (10.88px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span>02</span>",
+            "target": [
+              "p:nth-child(2) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9c9b95, background color: #f6f5f1, font size: 8.2pt (10.88px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span>03</span>",
+            "target": [
+              "p:nth-child(3) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9c9b95, background color: #f6f5f1, font size: 8.2pt (10.88px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span>04</span>",
+            "target": [
+              "p:nth-child(4) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9c9b95, background color: #f6f5f1, font size: 8.2pt (10.88px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      },
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "help": "Elements must have their visible text as part of their accessible name",
+        "nodes": [
+          {
+            "html": "<a aria-label=\"ERP PNF, inicio\" class=\"landing-brand\" href=\"/\">",
+            "target": [
+              "a[aria-label=\"ERP PNF, inicio\"]"
+            ],
+            "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "landing",
+    "url": "http://localhost:3000/",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [
+        {
+          "tag": "svg",
+          "cls": {},
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "cls": {},
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "cls": {},
+          "text": ""
+        }
+      ],
+      "unlabeled": []
+    },
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "html": "<span>01</span>",
+            "target": [
+              "p:nth-child(1) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9c9b95, background color: #f6f5f1, font size: 8.2pt (10.88px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span>02</span>",
+            "target": [
+              "p:nth-child(2) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9c9b95, background color: #f6f5f1, font size: 8.2pt (10.88px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span>03</span>",
+            "target": [
+              "p:nth-child(3) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9c9b95, background color: #f6f5f1, font size: 8.2pt (10.88px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span>04</span>",
+            "target": [
+              "p:nth-child(4) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.55 (foreground color: #9c9b95, background color: #f6f5f1, font size: 8.2pt (10.88px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      },
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "help": "Elements must have their visible text as part of their accessible name",
+        "nodes": [
+          {
+            "html": "<a aria-label=\"ERP PNF, inicio\" class=\"landing-brand\" href=\"/\">",
+            "target": [
+              "a[aria-label=\"ERP PNF, inicio\"]"
+            ],
+            "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "recorrido",
+    "url": "http://localhost:3000/recorrido",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">01</span>",
+            "target": [
+              "li:nth-child(1) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">02</span>",
+            "target": [
+              "li:nth-child(2) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">03</span>",
+            "target": [
+              "li:nth-child(3) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">04</span>",
+            "target": [
+              "li:nth-child(4) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">05</span>",
+            "target": [
+              "li:nth-child(5) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">06</span>",
+            "target": [
+              "li:nth-child(6) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      },
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "help": "Elements must have their visible text as part of their accessible name",
+        "nodes": [
+          {
+            "html": "<a class=\"landing-brand\" aria-label=\"ERP PNF, inicio\" href=\"/\">",
+            "target": [
+              ".landing-brand"
+            ],
+            "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "recorrido",
+    "url": "http://localhost:3000/recorrido",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">01</span>",
+            "target": [
+              "li:nth-child(1) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">02</span>",
+            "target": [
+              "li:nth-child(2) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">03</span>",
+            "target": [
+              "li:nth-child(3) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">04</span>",
+            "target": [
+              "li:nth-child(4) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">05</span>",
+            "target": [
+              "li:nth-child(5) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span class=\"landing-tour-step-number\" aria-hidden=\"true\">06</span>",
+            "target": [
+              "li:nth-child(6) > .landing-tour-step-number"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.93 (foreground color: #797a7d, background color: #f6f5f1, font size: 8.9pt (11.84px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      },
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "help": "Elements must have their visible text as part of their accessible name",
+        "nodes": [
+          {
+            "html": "<a class=\"landing-brand\" aria-label=\"ERP PNF, inicio\" href=\"/\">",
+            "target": [
+              ".landing-brand"
+            ],
+            "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "login",
+    "url": "http://localhost:3000/login",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": [
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input type=\"checkbox\" aria-hidden=\"true\" tabindex=\"-1\" style=\"width: 16px; height: 16px;\" value=\"on\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input type=\"checkbox\" aria-hidden=\"true\" tabindex=\"-1\" style=\"width: 16px; height: 16px;\" checked=\"\" value=\"on\">"
+        }
+      ]
+    },
+    "violations": []
+  },
+  {
+    "name": "login",
+    "url": "http://localhost:3000/login",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [],
+      "unlabeled": [
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input type=\"checkbox\" aria-hidden=\"true\" tabindex=\"-1\" style=\"width: 16px; height: 16px;\" value=\"on\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input type=\"checkbox\" aria-hidden=\"true\" tabindex=\"-1\" style=\"width: 16px; height: 16px;\" checked=\"\" value=\"on\">"
+        }
+      ]
+    },
+    "violations": []
+  },
+  {
+    "name": "dashboard",
+    "url": "http://localhost:3000/app/dashboard",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "nodes": [
+          {
+            "html": "<span aria-hidden=\"true\">9+</span>",
+            "target": [
+              ".last\\:border-0.border-b.border-border:nth-child(1) > .text-right.py-2\\.5.px-4:nth-child(5) > .h-4\\.5.min-w-4\\.5.place-items-center > span[aria-hidden=\"true\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.41 (foreground color: #fffcfc, background color: #ec0342, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+          },
+          {
+            "html": "<span aria-hidden=\"true\">9+</span>",
+            "target": [
+              ".last\\:border-0.border-b.border-border:nth-child(2) > .text-right.py-2\\.5.px-4:nth-child(5) > .h-4\\.5.min-w-4\\.5.place-items-center > span[aria-hidden=\"true\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.41 (foreground color: #fffcfc, background color: #ec0342, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dashboard",
+    "url": "http://localhost:3000/app/dashboard",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "",
+          "text": "Producción y gasto por semanaSemanaProducciónGastoResultado14-sep$0.00"
+        },
+        {
+          "tag": "CAPTION",
+          "cls": "",
+          "text": "Producción y gasto por semana"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "",
+          "text": "SemanaProducciónGastoResultado"
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "text": "SemanaProducciónGastoResultado"
+        },
+        {
+          "tag": "TH",
+          "cls": "",
+          "text": "Resultado"
+        },
+        {
+          "tag": "TBODY",
+          "cls": "",
+          "text": "14-sep$0.00$0.00$0.0021-sep$2,533,249.15$1,948,974.38$584,274.7728-sep"
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "text": "14-sep$0.00$0.00$0.00"
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "text": "$0.00"
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "text": "21-sep$2,533,249.15$1,948,974.38$584,274.77"
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "text": "$584,274.77"
+        },
+        {
+          "tag": "TR",
+          "cls": "",
+          "text": "28-sep$2,955,432.54$2,185,887.32$769,545.22"
+        },
+        {
+          "tag": "TD",
+          "cls": "",
+          "text": "$769,545.22"
+        }
+      ],
+      "unlabeled": []
+    },
+    "violations": [
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "help": "Elements must have their visible text as part of their accessible name",
+        "nodes": [
+          {
+            "html": "<a class=\"flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm text-primary-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\" aria-label=\"14 pendientes en Residencial Los Encinos — Torre A\" href=\"/app/obras/4d616d86-3c6f-5c35-bfa0-b91333ad9796\">",
+            "target": [
+              ".py-3:nth-child(1) > .items-start.justify-between.gap-3 > .min-h-11.focus-visible\\:ring-2.text-primary-ink"
+            ],
+            "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "html": "<a class=\"flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm text-primary-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\" aria-label=\"13 pendientes en Ampliación Nave Industrial Bajío\" href=\"/app/obras/03f8c174-6bfc-5e77-802f-65470a4a1d1d\">",
+            "target": [
+              ".py-3:nth-child(2) > .items-start.justify-between.gap-3 > .min-h-11.focus-visible\\:ring-2.text-primary-ink"
+            ],
+            "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "configuracion",
+    "url": "http://localhost:3000/app/configuracion",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": [
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input aria-hidden=\"true\" tabindex=\"-1\" type=\"radio\" value=\"moral\" checked=\"\" style=\"position: absolute; pointer-events: none; opacity: 0; margin: 0px; transform: translateX(-100%); width: 16px; height: 16px;\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input aria-hidden=\"true\" tabindex=\"-1\" type=\"radio\" value=\"fisica\" style=\"position: absolute; pointer-events: none; opacity: 0; margin: 0px; transform: translateX(-100%); width: 16px; height: 16px;\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" required=\"\" value=\"Constructora Naranja del Bajío, S.A. de C.V.\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"Constructora Naranja del Bajío\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" maxlength=\"13\" required=\"\" value=\"CNB200315AB1\">"
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "SELECT",
+          "placeholder": null,
+          "html": "<select aria-hidden=\"true\" tabindex=\"-1\" style=\"position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; overflow-wrap: normal;\"><option value=\"601 - General de Ley Personas Morales\" selected=\"\">601 - General de Ley Personas Morales</option><option value=\"601 — General de Ley Personas Morales\">601 — General de Ley Personas Morales</option><option v"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"Av. López Mateos Sur\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"1450\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"Ciudad del Sol\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"Zapopan\">"
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "SELECT",
+          "placeholder": null,
+          "html": "<select aria-hidden=\"true\" tabindex=\"-1\" style=\"position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; overflow-wrap: normal;\"><option value=\"Aguascalientes\">Aguascalientes</option><option value=\"Baja California\">Baja California</option><option value=\"Baja California Sur\">Baja California Sur</option><option value=\"Campeche\">Campeche</option><opti"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" maxlength=\"5\" value=\"45050\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"\">"
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" min=\"0\" step=\"0.01\" type=\"number\" value=\"12000000\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": "Nueva unidad…",
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" placeholder=\"Nueva unidad…\" value=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm max-w-xs\" accept=\"image/png,image/jpeg,image/svg+xml\" type=\"file\">"
+        },
+        {
+          "tag": "SELECT",
+          "placeholder": null,
+          "html": "<select aria-hidden=\"true\" tabindex=\"-1\" style=\"position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; overflow-wrap: normal;\"><option value=\"\" selected=\"\"></option><option value=\"Acta Constitutiva\">Acta Constitutiva</option><option value=\"Constancia de Situación Fiscal (CSF)\">Constancia de Situación Fiscal (CSF)</option><option value=\"Opinión de"
+        }
+      ]
+    },
+    "violations": []
+  },
+  {
+    "name": "configuracion",
+    "url": "http://localhost:3000/app/configuracion",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [
+        {
+          "tag": "BUTTON",
+          "cls": "inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow",
+          "text": "Cuentas"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow",
+          "text": "Permisos"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow",
+          "text": "Notificaciones"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow",
+          "text": "Documentos"
+        }
+      ],
+      "unlabeled": [
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input aria-hidden=\"true\" tabindex=\"-1\" type=\"radio\" value=\"moral\" checked=\"\" style=\"position: absolute; pointer-events: none; opacity: 0; margin: 0px; transform: translateX(-100%); width: 16px; height: 16px;\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input aria-hidden=\"true\" tabindex=\"-1\" type=\"radio\" value=\"fisica\" style=\"position: absolute; pointer-events: none; opacity: 0; margin: 0px; transform: translateX(-100%); width: 16px; height: 16px;\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" required=\"\" value=\"Constructora Naranja del Bajío, S.A. de C.V.\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"Constructora Naranja del Bajío\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" maxlength=\"13\" required=\"\" value=\"CNB200315AB1\" style=\"\">"
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "SELECT",
+          "placeholder": null,
+          "html": "<select aria-hidden=\"true\" tabindex=\"-1\" style=\"position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; overflow-wrap: normal;\"><option value=\"601 - General de Ley Personas Morales\" selected=\"\">601 - General de Ley Personas Morales</option><option value=\"601 — General de Ley Personas Morales\">601 — General de Ley Personas Morales</option><option v"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"Av. López Mateos Sur\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"1450\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"Ciudad del Sol\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"Zapopan\" style=\"\">"
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "SELECT",
+          "placeholder": null,
+          "html": "<select aria-hidden=\"true\" tabindex=\"-1\" style=\"position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; overflow-wrap: normal;\"><option value=\"Aguascalientes\">Aguascalientes</option><option value=\"Baja California\">Baja California</option><option value=\"Baja California Sur\">Baja California Sur</option><option value=\"Campeche\">Campeche</option><opti"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" maxlength=\"5\" value=\"45050\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" value=\"\" style=\"\">"
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" min=\"0\" step=\"0.01\" type=\"number\" value=\"12000000\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": "Nueva unidad…",
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm\" placeholder=\"Nueva unidad…\" value=\"\" style=\"\">"
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": null,
+          "html": "<input class=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm max-w-xs\" accept=\"image/png,image/jpeg,image/svg+xml\" type=\"file\" style=\"\">"
+        },
+        {
+          "tag": "SELECT",
+          "placeholder": null,
+          "html": "<select aria-hidden=\"true\" tabindex=\"-1\" style=\"position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; overflow-wrap: normal;\"><option value=\"\" selected=\"\"></option><option value=\"Acta Constitutiva\">Acta Constitutiva</option><option value=\"Constancia de Situación Fiscal (CSF)\">Constancia de Situación Fiscal (CSF)</option><option value=\"Opinión de"
+        }
+      ]
+    },
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              ".sm\\:col-span-2.min-w-0 > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.sm\\:text-sm"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              "div:nth-child(3) > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.sm\\:text-sm"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      },
+      {
+        "id": "label",
+        "impact": "critical",
+        "help": "Form elements must have labels",
+        "nodes": [
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" required=\"\" value=\"Constructora Naranja...\" style=\"\">",
+            "target": [
+              "div:nth-child(1) > .file\\:border-0.file\\:bg-transparent[required=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Constructora Naranja...\" style=\"\">",
+            "target": [
+              "input[value=\"Constructora Naranja del Bajío\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" maxlength=\"13\" required=\"\" value=\"CNB200315AB1\" style=\"\">",
+            "target": [
+              "input[maxlength=\"13\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Av. López Mateos Sur\" style=\"\">",
+            "target": [
+              "input[value=\"Av. López Mateos Sur\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"1450\" style=\"\">",
+            "target": [
+              "input[value=\"1450\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\" style=\"\">",
+            "target": [
+              "div:nth-child(3) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Ciudad del Sol\" style=\"\">",
+            "target": [
+              "input[value=\"Ciudad del Sol\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Zapopan\" style=\"\">",
+            "target": [
+              "input[value=\"Zapopan\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" maxlength=\"5\" value=\"45050\" style=\"\">",
+            "target": [
+              "input[maxlength=\"5\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\" style=\"\">",
+            "target": [
+              ".sm\\:grid-cols-2.gap-4 > div:nth-child(1) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\" style=\"\">",
+            "target": [
+              ".sm\\:grid-cols-2.gap-4 > div:nth-child(2) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "equipo",
+    "url": "http://localhost:3000/app/equipo",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "equipo",
+    "url": "http://localhost:3000/app/equipo",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "NombreEmailRolAccionesArq. Claudia Estrada Navarrosupervisor@demo.pnfS"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "NombreEmailRolAcciones"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+          "text": "NombreEmailRolAcciones"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+          "text": "Rol"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] w-32 text-right",
+          "text": "Acciones"
+        },
+        {
+          "tag": "TBODY",
+          "cls": "[&_tr:last-child]:border-0",
+          "text": "Arq. Claudia Estrada Navarrosupervisor@demo.pnfSupervisorIng. Jorge Lu"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+          "text": "Arq. Claudia Estrada Navarrosupervisor@demo.pnfSupervisor"
+        },
+        {
+          "tag": "TD",
+          "cls": "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+          "text": "Supervisor"
+        },
+        {
+          "tag": "DIV",
+          "cls": "inline-flex items-center rounded-md border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs",
+          "text": "Supervisor"
+        },
+        {
+          "tag": "TD",
+          "cls": "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] text-right",
+          "text": ""
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 w-9",
+          "text": ""
+        },
+        {
+          "tag": "svg",
+          "cls": {},
+          "text": ""
+        }
+      ],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "catalogos",
+    "url": "http://localhost:3000/app/catalogos",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": [
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        }
+      ]
+    },
+    "violations": []
+  },
+  {
+    "name": "catalogos",
+    "url": "http://localhost:3000/app/catalogos/clientes",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "NombreRFCTipoTeléfonoCorreoAlertasEstatusAccionesDesarrollos Punta Nor"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "NombreRFCTipoTeléfonoCorreoAlertasEstatusAcciones"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+          "text": "NombreRFCTipoTeléfonoCorreoAlertasEstatusAcciones"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] whitespace-nowrap",
+          "text": "Tipo"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] whitespace-nowrap",
+          "text": "Teléfono"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] whitespace-nowrap",
+          "text": "Correo"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] whitespace-nowrap",
+          "text": "Alertas"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] whitespace-nowrap",
+          "text": "Estatus"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] w-32 text-right whitespace-nowrap",
+          "text": "Acciones"
+        },
+        {
+          "tag": "TBODY",
+          "cls": "[&_tr:last-child]:border-0",
+          "text": "Desarrollos Punta Norte, S.A. de C.V.DPN190228Q71Moral322 225 6700cont"
+        },
+        {
+          "tag": "TR",
+          "cls": "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer",
+          "text": "Desarrollos Punta Norte, S.A. de C.V.DPN190228Q71Moral322 225 6700cont"
+        },
+        {
+          "tag": "TD",
+          "cls": "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] whitespace-nowrap",
+          "text": "Moral"
+        }
+      ],
+      "unlabeled": [
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "INPUT",
+          "placeholder": "Buscar por nombre o RFC…",
+          "html": "<input class=\"flex w-full rounded-md border border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pl-8 h-8 text-xs\" placeholder=\"Buscar por nombre o RFC…\" value=\"\">"
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm [&amp;&gt;"
+        }
+      ]
+    },
+    "violations": [
+      {
+        "id": "aria-valid-attr-value",
+        "impact": "critical",
+        "help": "ARIA attributes must conform to valid values",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"tab\" aria-selected=\"true\" aria-controls=\"radix-_r_s_-content-...\" data-state=\"active\" id=\"radix-_r_s_-trigger-...\" class=\"inline-flex shrink-0...\" tabindex=\"-1\" data-orientation=\"horizontal\" data-radix-collectio...=\"\">",
+            "target": [
+              "#radix-_r_s_-trigger-todos"
+            ],
+            "summary": "Fix all of the following:\n  Invalid ARIA attribute value: aria-controls=\"radix-_r_s_-content-todos\""
+          }
+        ]
+      },
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              ".h-9"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex min-w-0 items-c...\">",
+            "target": [
+              ".w-36"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "obras",
+    "url": "http://localhost:3000/app/obras",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "obras",
+    "url": "http://localhost:3000/app/obras",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "obra-inicio",
+    "url": "http://localhost:3000/app/obras/58a43d52-9a1e-49e3-9f38-a3bbcfe8bcf8",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "obra-inicio",
+    "url": "http://localhost:3000/app/obras/58a43d52-9a1e-49e3-9f38-a3bbcfe8bcf8",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "obra-requisiciones",
+    "url": "http://localhost:3000/app/obras/58a43d52-9a1e-49e3-9f38-a3bbcfe8bcf8/requisiciones",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "obra-requisiciones",
+    "url": "http://localhost:3000/app/obras/58a43d52-9a1e-49e3-9f38-a3bbcfe8bcf8/requisiciones",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [
+        {
+          "tag": "TABLE",
+          "cls": "w-full caption-bottom text-sm",
+          "text": "FolioSolicitanteIns.Fecha req.EstatusAcciónREQ-2026-005Ricardo Naranja"
+        },
+        {
+          "tag": "THEAD",
+          "cls": "[&_tr]:border-b",
+          "text": "FolioSolicitanteIns.Fecha req.EstatusAcción"
+        },
+        {
+          "tag": "TR",
+          "cls": "transition-colors data-[state=selected]:bg-muted bg-muted/40 border-b border-border hover:bg-muted/40",
+          "text": "FolioSolicitanteIns.Fecha req.EstatusAcción"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 text-left align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[150px]",
+          "text": "Estatus"
+        },
+        {
+          "tag": "TH",
+          "cls": "h-10 px-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] py-2.5 pr-4 text-xs font-semibold uppercase tracking-wider text-right text-muted-foreground w-[100px]",
+          "text": "Acción"
+        },
+        {
+          "tag": "TBODY",
+          "cls": "[&_tr:last-child]:border-0",
+          "text": "REQ-2026-005Ricardo Naranja Salazar5 insumos · Acero de refuerzo No. 3"
+        },
+        {
+          "tag": "TR",
+          "cls": "data-[state=selected]:bg-muted cursor-pointer border-b border-border/60 last:border-0 hover:bg-muted/30 transition-colors group",
+          "text": "REQ-2026-005Ricardo Naranja Salazar5 insumos · Acero de refuerzo No. 3"
+        },
+        {
+          "tag": "TD",
+          "cls": "p-2 [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] py-3 align-middle",
+          "text": "Enviada"
+        },
+        {
+          "tag": "DIV",
+          "cls": "inline-flex items-center rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent shadow hover:bg-primary/80 bg-gray-200 text-gray-800 border-0 text-xs px-2 py-0.5 font-medium",
+          "text": "Enviada"
+        },
+        {
+          "tag": "TD",
+          "cls": "p-2 [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] py-3 pr-4 text-right align-middle",
+          "text": "Cotizar"
+        },
+        {
+          "tag": "DIV",
+          "cls": "flex items-center justify-end gap-1.5",
+          "text": "Cotizar"
+        },
+        {
+          "tag": "BUTTON",
+          "cls": "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 rounded-md h-7 px-3 text-xs opacity-0 group-hover:opacity-100 transition-opacity focus-visible:opacity-100",
+          "text": "Cotizar"
+        }
+      ],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "obra-nomina",
+    "url": "http://localhost:3000/app/obras/58a43d52-9a1e-49e3-9f38-a3bbcfe8bcf8/nomina",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "obra-nomina",
+    "url": "http://localhost:3000/app/obras/58a43d52-9a1e-49e3-9f38-a3bbcfe8bcf8/nomina",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [],
+      "unlabeled": []
+    },
+    "violations": []
+  },
+  {
+    "name": "obra-configuracion",
+    "url": "http://localhost:3000/app/obras/58a43d52-9a1e-49e3-9f38-a3bbcfe8bcf8/configuracion",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overflow": [],
+      "unlabeled": [
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        }
+      ]
+    },
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              "div:nth-child(2) > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.focus\\:ring-ring"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              "div:nth-child(3) > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.focus\\:ring-ring"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "obra-configuracion",
+    "url": "http://localhost:3000/app/obras/58a43d52-9a1e-49e3-9f38-a3bbcfe8bcf8/configuracion",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360,
+      "overflow": [
+        {
+          "tag": "SPAN",
+          "cls": "text-muted-foreground",
+          "text": "· LIB180915K45"
+        }
+      ],
+      "unlabeled": [
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        },
+        {
+          "tag": "BUTTON",
+          "placeholder": null,
+          "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-w-0 items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm ring-offset-background cursor-pointer data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 "
+        }
+      ]
+    },
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "help": "Buttons must have discernible text",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              "div:nth-child(2) > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.focus\\:ring-ring"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              "div:nth-child(3) > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.focus\\:ring-ring"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  }
+]

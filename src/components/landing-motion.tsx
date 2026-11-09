@@ -42,11 +42,6 @@ export default function LandingMotion({ children }: { children: ReactNode }) {
             ".landing-preview-row",
             { clipPath: "inset(0 100% 0 0)", stagger: 0.12, duration: 0.42 },
             "-=0.42",
-          )
-          .from(
-            ".landing-audience > div span",
-            { scale: 0.9, autoAlpha: 0, stagger: 0.08, duration: 0.32 },
-            "-=0.4",
           );
 
         const flowSteps = gsap.utils.toArray<HTMLElement>(".landing-flow-step", root.current);
@@ -74,18 +69,6 @@ export default function LandingMotion({ children }: { children: ReactNode }) {
             },
           },
         );
-
-        const stamp = gsap.timeline({
-          defaults: { ease: "expo.out" },
-          scrollTrigger: { trigger: ".landing-module-stamp", start: "top 78%", once: true },
-        });
-        stamp
-          .from(".landing-module-stamp", { y: -20, rotation: -1.5, scale: 0.97, duration: 0.55 })
-          .from(
-            ".landing-module-stamp > *",
-            { y: 8, autoAlpha: 0, stagger: 0.08, duration: 0.3 },
-            "-=0.28",
-          );
 
         return () => {
           flowSteps.forEach((step) => {

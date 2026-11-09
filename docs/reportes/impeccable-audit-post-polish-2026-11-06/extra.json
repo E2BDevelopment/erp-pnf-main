@@ -1,0 +1,65 @@
+[
+  {
+    "name": "config-identidad",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=identidad",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "config-cuentas",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=cuentas",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "config-permisos",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=permisos",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "config-documentacion",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=documentacion",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "config-notificaciones",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=notificaciones",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "editar-unidad-negocio",
+    "url": "http://127.0.0.1:3100/app/configuracion?tab=configuracion",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "confirmar-baja",
+    "url": "http://127.0.0.1:3100/app/equipo",
+    "layout": {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    "violations": []
+  }
+]

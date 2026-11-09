@@ -1,7 +1,7 @@
+import { requirePermission } from "@/lib/permisos/require";
 import { createServerFn } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { requirePermission } from "@/lib/permisos/require";
 
 const InsumoInput = z.object({
   insumo_id: z.string().uuid(),
@@ -157,10 +157,11 @@ export const listRequisicionesAsignadas = createServerFn({ method: "POST" })
       obra: obraMap.get(r.obra_id) ?? null,
       residente: residenteMap.get(r.obra_id) ?? null,
       insumos_count: (r.items ?? []).length,
-      fecha_requerida: (r.items ?? [])
-        .map((item: any) => item.fecha_requerida)
-        .filter(Boolean)
-        .sort()[0] ?? null,
+      fecha_requerida:
+        (r.items ?? [])
+          .map((item: any) => item.fecha_requerida)
+          .filter(Boolean)
+          .sort()[0] ?? null,
       solicitante: r.creado_por ? (profileMap.get(r.creado_por)?.nombre_completo ?? null) : null,
     }));
   });
@@ -267,7 +268,7 @@ export const crearRequisicion = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "requisiciones.crear");
+    await requirePermission(supabase, userId, "requisiciones.crear", data.obraId);
     const { data: profile } = await supabase
       .from("profiles")
       .select("company_id")
@@ -364,6 +365,10 @@ export const agregarInsumoRequisicion = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "requisiciones.crear", {
+      table: "requisiciones",
+      id: data.requisicionId,
+    });
     const { supabase } = context;
     const { error } = await supabase.from("requisicion_insumos").insert({
       requisicion_id: data.requisicionId,
@@ -380,6 +385,10 @@ export const cancelarRequisicion = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "requisiciones.crear", {
+      table: "requisiciones",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: req } = await supabase
       .from("requisiciones")
@@ -457,7 +466,12 @@ export const guardarBorradorRequisicion = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "requisiciones.crear");
+    await requirePermission(
+      supabase,
+      userId,
+      "requisiciones.crear",
+      data.borradorId ? { table: "requisiciones", id: data.borradorId } : data.obraId,
+    );
     const { data: profile } = await supabase
       .from("profiles")
       .select("company_id")
@@ -527,7 +541,10 @@ export const enviarBorradorRequisicion = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "requisiciones.crear");
+    await requirePermission(supabase, userId, "requisiciones.crear", {
+      table: "requisiciones",
+      id: data.borradorId,
+    });
     const { data: existing } = await supabase
       .from("requisiciones")
       .select("id, estatus, creado_por, obra_id, company_id")
@@ -542,7 +559,10 @@ export const enviarBorradorRequisicion = createServerFn({ method: "POST" })
       .select("nombre")
       .eq("company_id", existing.company_id)
       .eq("estatus", "rechazado")
-      .in("id", data.insumos.map((item) => item.insumo_id));
+      .in(
+        "id",
+        data.insumos.map((item) => item.insumo_id),
+      );
     if (rechazadosErr) throw new Error(rechazadosErr.message);
     if (rechazados?.length) {
       throw new Error(`Quita de la requisición el insumo rechazado: ${rechazados[0].nombre}.`);
@@ -577,7 +597,8 @@ export const enviarBorradorRequisicion = createServerFn({ method: "POST" })
       .select("id")
       .maybeSingle();
     if (updErr) throw new Error(updErr.message);
-    if (!updatedReq) throw new Error("No se pudo enviar la requisición. Verifica que aún sea tu borrador.");
+    if (!updatedReq)
+      throw new Error("No se pudo enviar la requisición. Verifica que aún sea tu borrador.");
 
     await notificarRequisicionEnviada(supabase, {
       requisicionId: data.borradorId,
@@ -594,6 +615,10 @@ export const eliminarBorradorRequisicion = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "requisiciones.crear", {
+      table: "requisiciones",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: req } = await supabase
       .from("requisiciones")

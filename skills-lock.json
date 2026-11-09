@@ -43,6 +43,12 @@
       "skillPath": "skills/commit-work/SKILL.md",
       "computedHash": "c9362cbf8d20af2fba1789a57c27e94cf063c0cbe659f40898d31d2afa3b1cb8"
     },
+    "daily-meeting-update": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/daily-meeting-update/SKILL.md",
+      "computedHash": "a01be54c92bdfd8aa40ce77e7ff168531fe43543319850b8dc5824fd568fc68d"
+    },
     "diagnosing-bugs": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -54,6 +60,12 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/domain-modeling/SKILL.md",
       "computedHash": "f377a1341e1b368833cfe5889ace3e61d7df48d7a9e5da9253dba75d062bbfbc"
+    },
+    "figma-designer": {
+      "source": "elayadesign/ai-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/figma-designer/SKILL.md",
+      "computedHash": "a717b7cb00defda248a26698a3dad8049552b2e7e4aa9c99a014fd4339aaf05e"
     },
     "game-changing-features": {
       "source": "softaworks/agent-toolkit",
@@ -156,6 +168,12 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "11cfd9568d71445df710d5a9332c674ad773de0c9d5fc22d3ffa175bdd7d988b"
+    },
+    "landing-page-design": {
+      "source": "elayadesign/ai-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/landing-page-design/SKILL.md",
+      "computedHash": "c4f760690439298d9ef3238534919ee3fd558a3345c414ff6c7e7acacd973a08"
     },
     "loop-me": {
       "source": "mattpocock/skills",

@@ -67,6 +67,7 @@ export function UnidadesNegocioManager() {
 
       <div className="flex gap-2">
         <Input
+          aria-label="Nueva unidad de negocio"
           placeholder="Nueva unidad…"
           value={nuevo}
           onChange={(e) => setNuevo(e.target.value)}
@@ -97,6 +98,7 @@ export function UnidadesNegocioManager() {
               {editing?.id === u.id ? (
                 <>
                   <Input
+                    aria-label="Nombre de la unidad de negocio"
                     value={editing.nombre}
                     onChange={(e) => setEditing({ ...editing, nombre: e.target.value })}
                     className="flex-1"

@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/permisos/require";
 import { createServerFn } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -43,6 +44,10 @@ export const registrarPagoOC = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
     assertPayer(roles);
+    await requirePermission(supabase, userId, "cxp.registrar_pago", {
+      table: "ordenes_compra",
+      id: data.ocId,
+    });
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -205,6 +210,10 @@ export const cancelarPagoOC = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ pagoId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "cxp.cancelar_pago", {
+      table: "pagos",
+      id: data.pagoId,
+    });
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
     if (!roles.has("director")) throw new Error("Solo el director puede cancelar pagos");
@@ -287,6 +296,7 @@ export const getSaldosProveedores = createServerFn({ method: "GET" })
     if (!roles.has("director") && !roles.has("administrativo")) {
       throw new Error("No tienes permisos");
     }
+    await requirePermission(supabase, userId, "cxp.ver");
 
     // OCs con saldo pendiente
     const { data: ocs, error } = await supabase
@@ -351,6 +361,7 @@ export const getDetalleSaldoProveedor = createServerFn({ method: "POST" })
     if (!roles.has("director") && !roles.has("administrativo")) {
       throw new Error("No tienes permisos");
     }
+    await requirePermission(supabase, userId, "cxp.ver");
 
     const { data: ocs, error } = await supabase
       .from("ordenes_compra")
@@ -376,6 +387,7 @@ export const listCxPDestajoPendientes = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
     assertPayer(roles);
+    await requirePermission(supabase, userId, "cxp.ver");
 
     const { data, error } = await supabase
       .from("cuentas_por_pagar")
@@ -412,6 +424,7 @@ export const listCxPSubcontratoPendientes = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
     assertPayer(roles);
+    await requirePermission(supabase, userId, "cxp.ver");
 
     const { data, error } = await supabase
       .from("cuentas_por_pagar")
@@ -459,6 +472,10 @@ export const registrarPagoCxP = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
     assertPayer(roles);
+    await requirePermission(supabase, userId, "cxp.registrar_pago", {
+      table: "cuentas_por_pagar",
+      id: data.cxpId,
+    });
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -706,6 +723,7 @@ export const listCxPCajaChicaFondoPendientes = createServerFn({ method: "GET" })
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
     assertPayer(roles);
+    await requirePermission(supabase, userId, "cxp.ver");
 
     // 1) Fondos pendientes (CxP con origen caja_chica_fondo)
     const { data: cxpRows, error } = await supabase

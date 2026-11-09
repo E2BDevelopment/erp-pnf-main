@@ -42,6 +42,7 @@ export default function CatalogosLayout({ children }: { children: React.ReactNod
             <Link
               key={s.slug}
               to={s.to}
+              aria-current={isActive ? "page" : undefined}
               className={`px-4 py-2 -mb-px text-sm font-medium border-b-2 transition-colors ${
                 isActive
                   ? "border-primary text-primary-ink"
@@ -63,7 +64,7 @@ export default function CatalogosLayout({ children }: { children: React.ReactNod
             if (target) navigate({ to: target.to });
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger aria-label="Catálogo">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

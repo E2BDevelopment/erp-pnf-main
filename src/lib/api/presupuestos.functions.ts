@@ -107,9 +107,9 @@ export const crearPresupuesto = createServerFn({ method: "POST" })
     const { companyId } = await getCompanyAndIsDirector(supabase, userId);
 
     if (data.tipo === "base") {
-      await requirePermission(supabase, userId, "presupuestos.crear_base");
+      await requirePermission(supabase, userId, "presupuestos.crear_base", data.obraId);
     } else {
-      await requirePermission(supabase, userId, "presupuestos.crear_oc");
+      await requirePermission(supabase, userId, "presupuestos.crear_oc", data.obraId);
     }
 
     let numero = 0;
@@ -192,6 +192,7 @@ export const guardarRenglones = createServerFn({ method: "POST" })
       supabase,
       userId,
       presupuesto.tipo === "adenda" ? "presupuestos.crear_oc" : "presupuestos.crear_base",
+      { table: "obra_presupuestos", id: data.presupuestoId },
     );
     if (presupuesto.estatus === "autorizado")
       throw new Error("El presupuesto está autorizado y no se puede editar. Crea una adenda.");
@@ -255,13 +256,19 @@ export const autorizarPresupuesto = createServerFn({ method: "POST" })
     if (pErr) throw new Error(pErr.message);
 
     if (pres.tipo === "adenda") {
-      await requirePermission(supabase, userId, "presupuestos.autorizar_oc");
+      await requirePermission(supabase, userId, "presupuestos.autorizar_oc", {
+        table: "obra_presupuestos",
+        id: data.id,
+      });
       if (pres.estatus !== "solicitada")
         throw new Error("La orden de cambio debe haber sido solicitada por el residente");
       if (pres.enviado_por && pres.enviado_por === userId && !isDirector)
         throw new Error("No puedes autorizar una OC que tú mismo solicitaste");
     } else {
-      await requirePermission(supabase, userId, "presupuestos.autorizar_base");
+      await requirePermission(supabase, userId, "presupuestos.autorizar_base", {
+        table: "obra_presupuestos",
+        id: data.id,
+      });
       if (pres.estatus !== "solicitada")
         throw new Error("El presupuesto base debe haber sido enviado a autorización");
       if (pres.enviado_por && pres.enviado_por === userId && !isDirector)
@@ -321,6 +328,7 @@ export const solicitarAutorizacionPresupuesto = createServerFn({ method: "POST" 
       supabase,
       userId,
       pres.tipo === "adenda" ? "presupuestos.crear_oc" : "presupuestos.crear_base",
+      { table: "obra_presupuestos", id: data.id },
     );
 
     const { count } = await supabase
@@ -381,6 +389,7 @@ export const rechazarPresupuesto = createServerFn({ method: "POST" })
       supabase,
       userId,
       pres.tipo === "adenda" ? "presupuestos.autorizar_oc" : "presupuestos.autorizar_base",
+      { table: "obra_presupuestos", id: data.id },
     );
 
     const { error } = await supabase
@@ -429,6 +438,7 @@ export const reabrirPresupuesto = createServerFn({ method: "POST" })
       supabase,
       userId,
       pres.tipo === "adenda" ? "presupuestos.crear_oc" : "presupuestos.crear_base",
+      { table: "obra_presupuestos", id: data.id },
     );
 
     const { error } = await supabase
@@ -459,6 +469,7 @@ export const eliminarPresupuesto = createServerFn({ method: "POST" })
       supabase,
       userId,
       p.tipo === "adenda" ? "presupuestos.eliminar_oc" : "presupuestos.eliminar_base",
+      { table: "obra_presupuestos", id: data.id },
     );
     if (p.estatus === "autorizado")
       throw new Error("No se puede eliminar un presupuesto autorizado");
@@ -760,7 +771,10 @@ export const guardarRenglonesOC = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "presupuestos.crear_oc");
+    await requirePermission(supabase, userId, "presupuestos.crear_oc", {
+      table: "obra_presupuestos",
+      id: data.presupuestoId,
+    });
 
     const { data: presupuesto } = await supabase
       .from("obra_presupuestos")

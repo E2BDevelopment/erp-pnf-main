@@ -17,9 +17,9 @@ export const CATEGORIA_LABEL: Record<TerceroCategoria, string> = {
 };
 
 export const CATEGORIA_BADGE: Record<TerceroCategoria, string> = {
-  proveedor: "bg-blue-600 text-white hover:bg-blue-600",
-  contratista: "bg-teal-600 text-white hover:bg-teal-600",
-  ambos: "bg-slate-700 text-white hover:bg-slate-700",
+  proveedor: "border-0 bg-blue-100 text-blue-800 shadow-none hover:bg-blue-100",
+  contratista: "border-0 bg-teal-100 text-teal-800 shadow-none hover:bg-teal-100",
+  ambos: "border-0 bg-slate-100 text-slate-800 shadow-none hover:bg-slate-100",
 };
 
 export const DOC_LABEL: Record<TerceroDocTipo, string> = {

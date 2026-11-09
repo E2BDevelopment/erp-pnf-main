@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearch } from "@/lib/navigation";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -117,6 +117,7 @@ export function CatalogoTrabajadoresModule() {
   const [tab, setTab] = useState<"todos" | "pendientes">("todos");
   const [creating, setCreating] = useState(false);
   const [detalleId, setDetalleId] = useState<string | null>(null);
+  const detalleTrigger = useRef<HTMLButtonElement | null>(null);
   const [editing, setEditing] = useState<Row | null>(null);
   const [toDelete, setToDelete] = useState<Row | null>(null);
   const search_ = useSearch({ from: "/_authenticated/app/catalogos/trabajadores" });
@@ -202,21 +203,33 @@ export function CatalogoTrabajadoresModule() {
         </div>
         <div className="flex items-center gap-2">
           {canManage && (
-            <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
-              <TabsList className="h-8">
-                <TabsTrigger value="todos" className="text-xs h-6 px-2">
-                  Todos
-                </TabsTrigger>
-                <TabsTrigger value="pendientes" className="text-xs h-6 px-2">
-                  Pendientes
-                  {stats.pendientes > 0 && (
-                    <Badge className="ml-1.5 h-4 px-1.5 bg-amber-100 text-amber-800 hover:bg-amber-100 text-[11px]">
-                      {stats.pendientes}
-                    </Badge>
-                  )}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <ToggleGroup
+              type="single"
+              value={tab}
+              aria-label="Filtrar trabajadores por autorización"
+              className="inline-flex h-8 rounded-lg bg-muted p-1 text-muted-foreground"
+              onValueChange={(v) => {
+                if (v) setTab(v as typeof tab);
+              }}
+            >
+              <ToggleGroupItem
+                value="todos"
+                className="text-xs h-6 px-2 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow"
+              >
+                Todos
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="pendientes"
+                className="text-xs h-6 px-2 data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow"
+              >
+                Pendientes
+                {stats.pendientes > 0 && (
+                  <Badge className="ml-1.5 h-4 px-1.5 bg-amber-100 text-amber-800 hover:bg-amber-100 text-[11px]">
+                    {stats.pendientes}
+                  </Badge>
+                )}
+              </ToggleGroupItem>
+            </ToggleGroup>
           )}
           {canRequest && (
             <Button
@@ -236,6 +249,7 @@ export function CatalogoTrabajadoresModule() {
         <div className="relative flex-1 min-w-[180px]">
           <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
+            aria-label="Buscar trabajadores por nombre, CURP o NSS"
             placeholder="Buscar nombre, CURP o NSS…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -243,7 +257,7 @@ export function CatalogoTrabajadoresModule() {
           />
         </div>
         <Select value={imssFiltro} onValueChange={(v) => setImssFiltro(v as typeof imssFiltro)}>
-          <SelectTrigger className="w-36 h-8 text-xs">
+          <SelectTrigger aria-label="Estado de alta en IMSS" className="w-36 h-8 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -258,7 +272,7 @@ export function CatalogoTrabajadoresModule() {
           value={puestoFiltro}
           onValueChange={(v) => setPuestoFiltro(v as TrabajadorPuesto | "todos")}
         >
-          <SelectTrigger className="w-36 h-8 text-xs">
+          <SelectTrigger aria-label="Puesto del trabajador" className="w-36 h-8 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -275,7 +289,7 @@ export function CatalogoTrabajadoresModule() {
       {/* Lista protagonista */}
       <Card className="overflow-hidden">
         {/* Header de columnas */}
-        <div className="hidden sm:grid grid-cols-[1fr_110px_90px_90px_90px_40px] gap-3 px-3 py-2 border-b bg-muted/30 text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
+        <div className="hidden sm:grid sm:grid-cols-[minmax(0,1fr)_90px_90px_40px] md:grid-cols-[minmax(0,1fr)_110px_90px_90px_40px] lg:grid-cols-[minmax(0,1fr)_110px_90px_90px_90px_40px] gap-3 px-3 py-2 border-b bg-muted/30 text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
           <div>Trabajador</div>
           <div className="hidden md:block">Puesto</div>
           <div>IMSS</div>
@@ -299,69 +313,66 @@ export function CatalogoTrabajadoresModule() {
         ) : (
           <ul className="divide-y">
             {rows.map((r) => (
-              <li
-                key={r.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => setDetalleId(r.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
+              <li key={r.id} className="flex items-stretch hover:bg-muted/40 transition-colors">
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    detalleTrigger.current = event.currentTarget;
                     setDetalleId(r.id);
-                  }
-                }}
-                className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_110px_90px_90px_90px_40px] gap-3 items-center px-3 py-2.5 hover:bg-muted/40 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                {/* Trabajador */}
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <Avatar name={r.nombre_completo} />
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium truncate leading-tight">
-                      {r.nombre_completo}
-                    </div>
-                    <div className="text-[11px] text-muted-foreground truncate leading-tight">
-                      <span className="md:hidden">
-                        {r.puesto ? PUESTO_LABEL[r.puesto] : "Sin puesto"} ·{" "}
-                      </span>
-                      <span className="font-mono">{mascararCurp(r.curp)}</span>
+                  }}
+                  className="grid min-w-0 flex-1 grid-cols-1 sm:grid-cols-[minmax(0,1fr)_90px_90px] md:grid-cols-[minmax(0,1fr)_110px_90px_90px] lg:grid-cols-[minmax(0,1fr)_110px_90px_90px_90px] gap-3 items-center px-3 py-2.5 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                >
+                  <span className="sr-only">Ver ficha de </span>
+                  {/* Trabajador */}
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Avatar name={r.nombre_completo} />
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium truncate leading-tight">
+                        {r.nombre_completo}
+                      </div>
+                      <div className="text-[11px] text-muted-foreground truncate leading-tight">
+                        <span className="md:hidden">
+                          {r.puesto ? PUESTO_LABEL[r.puesto] : "Sin puesto"} ·{" "}
+                        </span>
+                        <span className="font-mono">{mascararCurp(r.curp)}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Puesto (md+) */}
-                <div className="hidden md:block text-xs text-foreground/80 truncate">
-                  {r.puesto ? PUESTO_LABEL[r.puesto] : "—"}
-                </div>
+                  {/* Puesto (md+) */}
+                  <div className="hidden md:block text-xs text-foreground/80 truncate">
+                    {r.puesto ? PUESTO_LABEL[r.puesto] : "—"}
+                  </div>
 
-                {/* IMSS (sm+) */}
-                <div className="hidden sm:flex items-center gap-1.5 text-xs whitespace-nowrap">
-                  <span className={`size-1.5 rounded-full ${IMSS_DOT[r.imss_estatus]}`} />
-                  {IMSS_SHORT[r.imss_estatus]}
-                </div>
+                  {/* IMSS (sm+) */}
+                  <div className="hidden sm:flex items-center gap-1.5 text-xs whitespace-nowrap">
+                    <span className={`size-1.5 rounded-full ${IMSS_DOT[r.imss_estatus]}`} />
+                    {IMSS_SHORT[r.imss_estatus]}
+                  </div>
 
-                {/* Docs (lg+) */}
-                <div className="hidden lg:flex items-center gap-1.5 text-xs whitespace-nowrap">
-                  <span className={`size-1.5 rounded-full ${DOCS_DOT[r.documentos_estado]}`} />
-                  {DOCS_SHORT[r.documentos_estado]}
-                </div>
+                  {/* Docs (lg+) */}
+                  <div className="hidden lg:flex items-center gap-1.5 text-xs whitespace-nowrap">
+                    <span className={`size-1.5 rounded-full ${DOCS_DOT[r.documentos_estado]}`} />
+                    {DOCS_SHORT[r.documentos_estado]}
+                  </div>
 
-                {/* Estatus (sm+) */}
-                <div className="hidden sm:block">
-                  {r.estatus_autorizacion === "autorizado" ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700">
-                      <span className="size-1.5 rounded-full bg-emerald-500" />
-                      Registrado
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-[11px] text-amber-700">
-                      <span className="size-1.5 rounded-full bg-amber-500" />
-                      Pendiente
-                    </span>
-                  )}
-                </div>
-
-                {/* Acciones */}
-                <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+                  {/* Estatus (sm+) */}
+                  <div className="hidden sm:block">
+                    {r.estatus_autorizacion === "autorizado" ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700">
+                        <span className="size-1.5 rounded-full bg-emerald-500" />
+                        Registrado
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[11px] text-amber-700">
+                        <span className="size-1.5 rounded-full bg-amber-500" />
+                        Pendiente
+                      </span>
+                    )}
+                  </div>
+                </button>
+                {/* Acciones independientes de la apertura de la ficha. */}
+                <div className="flex w-12 shrink-0 items-center justify-end pr-3">
                   {canManage ? (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -432,6 +443,7 @@ export function CatalogoTrabajadoresModule() {
       )}
 
       <TrabajadorDetalle
+        onReturnFocus={() => detalleTrigger.current?.focus()}
         trabajadorId={detalleId}
         open={!!detalleId}
         onClose={() => setDetalleId(null)}
@@ -460,4 +472,3 @@ export function CatalogoTrabajadoresModule() {
     </div>
   );
 }
-

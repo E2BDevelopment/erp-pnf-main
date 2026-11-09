@@ -102,9 +102,9 @@ export const ConfiguracionTab = forwardRef<ConfiguracionTabHandle>(
           <h3 className="text-sm font-medium">General</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <Label>Moneda</Label>
+              <Label htmlFor="configuracion-tab-moneda">Moneda</Label>
               <Select value={moneda} onValueChange={setMoneda}>
-                <SelectTrigger>
+                <SelectTrigger id="configuracion-tab-moneda">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -117,9 +117,9 @@ export const ConfiguracionTab = forwardRef<ConfiguracionTabHandle>(
               </Select>
             </div>
             <div>
-              <Label>Zona horaria</Label>
+              <Label htmlFor="configuracion-tab-zona-horaria">Zona horaria</Label>
               <Select value={zona} onValueChange={setZona}>
-                <SelectTrigger>
+                <SelectTrigger id="configuracion-tab-zona-horaria">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -138,8 +138,9 @@ export const ConfiguracionTab = forwardRef<ConfiguracionTabHandle>(
           <h3 className="text-sm font-medium">Contabilidad</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <Label>Capital social (MXN)</Label>
+              <Label htmlFor="configuracion-tab-capital-social-mxn">Capital social (MXN)</Label>
               <Input
+                id="configuracion-tab-capital-social-mxn"
                 type="number"
                 min={0}
                 step="0.01"

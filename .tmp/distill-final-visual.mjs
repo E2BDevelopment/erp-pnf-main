@@ -1,0 +1,11 @@
+import {chromium} from 'playwright';
+import AxeBuilder from '@axe-core/playwright';
+import {writeFile} from 'node:fs/promises';
+import path from 'node:path';
+const out=path.resolve('docs/reportes/impeccable-distill-2026-11-06');const b=await chromium.launch({channel:'msedge',headless:true}),c=await b.newContext({reducedMotion:'reduce',hasTouch:true,locale:'es-MX'}),p=await c.newPage(),results=[];const errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='warning'&&/GSAP|not found/i.test(m.text()))errors.push(m.text());});
+try{
+ for(const route of ['/','/recorrido'])for(const width of [320,360,768,980,1440]){
+  await p.setViewportSize({width,height:900});await p.goto('http://localhost:3000'+route);await p.waitForLoadState('networkidle');const axe=await new AxeBuilder({page:p}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();const data=await p.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,diagram:[...document.querySelectorAll('.landing-drawing-top span,.landing-structure-node,.landing-drawing-bottom')].map(e=>({text:e.textContent,px:getComputedStyle(e).fontSize})),status:[...document.querySelectorAll('.landing-preview-status')].map(e=>({bg:getComputedStyle(e).backgroundColor,color:getComputedStyle(e).color})),variables:{primary:getComputedStyle(document.documentElement).getPropertyValue('--primary')}}));const result={route,...data,violations:axe.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({html:n.html,summary:n.failureSummary}))}))};results.push(result);const name=route==='/'?'landing':'recorrido';await p.screenshot({path:path.join(out,`after-${name}-${width}.png`),fullPage:true});if(route==='/'){await p.locator('.landing-weekly-drawing').screenshot({path:path.join(out,`diagram-${width}.png`)});await p.locator('.landing-preview').screenshot({path:path.join(out,`preview-${width}.png`)});}await writeFile(path.join(out,'verification.json'),JSON.stringify({results,errors},null,2));console.log(name,width,'overflow',data.scroll,'violations',result.violations.map(v=>v.id));
+ }
+ await p.emulateMedia({reducedMotion:'no-preference'});await p.goto('http://localhost:3000/');await p.waitForTimeout(2200);console.log('motion errors',errors);await writeFile(path.join(out,'motion-errors.json'),JSON.stringify(errors,null,2));
+}finally{await b.close();}
