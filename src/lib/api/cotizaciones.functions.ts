@@ -197,7 +197,10 @@ export const guardarPaquete = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "cotizaciones.gestionar");
+    await requirePermission(supabase, userId, "cotizaciones.gestionar", {
+      table: "requisiciones",
+      id: data.requisicionId,
+    });
     const { companyId } = await getCtx(supabase, userId);
 
     const { data: req } = await supabase
@@ -293,7 +296,10 @@ export const eliminarPaquete = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ paqueteId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "cotizaciones.gestionar");
+    await requirePermission(supabase, userId, "cotizaciones.gestionar", {
+      table: "cotizacion_paquetes",
+      id: data.paqueteId,
+    });
     const { data: paquete } = await supabase
       .from("cotizacion_paquetes")
       .select("id, requisicion_id")
@@ -318,7 +324,10 @@ export const generarOC = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ paqueteId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "oc.crear");
+    await requirePermission(supabase, userId, "oc.crear", {
+      table: "cotizacion_paquetes",
+      id: data.paqueteId,
+    });
     const { companyId } = await getCtx(supabase, userId);
 
     const { data: paquete } = await supabase
@@ -396,7 +405,10 @@ export const enviarOCASupervisor = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ ocId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "oc.crear");
+    await requirePermission(supabase, userId, "oc.crear", {
+      table: "ordenes_compra",
+      id: data.ocId,
+    });
     const { companyId } = await getCtx(supabase, userId);
     const { data: oc } = await supabase
       .from("ordenes_compra")
@@ -459,7 +471,10 @@ export const reabrirOC = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ ocId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "oc.cancelar");
+    await requirePermission(supabase, userId, "oc.cancelar", {
+      table: "ordenes_compra",
+      id: data.ocId,
+    });
     const { data: oc } = await supabase
       .from("ordenes_compra")
       .select("id, requisicion_id, estatus")
@@ -481,7 +496,10 @@ export const autorizarOC = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ ocId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "oc.autorizar");
+    await requirePermission(supabase, userId, "oc.autorizar", {
+      table: "ordenes_compra",
+      id: data.ocId,
+    });
     const { companyId } = await getCtx(supabase, userId);
     const { data: oc } = await supabase
       .from("ordenes_compra")
@@ -543,7 +561,10 @@ export const rechazarOC = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "oc.cancelar");
+    await requirePermission(supabase, userId, "oc.cancelar", {
+      table: "ordenes_compra",
+      id: data.ocId,
+    });
     const { data: oc } = await supabase
       .from("ordenes_compra")
       .select("id, requisicion_id, estatus")
@@ -587,7 +608,10 @@ export const enviarOCAProveedor = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ ocId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "oc.crear");
+    await requirePermission(supabase, userId, "oc.crear", {
+      table: "ordenes_compra",
+      id: data.ocId,
+    });
 
     const { data: oc } = await supabase
       .from("ordenes_compra")

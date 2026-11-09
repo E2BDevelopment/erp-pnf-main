@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+const file='.tmp/pre-distill-globals.css';let s=fs.readFileSync(file,'utf8');
+s=s.replaceAll('\r\n','\n');
+s=s.replace('.landing-problem-list p span { color: #9c9b95;', '.landing-problem-list p span { color: var(--muted-foreground);');
+s=s.replace('.landing-tour-step-number { color: #797a7d;', '.landing-tour-step-number { color: var(--muted-foreground);');
+s=s.replace(/(\.landing-(?:preview[^{}]*|brand (?:strong|small)|flow-step small|principle|problem-list p span)\s*\{)([^{}]*)(\})/g,(all,start,body,end)=>start+body.replace(/font-size:\s*(0?\.\d+)rem/g,(value,size)=>Number(size)<.75?'font-size: .75rem':value)+end);
+s=s.replace('.landing-preview-row {\n  display: flex;', '.landing-preview-row {\n  display: grid;\n  grid-template-columns: 30px minmax(0, 1fr) auto;');
+s=s.replace('  overflow: hidden;\n  font-size: .75rem;\n  font-weight: 650;\n  text-overflow: ellipsis;\n  white-space: nowrap;', '  font-size: .75rem;\n  font-weight: 650;\n  overflow-wrap: anywhere;');
+s=s.replace('.landing-header-inner { height: 68px; }', '.landing-header-inner { height: 68px; gap: 12px; }');
+s=s.replace('  .landing-preview-status { font-size: .75rem; }', '  .landing-preview-status { grid-column: 2 / -1; justify-self: start; margin-left: 0; font-size: .75rem; }');
+s=s.replace('.landing-header a[aria-label="ERP PNF, inicio"] span {\n  font-size: 0.95rem;\n  letter-spacing: -0.03em;\n}\n','');
+fs.writeFileSync(file,s);console.log('reference bytes',Buffer.byteLength(s),'expected',46208);

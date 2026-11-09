@@ -226,6 +226,8 @@ export const registry: Record<string, { __execute: (input?: { data?: unknown }) 
   "api/pendientes.functions.getPendientes": m_api_pendientes_functions.getPendientes,
   "api/permisos.functions.listRolePermissions": m_api_permisos_functions.listRolePermissions,
   "api/permisos.functions.setRolePermission": m_api_permisos_functions.setRolePermission,
+  "api/permisos.functions.listCompanyRoles": m_api_permisos_functions.listCompanyRoles,
+  "api/permisos.functions.createCompanyRole": m_api_permisos_functions.createCompanyRole,
   "api/presupuestos.functions.listPresupuestos": m_api_presupuestos_functions.listPresupuestos,
   "api/presupuestos.functions.getPresupuesto": m_api_presupuestos_functions.getPresupuesto,
   "api/presupuestos.functions.crearPresupuesto": m_api_presupuestos_functions.crearPresupuesto,

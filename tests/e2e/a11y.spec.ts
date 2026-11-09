@@ -29,17 +29,7 @@ async function analizar(page: Page, nombre: string) {
 }
 
 test.describe("accesibilidad WCAG 2.1 AA", () => {
-  /**
-   * Hallazgo A11Y-01 (serio): la landing nueva tiene 5 nodos con contraste
-   * insuficiente (numeración 01-04 y kicker naranja) y el logo del header usa
-   * aria-label sin incluir el texto visible. Se documenta como fallo esperado
-   * para que el suite distinga defectos conocidos de regresiones nuevas.
-   */
-  test("landing sin violaciones críticas ni serias (hallazgo A11Y-01)", async ({ page }) => {
-    test.fail(
-      true,
-      "A11Y-01: 5 nodos con contraste insuficiente y logo con label-content-name-mismatch",
-    );
+  test("landing sin violaciones críticas ni serias", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await analizar(page, "landing");

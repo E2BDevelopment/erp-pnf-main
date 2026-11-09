@@ -48,6 +48,10 @@ El producto empieza como herramienta interna de una constructora y está constru
 
 **Onboarding.** Registro de empresa en dos pasos: datos de la empresa (persona moral o física, razón social o nombre completo, RFC) y cuenta del Director (nombre, correo, contraseña). Al terminar se crea la empresa, el usuario con perfil de Director y se entra al dashboard corporativo.
 
+**Roles personalizados.** El Director puede crear roles por empresa desde la tabla de permisos y asignarlos al equipo. Cada rol conserva un perfil operativo base (Residente, Auxiliar, Administrativo o Supervisor) para los flujos, módulos y reglas RLS existentes; copia sus permisos actuales al crearse y después mantiene una matriz independiente. Un permiso nuevo sin configurar queda denegado para roles personalizados. Director conserva acceso total y no puede usarse como perfil base.
+
+**Permisos por obra.** Cada obra hereda la matriz de la empresa. El Director configura excepciones por rol estándar o personalizado desde Configuración de la obra → Permisos: heredar, permitir o denegar. Una excepción sustituye la regla de empresa para ese rol, acción y obra; entre varios roles se mantiene la unión de permisos. Volver a heredar elimina la excepción. Los cambios corporativos afectan a las casillas heredadas. Las excepciones no conceden acceso a obras, no modifican los perfiles operativos ni eliminan vistos buenos o restricciones del proceso. Las acciones corporativas quedan fuera de esta matriz y el Director conserva acceso total. Los cambios se auditan y se comprueban en servidor y base de datos.
+
 **Configuración de empresa.** Tres secciones: datos de facturación, equipo (alta de usuarios con los cinco perfiles) y otras configuraciones, aún por definir.
 
 **Creación de obra.** Asistente de tres pasos: datos generales, presupuesto opcional en Excel y asignación de equipo.

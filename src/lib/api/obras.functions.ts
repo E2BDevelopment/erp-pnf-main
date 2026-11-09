@@ -196,7 +196,13 @@ export const getObraConfiguracion = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => z.object({ obraId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "obras.editar");
+    const permissions = await Promise.allSettled([
+      requirePermission(supabase, userId, "obras.editar", data.obraId),
+      requirePermission(supabase, userId, "obras.asignar_team", data.obraId),
+    ]);
+    if (permissions.every((result) => result.status === "rejected")) {
+      throw new Error("No tienes permiso para consultar la configuración de esta obra");
+    }
 
     const { data: obra, error } = await supabase
       .from("obras")
@@ -239,7 +245,7 @@ export const actualizarObra = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => actualizarObraSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "obras.editar");
+    await requirePermission(supabase, userId, "obras.editar", data.obraId);
 
     const { error } = await supabase
       .from("obras")
@@ -273,20 +279,16 @@ export const actualizarObraTeam = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => actualizarObraTeamSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "obras.asignar_team");
+    await requirePermission(supabase, userId, "obras.asignar_team", data.obraId);
 
     const errorEquipo = validarEquipoObra(data.team);
     if (errorEquipo) throw new Error(errorEquipo);
 
-    const { error: delErr } = await supabase.from("obra_team").delete().eq("obra_id", data.obraId);
-    if (delErr) throw new Error(delErr.message);
-
-    if (data.team.length > 0) {
-      const { error: insErr } = await supabase
-        .from("obra_team")
-        .insert(data.team.map((m) => ({ obra_id: data.obraId, user_id: m.user_id, role: m.role })));
-      if (insErr) throw new Error(insErr.message);
-    }
+    const { error } = await supabase.rpc("replace_obra_team", {
+      _obra_id: data.obraId,
+      _team: data.team,
+    });
+    if (error) throw new Error(error.message);
     return { ok: true };
   });
 
@@ -306,7 +308,7 @@ export const actualizarObraComisiones = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => actualizarObraComisionesSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    await requirePermission(supabase, userId, "obras.asignar_team");
+    await requirePermission(supabase, userId, "obras.asignar_team", data.obraId);
 
     const { data: team, error: teamErr } = await supabase
       .from("obra_team")

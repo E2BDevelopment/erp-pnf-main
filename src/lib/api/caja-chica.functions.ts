@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/permisos/require";
 import { createServerFn } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -196,6 +197,12 @@ export const solicitarFondoCajaChica = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(
+      context.supabase,
+      context.userId,
+      "caja_chica.solicitar_fondo",
+      data.obraId,
+    );
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     const esResidente = await isResidenteDeObra(supabase, userId, data.obraId);
@@ -287,6 +294,10 @@ export const autorizarFondoCajaChica = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.autorizar_fondo", {
+      table: "caja_chica_fondos",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
 
@@ -411,6 +422,10 @@ export const rechazarFondoCajaChica = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.autorizar_fondo", {
+      table: "caja_chica_fondos",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
 
@@ -472,6 +487,10 @@ export const entregarFondoCajaChica = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.autorizar_fondo", {
+      table: "caja_chica_fondos",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     if (!ctx.isDirector && !ctx.isAdministrativo) {
@@ -568,6 +587,12 @@ export const crearGastoCajaChica = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => gastoInput.extend({ obraId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(
+      context.supabase,
+      context.userId,
+      "caja_chica.registrar_gasto",
+      data.obraId,
+    );
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     const esResidente = await isResidenteDeObra(supabase, userId, data.obraId);
@@ -594,6 +619,10 @@ export const actualizarGastoCajaChica = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => gastoInput.extend({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.registrar_gasto", {
+      table: "caja_chica_gastos",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: g } = await supabase
       .from("caja_chica_gastos")
@@ -622,6 +651,10 @@ export const eliminarGastoCajaChica = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.registrar_gasto", {
+      table: "caja_chica_gastos",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: g } = await supabase
       .from("caja_chica_gastos")
@@ -747,6 +780,12 @@ export const solicitarReembolsoCajaChica = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(
+      context.supabase,
+      context.userId,
+      "caja_chica.solicitar_reembolso",
+      data.obraId,
+    );
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     const esResidente = await isResidenteDeObra(supabase, userId, data.obraId);
@@ -850,6 +889,10 @@ export const revisarGastoReembolso = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.aprobar_gasto", {
+      table: "caja_chica_gastos",
+      id: data.gastoId,
+    });
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     if (!ctx.isDirector && !ctx.isSupervisor) {
@@ -893,6 +936,10 @@ export const cerrarRevisionReembolso = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.aprobar_gasto", {
+      table: "caja_chica_reembolsos",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     if (!ctx.isDirector && !ctx.isSupervisor) {
@@ -956,6 +1003,10 @@ export const reponerReembolsoCajaChica = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.autorizar_reembolso", {
+      table: "caja_chica_reembolsos",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     if (!ctx.isDirector && !ctx.isAdministrativo) {
@@ -1012,6 +1063,12 @@ export const reclasificarComprobanteGasto = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(
+      context.supabase,
+      context.userId,
+      "caja_chica.reclasificar_comprobante",
+      { table: "caja_chica_gastos", id: data.gastoId },
+    );
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     if (!ctx.isDirector && !ctx.isAdministrativo) {
@@ -1087,6 +1144,10 @@ export const rechazarReembolsoCajaChica = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "caja_chica.autorizar_reembolso", {
+      table: "caja_chica_reembolsos",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const ctx = await getCtx(supabase, userId);
     if (!ctx.isDirector && !ctx.isSupervisor) {

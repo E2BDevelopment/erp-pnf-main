@@ -1,0 +1,82 @@
+{
+  "chart": [
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-produccion)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-produccion)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-produccion)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-produccion)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-produccion)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-produccion)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-gasto)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-gasto)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-gasto)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    },
+    {
+      "fill": "rgb(0, 0, 0)",
+      "attribute": "var(--color-gasto)",
+      "primary": "#f47721",
+      "alias": "#f47721",
+      "series": ""
+    }
+  ],
+  "close": {
+    "width": 16,
+    "height": 16
+  },
+  "animation": {
+    "animation": "enter",
+    "duration": "0.2s"
+  }
+}

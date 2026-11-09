@@ -1,0 +1,12 @@
+{
+  "before": {
+    "bytes": 39849,
+    "rules": 389,
+    "declarations": 1194
+  },
+  "after": {
+    "bytes": 34247,
+    "rules": 310,
+    "declarations": 1022
+  }
+}

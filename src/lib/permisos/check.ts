@@ -1,5 +1,4 @@
 import { CATALOGO_ACCIONES, type PermRole } from "./catalogo";
-import type { AppRole } from "@/stores/auth";
 
 export type OverridesMap = Map<string, boolean>; // key: `${role}::${action_key}`
 
@@ -19,8 +18,9 @@ export function overridesFromRows(
  */
 export function hasPermission(
   actionKey: string,
-  roles: AppRole[],
+  roles: string[],
   overrides: OverridesMap,
+  obraOverrides: OverridesMap = new Map(),
 ): boolean {
   if (roles.includes("director")) return true;
   const accion = CATALOGO_ACCIONES.find((a) => a.key === actionKey);
@@ -28,7 +28,8 @@ export function hasPermission(
   for (const r of roles) {
     if (r === "director") return true;
     const role = r as PermRole;
-    const override = overrides.get(`${role}::${actionKey}`);
+    const override =
+      obraOverrides.get(`${role}::${actionKey}`) ?? overrides.get(`${role}::${actionKey}`);
     const allowed = override ?? accion.defaults[role];
     if (allowed) return true;
   }

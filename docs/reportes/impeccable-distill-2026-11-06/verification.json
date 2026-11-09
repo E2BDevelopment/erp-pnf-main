@@ -1,0 +1,305 @@
+{
+  "results": [
+    {
+      "route": "/",
+      "width": 320,
+      "scroll": 320,
+      "diagram": [
+        {
+          "text": "CIERRE SEMANAL",
+          "px": "12px"
+        },
+        {
+          "text": "POR OBRA",
+          "px": "12px"
+        },
+        {
+          "text": "NÓMINA",
+          "px": "12px"
+        },
+        {
+          "text": "ALMACÉN",
+          "px": "12px"
+        },
+        {
+          "text": "CAJA CHICA",
+          "px": "12px"
+        },
+        {
+          "text": "RESUMEN",
+          "px": "12px"
+        },
+        {
+          "text": "PRODUCCIÓN · INGRESOS · EGRESOS",
+          "px": "12px"
+        }
+      ],
+      "status": [
+        {
+          "bg": "lab(95.916 -1.2165 23.111)",
+          "color": "lab(37.8823 37.1699 52.2718)"
+        },
+        {
+          "bg": "lab(94.9004 -17.0769 5.63836)",
+          "color": "lab(35.3675 -33.1188 8.04002)"
+        }
+      ],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/",
+      "width": 360,
+      "scroll": 360,
+      "diagram": [
+        {
+          "text": "CIERRE SEMANAL",
+          "px": "12px"
+        },
+        {
+          "text": "POR OBRA",
+          "px": "12px"
+        },
+        {
+          "text": "NÓMINA",
+          "px": "12px"
+        },
+        {
+          "text": "ALMACÉN",
+          "px": "12px"
+        },
+        {
+          "text": "CAJA CHICA",
+          "px": "12px"
+        },
+        {
+          "text": "RESUMEN",
+          "px": "12px"
+        },
+        {
+          "text": "PRODUCCIÓN · INGRESOS · EGRESOS",
+          "px": "12px"
+        }
+      ],
+      "status": [
+        {
+          "bg": "lab(95.916 -1.2165 23.111)",
+          "color": "lab(37.8823 37.1699 52.2718)"
+        },
+        {
+          "bg": "lab(94.9004 -17.0769 5.63836)",
+          "color": "lab(35.3675 -33.1188 8.04002)"
+        }
+      ],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "scroll": 768,
+      "diagram": [
+        {
+          "text": "CIERRE SEMANAL",
+          "px": "12px"
+        },
+        {
+          "text": "POR OBRA",
+          "px": "12px"
+        },
+        {
+          "text": "NÓMINA",
+          "px": "12px"
+        },
+        {
+          "text": "ALMACÉN",
+          "px": "12px"
+        },
+        {
+          "text": "CAJA CHICA",
+          "px": "12px"
+        },
+        {
+          "text": "RESUMEN",
+          "px": "12px"
+        },
+        {
+          "text": "PRODUCCIÓN · INGRESOS · EGRESOS",
+          "px": "12px"
+        }
+      ],
+      "status": [
+        {
+          "bg": "lab(95.916 -1.2165 23.111)",
+          "color": "lab(37.8823 37.1699 52.2718)"
+        },
+        {
+          "bg": "lab(94.9004 -17.0769 5.63836)",
+          "color": "lab(35.3675 -33.1188 8.04002)"
+        }
+      ],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/",
+      "width": 980,
+      "scroll": 980,
+      "diagram": [
+        {
+          "text": "CIERRE SEMANAL",
+          "px": "12px"
+        },
+        {
+          "text": "POR OBRA",
+          "px": "12px"
+        },
+        {
+          "text": "NÓMINA",
+          "px": "12px"
+        },
+        {
+          "text": "ALMACÉN",
+          "px": "12px"
+        },
+        {
+          "text": "CAJA CHICA",
+          "px": "12px"
+        },
+        {
+          "text": "RESUMEN",
+          "px": "12px"
+        },
+        {
+          "text": "PRODUCCIÓN · INGRESOS · EGRESOS",
+          "px": "12px"
+        }
+      ],
+      "status": [
+        {
+          "bg": "lab(95.916 -1.2165 23.111)",
+          "color": "lab(37.8823 37.1699 52.2718)"
+        },
+        {
+          "bg": "lab(94.9004 -17.0769 5.63836)",
+          "color": "lab(35.3675 -33.1188 8.04002)"
+        }
+      ],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "scroll": 1440,
+      "diagram": [
+        {
+          "text": "CIERRE SEMANAL",
+          "px": "12px"
+        },
+        {
+          "text": "POR OBRA",
+          "px": "12px"
+        },
+        {
+          "text": "NÓMINA",
+          "px": "12px"
+        },
+        {
+          "text": "ALMACÉN",
+          "px": "12px"
+        },
+        {
+          "text": "CAJA CHICA",
+          "px": "12px"
+        },
+        {
+          "text": "RESUMEN",
+          "px": "12px"
+        },
+        {
+          "text": "PRODUCCIÓN · INGRESOS · EGRESOS",
+          "px": "12px"
+        }
+      ],
+      "status": [
+        {
+          "bg": "lab(95.916 -1.2165 23.111)",
+          "color": "lab(37.8823 37.1699 52.2718)"
+        },
+        {
+          "bg": "lab(94.9004 -17.0769 5.63836)",
+          "color": "lab(35.3675 -33.1188 8.04002)"
+        }
+      ],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/recorrido",
+      "width": 320,
+      "scroll": 320,
+      "diagram": [],
+      "status": [],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/recorrido",
+      "width": 360,
+      "scroll": 360,
+      "diagram": [],
+      "status": [],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/recorrido",
+      "width": 768,
+      "scroll": 768,
+      "diagram": [],
+      "status": [],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/recorrido",
+      "width": 980,
+      "scroll": 980,
+      "diagram": [],
+      "status": [],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    },
+    {
+      "route": "/recorrido",
+      "width": 1440,
+      "scroll": 1440,
+      "diagram": [],
+      "status": [],
+      "variables": {
+        "primary": "#f47721"
+      },
+      "violations": []
+    }
+  ],
+  "errors": []
+}

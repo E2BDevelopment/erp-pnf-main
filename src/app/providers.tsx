@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ConfirmDialogProvider } from "@/components/ConfirmDialogProvider";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { CspNonceContext } from "@/lib/csp-nonce";
 
 /**
  * El puente de sesión se carga en diferido: solo las rutas que leen la sesión
@@ -26,21 +27,25 @@ function AuthSyncGate() {
   return necesitaSesion ? <AuthSync /> : null;
 }
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children, nonce }: { children: React.ReactNode; nonce?: string }) {
+  // Una respuesta RSC puede traer otro nonce; la CSP sigue siendo la del documento inicial.
+  const [documentNonce] = useState(nonce);
   const [queryClient] = useState(
     () => new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } }),
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider delayDuration={200}>
-        <ConfirmDialogProvider>
-          <AuthSyncGate />
-          {children}
-          <LoadingOverlay />
-          <Toaster />
-        </ConfirmDialogProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <CspNonceContext.Provider value={documentNonce}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider delayDuration={200}>
+          <ConfirmDialogProvider>
+            <AuthSyncGate />
+            {children}
+            <LoadingOverlay />
+            <Toaster />
+          </ConfirmDialogProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </CspNonceContext.Provider>
   );
 }

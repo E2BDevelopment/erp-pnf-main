@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -9,6 +9,7 @@ import {
   updateMemberRole,
   removeMember,
 } from "@/lib/api-client/team.functions";
+import { listCompanyRoles } from "@/lib/api-client/permisos.functions";
 import { useEffectiveIsDirector, type AppRole } from "@/stores/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,7 +60,11 @@ const ROLE_OPTIONS: { value: AppRole; label: string }[] = [
   { value: "supervisor", label: "Supervisor" },
 ];
 
-const roleLabel = (r: string) => ROLE_OPTIONS.find((o) => o.value === r)?.label ?? r;
+function useRoleOptions() {
+  const list = useServerFn(listCompanyRoles);
+  const q = useQuery({ queryKey: ["company-roles"], queryFn: () => list() });
+  return [...ROLE_OPTIONS, ...(q.data ?? []).map((role) => ({ value: role.id, label: role.name }))];
+}
 
 type Member = {
   id: string;
@@ -70,6 +75,8 @@ type Member = {
 
 export function EquipoModule() {
   const director = useEffectiveIsDirector();
+  const options = useRoleOptions();
+  const roleLabel = (role: string) => options.find((o) => o.value === role)?.label ?? role;
 
   const qc = useQueryClient();
   const fetchList = useServerFn(listTeamMembers);
@@ -80,6 +87,8 @@ export function EquipoModule() {
   });
 
   const [inviting, setInviting] = useState(false);
+  const inviteTrigger = useRef<HTMLButtonElement>(null);
+  const editTrigger = useRef<HTMLButtonElement | null>(null);
   const [editing, setEditing] = useState<Member | null>(null);
   const [toRemove, setToRemove] = useState<Member | null>(null);
 
@@ -105,7 +114,7 @@ export function EquipoModule() {
           Usuarios de la empresa y su rol. El Director crea cuentas y comparte la contraseña
           manualmente.
         </p>
-        <Button onClick={() => setInviting(true)}>
+        <Button ref={inviteTrigger} onClick={() => setInviting(true)}>
           <Plus className="size-4 mr-1" /> Crear usuario
         </Button>
       </div>
@@ -152,7 +161,10 @@ export function EquipoModule() {
                       variant="ghost"
                       size="icon"
                       aria-label={`Editar ${m.nombre_completo ?? "integrante"}`}
-                      onClick={() => setEditing(m as Member)}
+                      onClick={(event) => {
+                        editTrigger.current = event.currentTarget;
+                        setEditing(m as Member);
+                      }}
                     >
                       <Pencil className="size-4" />
                     </Button>
@@ -174,6 +186,7 @@ export function EquipoModule() {
 
       {inviting && (
         <InviteDialog
+          onReturnFocus={() => inviteTrigger.current?.focus()}
           onClose={() => setInviting(false)}
           onCreated={() => qc.invalidateQueries({ queryKey: ["team-members"] })}
         />
@@ -181,6 +194,7 @@ export function EquipoModule() {
 
       {editing && (
         <EditRoleDialog
+          onReturnFocus={() => editTrigger.current?.focus()}
           member={editing}
           onClose={() => setEditing(null)}
           onSaved={() => qc.invalidateQueries({ queryKey: ["team-members"] })}
@@ -210,11 +224,20 @@ export function EquipoModule() {
   );
 }
 
-function InviteDialog({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+function InviteDialog({
+  onClose,
+  onCreated,
+  onReturnFocus,
+}: {
+  onClose: () => void;
+  onCreated: () => void;
+  onReturnFocus: () => void;
+}) {
+  const options = useRoleOptions();
   const [email, setEmail] = useState("");
   const [nombre, setNombre] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<AppRole>("residente");
+  const [role, setRole] = useState<string>("residente");
 
   const invite = useServerFn(inviteTeamMember);
   const m = useMutation({
@@ -242,7 +265,12 @@ function InviteDialog({ onClose, onCreated }: { onClose: () => void; onCreated: 
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent>
+      <DialogContent
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          onReturnFocus();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Crear cuenta de usuario</DialogTitle>
           <DialogDescription>
@@ -252,33 +280,44 @@ function InviteDialog({ onClose, onCreated }: { onClose: () => void; onCreated: 
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label>Nombre completo</Label>
-            <Input value={nombre} onChange={(e) => setNombre(e.target.value)} />
-          </div>
-          <div>
-            <Label>Email</Label>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div>
-            <Label>Contraseña temporal</Label>
+            <Label htmlFor="invite-dialog-nombre-completo">Nombre completo</Label>
             <Input
+              id="invite-dialog-nombre-completo"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="invite-dialog-email">Email</Label>
+            <Input
+              id="invite-dialog-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="invite-dialog-contrasena-temporal">Contraseña temporal</Label>
+            <Input
+              id="invite-dialog-contrasena-temporal"
+              aria-describedby="invite-dialog-password-hint"
               type="text"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Mínimo 8 caracteres"
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p id="invite-dialog-password-hint" className="text-xs text-muted-foreground mt-1">
               No se enviará correo. Cópiala y compártela manualmente.
             </p>
           </div>
           <div>
-            <Label>Rol</Label>
-            <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
-              <SelectTrigger className="mt-1">
+            <Label htmlFor="invite-dialog-rol">Rol</Label>
+            <Select value={role} onValueChange={(v) => setRole(v)}>
+              <SelectTrigger id="invite-dialog-rol" className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {ROLE_OPTIONS.map((opt) => (
+                {options.map((opt) => (
                   <SelectItem key={opt.value} value={opt.value}>
                     {opt.label}
                   </SelectItem>
@@ -304,12 +343,15 @@ function EditRoleDialog({
   member,
   onClose,
   onSaved,
+  onReturnFocus,
 }: {
   member: Member;
   onClose: () => void;
   onSaved: () => void;
+  onReturnFocus: () => void;
 }) {
-  const [role, setRole] = useState<AppRole>((member.roles[0] as AppRole) ?? "residente");
+  const options = useRoleOptions();
+  const [role, setRole] = useState<string>(member.roles[0] ?? "residente");
   const update = useServerFn(updateMemberRole);
   const m = useMutation({
     mutationFn: update,
@@ -323,19 +365,24 @@ function EditRoleDialog({
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent>
+      <DialogContent
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          onReturnFocus();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Editar rol</DialogTitle>
           <DialogDescription>{member.nombre_completo || member.email}</DialogDescription>
         </DialogHeader>
         <div>
-          <Label>Rol</Label>
-          <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
-            <SelectTrigger className="mt-1">
+          <Label htmlFor="edit-role-dialog-rol">Rol</Label>
+          <Select value={role} onValueChange={(v) => setRole(v)}>
+            <SelectTrigger id="edit-role-dialog-rol" className="mt-1">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {ROLE_OPTIONS.map((opt) => (
+              {options.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
                 </SelectItem>

@@ -1,0 +1,13 @@
+{
+  "before": {
+    "bytes": 39849,
+    "rules": 389,
+    "declarations": 1194
+  },
+  "after": {
+    "rules": 314,
+    "declarations": 1044,
+    "bytes": 39497
+  },
+  "literalColors": 0
+}

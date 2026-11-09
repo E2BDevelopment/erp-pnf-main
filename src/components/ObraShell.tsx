@@ -8,6 +8,9 @@ import { ChevronLeft, RotateCw } from "lucide-react";
 import { getObraDashboard } from "@/lib/api-client/obras.functions";
 import { Button } from "@/components/ui/button";
 import { gsap, MOTION, MOTION_OK, useGSAP } from "@/lib/anim/gsap";
+import { usePathname } from "next/navigation";
+import { usePermisos } from "@/hooks/usePermisos";
+import { OBRA_MODULE_PERMISSIONS } from "@/lib/permisos/catalogo";
 
 export function ObraShell({ children }: { children: React.ReactNode }) {
   const { obraId } = useParams({ from: "/_authenticated/app/obras/$obraId" });
@@ -17,6 +20,9 @@ export function ObraShell({ children }: { children: React.ReactNode }) {
     queryFn: () => fetchDashboard({ data: { obraId } }),
   });
   const obra = dashboard.data?.obra;
+  const pathname = usePathname();
+  const { can, isLoading: permissionsLoading } = usePermisos(obraId);
+  const permission = OBRA_MODULE_PERMISSIONS[pathname.split("/").at(-1) ?? ""];
 
   // El nombre de la obra llega después del shell: cuando sustituye al
   // esqueleto, entra en vez de aparecer de golpe.
@@ -88,7 +94,17 @@ export function ObraShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-5xl flex-1 pt-4">{children}</div>
+      <div className="mx-auto w-full max-w-5xl flex-1 pt-4">
+        {permission && permissionsLoading ? (
+          <p className="text-sm text-muted-foreground">Cargando permisos…</p>
+        ) : permission && !can(permission) ? (
+          <p role="alert" className="text-sm text-muted-foreground">
+            No tienes permiso para consultar este módulo en esta obra.
+          </p>
+        ) : (
+          children
+        )}
+      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/permisos/require";
 import { createServerFn } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -318,6 +319,10 @@ export const registrarRecepcion = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "almacen.recibir", {
+      table: "ordenes_compra",
+      id: data.ocId,
+    });
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
 
@@ -536,6 +541,10 @@ export const actualizarUtilizado = createServerFn({ method: "POST" })
     z.object({ movimientoId: z.string().uuid(), utilizado: z.number().min(0) }).parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "almacen.cerrar_semana", {
+      table: "almacen_movimientos_semana",
+      id: data.movimientoId,
+    });
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
 
@@ -592,6 +601,10 @@ export const bloquearSemana = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ semanaId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "almacen.cerrar_semana", {
+      table: "almacen_semanas",
+      id: data.semanaId,
+    });
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
 
@@ -762,6 +775,10 @@ export const resolverSolicitudDesbloqueo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "almacen.desbloquear_semana", {
+      table: "almacen_semana_desbloqueo_solicitudes",
+      id: data.solicitudId,
+    });
     const { supabase, userId } = context;
     const { companyId, roles } = await getCtx(supabase, userId);
 

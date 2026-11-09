@@ -1,0 +1,64 @@
+[
+  {
+    "name": "landing-320",
+    "width": 320,
+    "scroll": 322
+  },
+  {
+    "name": "proveedores-320",
+    "width": 320,
+    "scroll": 320
+  },
+  {
+    "name": "insumos-320",
+    "width": 320,
+    "scroll": 320
+  },
+  {
+    "name": "categorias-interno-320",
+    "width": 252,
+    "scroll": 252
+  },
+  {
+    "name": "categorias-320",
+    "width": 320,
+    "scroll": 320
+  },
+  {
+    "name": "proveedores-768",
+    "width": 768,
+    "scroll": 768
+  },
+  {
+    "name": "insumos-768",
+    "width": 768,
+    "scroll": 768
+  },
+  {
+    "name": "categorias-interno-768",
+    "width": 460,
+    "scroll": 460
+  },
+  {
+    "name": "categorias-768",
+    "width": 768,
+    "scroll": 768
+  },
+  {
+    "name": "ficha-touch",
+    "width": 360,
+    "scroll": 360
+  },
+  {
+    "name": "touch-worker",
+    "menu": true,
+    "tabScrollBefore": 0,
+    "tabScrollAfter": 25,
+    "focusRestored": true
+  },
+  {
+    "name": "facturacion-texto-200",
+    "width": 1440,
+    "scroll": 1440
+  }
+]

@@ -24,9 +24,9 @@ import { IMSS_BADGE, IMSS_LABEL, PUESTO_LABEL } from "./imss";
 
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div>
+    <div className="min-w-0">
       <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className="mt-1 text-sm">
+      <div className="mt-1 text-sm [overflow-wrap:anywhere]">
         {value || <span className="text-muted-foreground">—</span>}
       </div>
     </div>
@@ -43,11 +43,13 @@ export function TrabajadorDetalle({
   trabajadorId,
   open,
   onClose,
+  onReturnFocus,
   canManage,
 }: {
   trabajadorId: string | null;
   open: boolean;
   onClose: () => void;
+  onReturnFocus: () => void;
   canManage: boolean;
 }) {
   const qc = useQueryClient();
@@ -84,11 +86,18 @@ export function TrabajadorDetalle({
   return (
     <>
       <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-        <SheetContent side="right" className="w-full sm:max-w-2xl lg:max-w-3xl overflow-y-auto">
-          <SheetHeader>
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <SheetTitle className="truncate">
+        <SheetContent
+          side="right"
+          className="w-full sm:max-w-2xl lg:max-w-3xl overflow-y-auto"
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            onReturnFocus();
+          }}
+        >
+          <SheetHeader className="pr-8">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0 flex-1 basis-48">
+                <SheetTitle className="break-words">
                   {t?.nombre_completo ?? (q.isLoading ? "Cargando…" : "Trabajador")}
                 </SheetTitle>
                 {/* Radix renderiza la descripción como <p>; los Badge son
@@ -143,7 +152,7 @@ export function TrabajadorDetalle({
 
           {t && (
             <Tabs defaultValue="general" className="mt-6">
-              <TabsList className="grid grid-cols-4 w-full">
+              <TabsList className="w-full justify-start sm:grid sm:grid-cols-4">
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="imss">IMSS</TabsTrigger>
                 <TabsTrigger value="documentos">Documentos</TabsTrigger>

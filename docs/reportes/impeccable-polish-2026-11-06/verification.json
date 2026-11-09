@@ -1,0 +1,137 @@
+[
+  {
+    "name": "landing",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scroll": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "landing",
+    "width": 390,
+    "layout": {
+      "width": 390,
+      "scroll": 390
+    },
+    "violations": []
+  },
+  {
+    "name": "landing",
+    "width": 768,
+    "layout": {
+      "width": 768,
+      "scroll": 768
+    },
+    "violations": []
+  },
+  {
+    "name": "landing",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scroll": 1440
+    },
+    "violations": []
+  },
+  {
+    "name": "proveedores",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scroll": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "trabajadores",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scroll": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "ficha-trabajador",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scroll": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "categorias",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scroll": 360
+    },
+    "violations": []
+  },
+  {
+    "name": "proveedores",
+    "width": 768,
+    "layout": {
+      "width": 768,
+      "scroll": 768
+    },
+    "violations": []
+  },
+  {
+    "name": "trabajadores",
+    "width": 768,
+    "layout": {
+      "width": 768,
+      "scroll": 768
+    },
+    "violations": []
+  },
+  {
+    "name": "categorias",
+    "width": 768,
+    "layout": {
+      "width": 768,
+      "scroll": 768
+    },
+    "violations": []
+  },
+  {
+    "name": "proveedores",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scroll": 1440
+    },
+    "violations": []
+  },
+  {
+    "name": "trabajadores",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scroll": 1440
+    },
+    "violations": []
+  },
+  {
+    "name": "categorias",
+    "width": 1440,
+    "layout": {
+      "width": 1440,
+      "scroll": 1440
+    },
+    "violations": []
+  },
+  {
+    "name": "confirmacion",
+    "width": 360,
+    "layout": {
+      "width": 360,
+      "scroll": 360
+    },
+    "violations": []
+  }
+]

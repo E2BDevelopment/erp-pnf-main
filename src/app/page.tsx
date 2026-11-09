@@ -93,7 +93,7 @@ export default function Landing() {
       <div className="min-h-screen bg-background landing-page">
         <header className="landing-header">
           <div className="landing-container landing-header-inner">
-            <Link to="/" aria-label="ERP PNF, inicio" className="landing-brand">
+            <Link to="/" className="landing-brand">
               <Image src="/assets/img/icon-1.png" alt="" width={38} height={38} className="size-[38px] rounded-md object-contain" priority />
               <span><strong>NARANJA FORTE</strong><small>ERP para constructoras</small></span>
             </Link>
@@ -123,7 +123,7 @@ export default function Landing() {
             <svg className="landing-architecture" viewBox="0 0 720 520" fill="none" aria-hidden="true">
               <path d="M74 448V228L222 145V448M222 448V190L389 91V448M389 448V239L535 151V448M535 448V279L650 211V448M53 448H672M120 254H194M120 300H194M120 346H194M255 224H355M255 273H355M255 322H355M423 270H506M423 315H506M569 309H625M569 350H625M222 190L389 91M389 239L535 151M535 279L650 211" stroke="currentColor" strokeWidth="1.2" />
               <path d="M222 145V104H348M389 91V48H512M535 151V110H623M74 228L222 145" stroke="currentColor" strokeWidth="1.2" strokeDasharray="4 6" />
-              <circle cx="389" cy="91" r="4" fill="#F36B21" /><circle cx="535" cy="151" r="4" fill="#F36B21" />
+              <circle cx="389" cy="91" r="4" fill="var(--primary)" /><circle cx="535" cy="151" r="4" fill="var(--primary)" />
             </svg>
             <div className="landing-container landing-hero-grid">
               <div className="landing-hero-copy">

@@ -1,0 +1,102 @@
+2:"[project]/node_modules/next/dist/next-devtools/userspace/app/segment-explorer-node.js [app-client] (ecmascript)"
+3:"/_next/static/chunks/_03c_nw54hn_93._.js"
+4:"/_next/static/chunks/node_modules_1grmxfmckkaov._.js"
+5:"/_next/static/chunks/src_1abu5w7uter2e._.js"
+6:I["$2",["$3","$4","$5"],"SegmentViewNode"]
+8:"$Sreact.fragment"
+19:"[project]/node_modules/next/dist/client/components/layout-router.js [app-client] (ecmascript)"
+1a:I["$19",["$3","$4","$5"],"default"]
+1c:"[project]/node_modules/next/dist/client/components/render-from-template-context.js [app-client] (ecmascript)"
+1d:I["$1c",["$3","$4","$5"],"default"]
+23:"[project]/node_modules/next/dist/client/components/client-page.js [app-client] (ecmascript)"
+24:I["$23",["$3","$4","$5"],"ClientPageRoot"]
+25:"[project]/src/app/login/page.tsx [app-client] (ecmascript)"
+26:"/_next/static/chunks/node_modules_next_dist_07frilor_aj14._.js"
+27:"/_next/static/chunks/node_modules_%40supabase_auth-js_dist_module_1vqrmkgvzhvl8._.js"
+28:"/_next/static/chunks/node_modules_1yyb0p29f0w2w._.js"
+29:"/_next/static/chunks/src_1yygj583nivgf._.js"
+2a:I["$25",["$3","$4","$5","$26","$27","$28","$29"],"default"]
+35:"[project]/node_modules/next/dist/lib/framework/boundary-components.js [app-client] (ecmascript)"
+36:I["$35",["$3","$4","$5"],"OutletBoundary"]
+38:"$Sreact.suspense"
+45:"ViewportBoundary"
+46:I["$35",["$3","$4","$5"],"$45"]
+4f:"MetadataBoundary"
+50:I["$35",["$3","$4","$5"],"$4f"]
+:HL["/_next/static/chunks/src_app_globals_162hn9oqc8uss.css","style",{"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"}]
+d:D"$15"
+d:D"$e"
+1e:X
+2f:D"$32"
+2f:D"$30"
+2f:D"$34"
+2f:["$","$L36",null,{"children":["$","$38",null,{"name":"Next.MetadataOutlet","children":"$@39"},"$30","$37",1]},"$30","$33",1]
+1f:[["children",{"s":"__PAGE__","d":{"r":["$","$8","c",{"children":[["$","$L6","c-page",{"type":"page","pagePath":"login/page.tsx","children":["$","$L24",null,{"Component":"$2a","serverProvidedParams":{"searchParams":{},"params":{},"promises":null}},null,"$22",1]},null,"$21",1],[["$","script","script-0",{"src":"/_next/static/chunks/node_modules_next_dist_07frilor_aj14._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$2b",0],["$","script","script-1",{"src":"/_next/static/chunks/node_modules_%40supabase_auth-js_dist_module_1vqrmkgvzhvl8._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$2c",0],["$","script","script-2",{"src":"/_next/static/chunks/node_modules_1yyb0p29f0w2w._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$2d",0],["$","script","script-3",{"src":"/_next/static/chunks/src_1yygj583nivgf._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$2e",0]],"$2f"]},null,"$20",0],"p":false,"v":null}}]]
+16:[["children",{"s":"login","d":{"r":["$","$8","c",{"children":[null,["$","$L1a",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L1d",null,{},null,"$1b",1],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined","segmentViewBoundaries":["$undefined","$undefined","$undefined","$undefined"]},null,"$18",1]]},null,"$17",0],"p":false,"v":"$1e"},"c":"$Q1f"}]]
+3b:D"$3e"
+3b:D"$3c"
+3b:D"$3f"
+3b:null
+40:D"$42"
+40:D"$41"
+40:D"$44"
+47:D"$49"
+47:D"$48"
+40:["$","$L46","b7ad10eev",{"children":"$L47"},"$41","$43",1]
+4a:D"$4c"
+4a:D"$4b"
+4a:D"$4e"
+53:D"$55"
+53:D"$54"
+56:D"$58"
+56:D"$57"
+56:D"$59"
+56:null
+4a:["$","$L50","b7ad10eem",{"children":[["$","div",null,{"hidden":true,"children":["$","$38",null,{"name":"Next.Metadata","children":"$L53"},"$4b","$52",1]},"$4b","$51",1],"$56"]},"$4b","$4d",1]
+0:{"q":"","i":true,"S":false,"r":"$undefined","b":"development","t":{"t":{"s":"","h":16,"d":{"r":["$","$L6","layout",{"type":"layout","pagePath":"layout.tsx","children":["$","$8","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/src_app_globals_162hn9oqc8uss.css","precedence":"next_static/chunks/src_app_globals_162hn9oqc8uss.css","crossOrigin":"$undefined","nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$9",0],["$","script","script-0",{"src":"/_next/static/chunks/_03c_nw54hn_93._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$a",0],["$","script","script-1",{"src":"/_next/static/chunks/node_modules_1grmxfmckkaov._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$b",0],["$","script","script-2",{"src":"/_next/static/chunks/src_1abu5w7uter2e._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$c",0]],"$Ld"]},null,"$7",1]},null,"$1",0],"p":false,"v":null},"c":"$Q16"},"h":{"r":["$","$8","h",{"children":["$3b","$40","$4a"]},null,"$3a",0],"p":false,"v":null}}}
+1e:C
+47:D"$5a"
+47:[["$","meta","0",{"charSet":"utf-8"},"$30","$5b",0],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"},"$30","$5c",0],["$","meta","2",{"name":"theme-color","content":"#f9fafb","media":"(prefers-color-scheme: light)"},"$30","$5d",0],["$","meta","3",{"name":"theme-color","content":"#15181c","media":"(prefers-color-scheme: dark)"},"$30","$5e",0]]
+67:"[project]/node_modules/next/dist/lib/metadata/generate/icon-mark.js [app-client] (ecmascript)"
+68:I["$67",["$3","$4","$5"],"IconMark"]
+39:D"$5f"
+39:null
+53:D"$60"
+53:[["$","title","0",{"children":"ERP PNF â€” ERP SaaS para constructoras mexicanas"},"$30","$61",0],["$","meta","1",{"name":"description","content":"Administra obras, requisiciones, nÃ³mina, compras y tesorerÃ­a desde el ERP SaaS diseÃ±ado para constructoras mexicanas."},"$30","$62",0],["$","link","2",{"rel":"shortcut icon","href":"/assets/img/icon-1.png"},"$30","$63",0],["$","link","3",{"rel":"icon","href":"/assets/img/icon-1.png"},"$30","$64",0],["$","link","4",{"rel":"apple-touch-icon","href":"/assets/img/icon-1.png"},"$30","$65",0],["$","$L68","5",{},"$30","$66",0]]
+8e:"[project]/src/app/providers.tsx [app-client] (ecmascript)"
+8f:I["$8e",["$3","$4","$5"],"Providers"]
+92:"[project]/src/app/error.tsx [app-client] (ecmascript)"
+93:"/_next/static/chunks/node_modules_02rsjh1d3mn34._.js"
+94:"/_next/static/chunks/src_app_error_tsx_0ts9uj72u-_iy._.js"
+95:I["$92",["$3","$4","$5","$93","$94"],"default"]
+af:"[project]/src/components/ui/button.tsx [app-client] (ecmascript)"
+b0:"/_next/static/chunks/node_modules_next_dist_0g9334r_v7-d9._.js"
+b1:I["$af",["$3","$4","$5","$b0"],"Button"]
+b7:"[project]/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)"
+b8:I["$b7",["$3","$4","$5","$b0"],""]
+d:D"$6c"
+d:D"$6e"
+d:D"$6f"
+d:D"$73"
+d:D"$75"
+d:D"$76"
+d:D"$8b"
+9b:D"$9d"
+9b:D"$9c"
+9b:D"$9f"
+a1:D"$a3"
+a1:D"$a2"
+a1:D"$a5"
+a1:D"$a4"
+a1:D"$a7"
+a1:["$","svg",null,{"ref":"$undefined","xmlns":"http://www.w3.org/2000/svg","width":24,"height":24,"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":2,"strokeLinecap":"round","strokeLinejoin":"round","className":"lucide lucide-file-question-mark mx-auto size-8 text-muted-foreground","aria-hidden":true,"children":[["$","path","1oefj6",{"d":"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"},"$a4","$a8",0],["$","path","p32p05",{"d":"M12 17h.01"},"$a4","$a9",0],["$","path","mhlwft",{"d":"M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"},"$a4","$aa",0],"$undefined"]},"$a4","$a6",1]
+b2:D"$b4"
+b2:D"$b3"
+b2:D"$b6"
+b2:["$","$Lb8",null,{"href":"/","children":"Ir al inicio"},"$b3","$b5",1]
+ba:D"$bc"
+ba:D"$bb"
+ba:D"$be"
+ba:["$","$Lb8",null,{"href":"/login","children":"Iniciar sesiÃ³n"},"$bb","$bd",1]
+9b:["$","div",null,{"className":"grid min-h-screen place-items-center bg-background px-4","children":["$","div",null,{"className":"w-full max-w-md text-center","children":["$a1",["$","h1",null,{"className":"mt-4 text-2xl font-semibold tracking-tight","children":"PÃ¡gina no encontrada"},"$9c","$ab",1],["$","p",null,{"className":"mt-2 text-sm text-muted-foreground","children":"La direcciÃ³n que abriste no existe o cambiÃ³ de lugar."},"$9c","$ac",1],["$","div",null,{"className":"mt-6 flex flex-wrap justify-center gap-2","children":[["$","$Lb1",null,{"asChild":true,"children":"$b2"},"$9c","$ae",1],["$","$Lb1",null,{"variant":"outline","asChild":true,"children":"$ba"},"$9c","$b9",1]]},"$9c","$ad",1]]},"$9c","$a0",1]},"$9c","$9e",1]
+d:["$","html",null,{"lang":"es","children":["$","body",null,{"children":["$","$L8f",null,{"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz","children":["$","$38",null,{"fallback":null,"children":["$","$L1a",null,{"parallelRouterKey":"children","error":"$95","errorStyles":["$","$L6",null,{"type":"error","pagePath":"error.tsx","children":[]},null,"$96",0],"errorScripts":[["$","script","script-0",{"src":"/_next/static/chunks/node_modules_02rsjh1d3mn34._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$97",0],["$","script","script-1",{"src":"/_next/static/chunks/src_app_error_tsx_0ts9uj72u-_iy._.js","async":true,"nonce":"MjRlNGFhNDItZGI0OC00MWRkLTk5MGYtZjNiMDY1M2RkMDEz"},null,"$98",0]],"template":["$","$L1d",null,{},null,"$99",1],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","$L6","c-not-found",{"type":"not-found","pagePath":"not-found.tsx","children":["$9b",[]]},null,"$9a",0],"forbidden":"$undefined","unauthorized":"$undefined","segmentViewBoundaries":[["$","$L6",null,{"type":"boundary:not-found","pagePath":"not-found.tsx@boundary"},null,"$bf",1],"$undefined",["$","$L6",null,{"type":"boundary:error","pagePath":"error.tsx@boundary"},null,"$c0",1],["$","$L6",null,{"type":"boundary:global-error","pagePath":"global-error.tsx"},null,"$c1",1]]},null,"$91",1]},"$e","$90",1]},"$e","$8d",1]},"$e","$8c",1]},"$e","$8a",1]

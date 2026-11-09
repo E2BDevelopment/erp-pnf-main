@@ -30,6 +30,7 @@ export function AuthSync() {
       const { data } = await supabase.auth.getSession();
       if (!active) return;
       if (!data.session) {
+        queryClient.clear();
         reset();
         return;
       }
@@ -60,6 +61,7 @@ export function AuthSync() {
       if (!shouldRefreshAuthRoute(event, session?.user.id ?? null, useAuthStore.getState().userId))
         return;
       if (!session) {
+        queryClient.clear();
         reset();
         router.refresh();
         return;

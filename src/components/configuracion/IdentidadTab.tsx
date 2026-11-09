@@ -103,8 +103,8 @@ export function IdentidadTab() {
   return (
     <div className="space-y-5">
       <div>
-        <Label>Logo de la empresa</Label>
-        <p className="text-xs text-muted-foreground mt-1">
+        <Label htmlFor="company-logo">Logo de la empresa</Label>
+        <p id="company-logo-help" className="text-xs text-muted-foreground mt-1">
           Se mostrará en los PDFs generados (cotizaciones, órdenes de compra, etc.). Formatos: PNG,
           JPG, SVG. Tamaño recomendado: 512x512 px.
         </p>
@@ -122,6 +122,8 @@ export function IdentidadTab() {
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Input
+              id="company-logo"
+              aria-describedby="company-logo-help"
               type="file"
               accept="image/png,image/jpeg,image/svg+xml"
               onChange={(e) => {

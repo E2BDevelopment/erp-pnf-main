@@ -31,6 +31,8 @@ import { Check, Trash2, Plus } from "lucide-react";
 import { formatMXN } from "@/lib/format";
 import { siguienteRolEquipo, validarComisionesEquipo, validarEquipoObra } from "@/lib/obra-utils";
 import { PresupuestoModule } from "@/components/presupuesto/PresupuestoModule";
+import { PermisosTab } from "@/components/configuracion/PermisosTab";
+import { useEffectiveIsDirector } from "@/stores/auth";
 
 type RolObra = "director" | "residente" | "auxiliar" | "administrativo" | "supervisor";
 type TeamRow = { user_id: string; role: RolObra };
@@ -52,6 +54,7 @@ function ConfiguracionObra() {
   const { obraId } = useParams();
   const navigate = useNavigate();
   const { can, isLoading: permisosLoading } = usePermisos();
+  const director = useEffectiveIsDirector();
 
   const puedeEditar = can("obras.editar");
   const puedeAsignarTeam = can("obras.asignar_team");
@@ -83,17 +86,24 @@ function ConfiguracionObra() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Configuración de la obra</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Edita los datos generales, presupuesto, equipo y comisiones.
+          Edita los datos generales, presupuesto, equipo, comisiones y permisos de esta obra.
         </p>
       </div>
 
       <Tabs defaultValue={defaultTab} className="space-y-4">
-        <TabsList>
+        <TabsList className="h-auto flex-wrap">
           {puedeEditar && <TabsTrigger value="datos">Datos generales</TabsTrigger>}
           {puedeEditar && <TabsTrigger value="presupuesto">Presupuesto</TabsTrigger>}
           {puedeAsignarTeam && <TabsTrigger value="equipo">Equipo</TabsTrigger>}
           {puedeAsignarTeam && <TabsTrigger value="comisiones">Comisiones</TabsTrigger>}
+          {director && <TabsTrigger value="permisos">Permisos</TabsTrigger>}
         </TabsList>
+
+        {director && (
+          <TabsContent value="permisos">
+            <PermisosTab obraId={obraId} />
+          </TabsContent>
+        )}
 
         {puedeEditar && (
           <TabsContent value="datos">
@@ -196,9 +206,9 @@ function DatosTab({ obraId, initial }: { obraId: string; initial: ObraData }) {
         <Input id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
       </div>
       <div>
-        <Label>Unidad de negocio *</Label>
+        <Label htmlFor="datos-tab-unidad-de-negocio">Unidad de negocio *</Label>
         <Select value={unidadNegocioId} onValueChange={setUnidadNegocioId}>
-          <SelectTrigger>
+          <SelectTrigger id="datos-tab-unidad-de-negocio">
             <SelectValue placeholder="Selecciona unidad" />
           </SelectTrigger>
           <SelectContent>
@@ -211,9 +221,9 @@ function DatosTab({ obraId, initial }: { obraId: string; initial: ObraData }) {
         </Select>
       </div>
       <div>
-        <Label>Cliente</Label>
+        <Label htmlFor="datos-tab-cliente">Cliente</Label>
         <Select value={clienteId} onValueChange={setClienteId}>
-          <SelectTrigger>
+          <SelectTrigger id="datos-tab-cliente">
             <SelectValue placeholder="Selecciona cliente" />
           </SelectTrigger>
           <SelectContent>
@@ -344,7 +354,7 @@ function EquipoTab({ obraId, initial }: { obraId: string; initial: TeamRow[] }) 
                 setTeam(next);
               }}
             >
-              <SelectTrigger className="flex-1">
+              <SelectTrigger aria-label={`Usuario del equipo ${idx + 1}`} className="flex-1">
                 <SelectValue placeholder="Usuario" />
               </SelectTrigger>
               <SelectContent>
@@ -363,7 +373,7 @@ function EquipoTab({ obraId, initial }: { obraId: string; initial: TeamRow[] }) 
                 setTeam(next);
               }}
             >
-              <SelectTrigger className="w-44">
+              <SelectTrigger aria-label={`Rol del equipo ${idx + 1}`} className="w-44">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -488,7 +498,10 @@ function ComisionesTab({
         {comisiones.map((row, idx) => (
           <div key={idx} className="flex gap-2 items-center flex-wrap">
             <Select value={row.user_id} onValueChange={(v) => updateRow(idx, { user_id: v })}>
-              <SelectTrigger className="flex-1 min-w-[160px]">
+              <SelectTrigger
+                aria-label={`Usuario de comisión ${idx + 1}`}
+                className="flex-1 min-w-[160px]"
+              >
                 <SelectValue placeholder="Usuario" />
               </SelectTrigger>
               <SelectContent>
@@ -506,6 +519,7 @@ function ComisionesTab({
               </SelectContent>
             </Select>
             <Input
+              aria-label={`Porcentaje de comisión ${idx + 1}`}
               type="number"
               min={0}
               max={100}
@@ -521,7 +535,7 @@ function ComisionesTab({
                 updateRow(idx, { base_calculo: v as ComisionRow["base_calculo"] })
               }
             >
-              <SelectTrigger className="w-44">
+              <SelectTrigger aria-label={`Base de cálculo de comisión ${idx + 1}`} className="w-44">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

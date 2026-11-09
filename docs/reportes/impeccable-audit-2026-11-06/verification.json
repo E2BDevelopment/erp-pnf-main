@@ -1,0 +1,368 @@
+[
+  {
+    "name": "stable-dashboard",
+    "width": 1440,
+    "url": "http://localhost:3000/app/dashboard",
+    "violations": []
+  },
+  {
+    "name": "stable-dashboard",
+    "width": 360,
+    "url": "http://localhost:3000/app/dashboard",
+    "violations": [
+      {
+        "id": "label-content-name-mismatch",
+        "impact": "serious",
+        "nodes": [
+          {
+            "html": "<a class=\"flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm text-primary-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\" aria-label=\"14 pendientes en Residencial Los Encinos — Torre A\" href=\"/app/obras/4d616d86-3c6f-5c35-bfa0-b91333ad9796\">",
+            "target": [
+              ".py-3:nth-child(1) > .items-start.justify-between.gap-3 > .min-h-11.focus-visible\\:ring-2.text-primary-ink"
+            ],
+            "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          },
+          {
+            "html": "<a class=\"flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm text-primary-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring\" aria-label=\"13 pendientes en Ampliación Nave Industrial Bajío\" href=\"/app/obras/03f8c174-6bfc-5e77-802f-65470a4a1d1d\">",
+            "target": [
+              ".py-3:nth-child(2) > .items-start.justify-between.gap-3 > .min-h-11.focus-visible\\:ring-2.text-primary-ink"
+            ],
+            "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "stable-configuracion",
+    "width": 1440,
+    "url": "http://localhost:3000/app/configuracion",
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              ".sm\\:col-span-2.min-w-0 > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.sm\\:text-sm"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              "div:nth-child(3) > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.sm\\:text-sm"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      },
+      {
+        "id": "label",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" required=\"\" value=\"Constructora Naranja...\">",
+            "target": [
+              "div:nth-child(1) > .file\\:border-0.file\\:bg-transparent[required=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Constructora Naranja...\">",
+            "target": [
+              "input[value=\"Constructora Naranja del Bajío\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" maxlength=\"13\" required=\"\" value=\"CNB200315AB1\">",
+            "target": [
+              "input[maxlength=\"13\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Av. López Mateos Sur\">",
+            "target": [
+              "input[value=\"Av. López Mateos Sur\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"1450\">",
+            "target": [
+              "input[value=\"1450\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\">",
+            "target": [
+              "div:nth-child(3) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Ciudad del Sol\">",
+            "target": [
+              "input[value=\"Ciudad del Sol\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Zapopan\">",
+            "target": [
+              "input[value=\"Zapopan\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" maxlength=\"5\" value=\"45050\">",
+            "target": [
+              "input[maxlength=\"5\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\">",
+            "target": [
+              ".sm\\:grid-cols-2.gap-4 > div:nth-child(1) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\">",
+            "target": [
+              ".sm\\:grid-cols-2.gap-4 > div:nth-child(2) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "stable-configuracion",
+    "width": 360,
+    "url": "http://localhost:3000/app/configuracion",
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              ".sm\\:col-span-2.min-w-0 > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.sm\\:text-sm"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              "div:nth-child(3) > .data-\\[placeholder\\]\\:text-muted-foreground.focus\\:ring-1.sm\\:text-sm"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      },
+      {
+        "id": "label",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" required=\"\" value=\"Constructora Naranja...\" style=\"\">",
+            "target": [
+              "div:nth-child(1) > .file\\:border-0.file\\:bg-transparent[required=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Constructora Naranja...\" style=\"\">",
+            "target": [
+              "input[value=\"Constructora Naranja del Bajío\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" maxlength=\"13\" required=\"\" value=\"CNB200315AB1\" style=\"\">",
+            "target": [
+              "input[maxlength=\"13\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Av. López Mateos Sur\" style=\"\">",
+            "target": [
+              "input[value=\"Av. López Mateos Sur\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"1450\" style=\"\">",
+            "target": [
+              "input[value=\"1450\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\" style=\"\">",
+            "target": [
+              "div:nth-child(3) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Ciudad del Sol\" style=\"\">",
+            "target": [
+              "input[value=\"Ciudad del Sol\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"Zapopan\" style=\"\">",
+            "target": [
+              "input[value=\"Zapopan\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" maxlength=\"5\" value=\"45050\" style=\"\">",
+            "target": [
+              "input[maxlength=\"5\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\" style=\"\">",
+            "target": [
+              ".sm\\:grid-cols-2.gap-4 > div:nth-child(1) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\" style=\"\">",
+            "target": [
+              ".sm\\:grid-cols-2.gap-4 > div:nth-child(2) > .file\\:border-0.file\\:bg-transparent[value=\"\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "crear-usuario",
+    "width": 360,
+    "url": "http://localhost:3000/app/equipo",
+    "violations": [
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              ".data-\\[placeholder\\]\\:text-muted-foreground"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      },
+      {
+        "id": "label",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" value=\"\">",
+            "target": [
+              "div:nth-child(1) > .py-1.file\\:border-0.file\\:bg-transparent"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<input class=\"flex h-9 w-full roun...\" type=\"email\" value=\"\">",
+            "target": [
+              "input[type=\"email\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "stable-catalogos",
+    "width": 1440,
+    "url": "http://localhost:3000/app/catalogos/clientes",
+    "violations": [
+      {
+        "id": "aria-valid-attr-value",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"tab\" aria-selected=\"true\" aria-controls=\"radix-_r_s_-content-...\" data-state=\"active\" id=\"radix-_r_s_-trigger-...\" class=\"inline-flex shrink-0...\" tabindex=\"-1\" data-orientation=\"horizontal\" data-radix-collectio...=\"\">",
+            "target": [
+              "#radix-_r_s_-trigger-todos"
+            ],
+            "summary": "Fix all of the following:\n  Invalid ARIA attribute value: aria-controls=\"radix-_r_s_-content-todos\""
+          }
+        ]
+      },
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex min-w-0 items-c...\">",
+            "target": [
+              ".w-36"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "stable-catalogos",
+    "width": 360,
+    "url": "http://localhost:3000/app/catalogos/clientes",
+    "violations": [
+      {
+        "id": "aria-valid-attr-value",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"tab\" aria-selected=\"true\" aria-controls=\"radix-_r_s_-content-...\" data-state=\"active\" id=\"radix-_r_s_-trigger-...\" class=\"inline-flex shrink-0...\" tabindex=\"-1\" data-orientation=\"horizontal\" data-radix-collectio...=\"\">",
+            "target": [
+              "#radix-_r_s_-trigger-todos"
+            ],
+            "summary": "Fix all of the following:\n  Invalid ARIA attribute value: aria-controls=\"radix-_r_s_-content-todos\""
+          }
+        ]
+      },
+      {
+        "id": "button-name",
+        "impact": "critical",
+        "nodes": [
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex h-9 w-full min-...\">",
+            "target": [
+              ".h-9"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          },
+          {
+            "html": "<button type=\"button\" role=\"combobox\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" class=\"flex min-w-0 items-c...\">",
+            "target": [
+              ".w-36"
+            ],
+            "summary": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+          }
+        ]
+      }
+    ]
+  }
+]

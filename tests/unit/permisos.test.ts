@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it, vi } from "vitest";
 import { CATALOGO_ACCIONES } from "@/lib/permisos/catalogo";
 import { hasPermission, overridesFromRows } from "@/lib/permisos/check";
-import { requirePermission } from "@/lib/permisos/require";
+import { requirePermission, resolvePermissionObra } from "@/lib/permisos/require";
 
 type QueryResult = { data: unknown; error: { message: string } | null };
 
@@ -10,7 +10,8 @@ function queryBuilder(result: QueryResult) {
   const builder: Record<string, unknown> = {};
   builder.select = () => builder;
   builder.eq = () => builder;
-  builder.maybeSingle = async () => result;
+  builder.maybeSingle = () => builder;
+  builder.overrideTypes = () => builder;
   builder.then = (
     resolve: (value: QueryResult) => unknown,
     reject?: (reason: unknown) => unknown,
@@ -157,6 +158,34 @@ describe("requirePermission", () => {
     );
   });
 
+  it("usa los permisos del rol personalizado sin heredar los del perfil base", async () => {
+    const customRole = "f1109454-0fa3-4f39-b1d9-79e97de2e044";
+    const overrides = overridesFromRows([
+      { role: "administrativo", action_key: "obras.crear", allowed: true },
+      { role: customRole, action_key: "obras.crear", allowed: false },
+    ]);
+    expect(hasPermission("obras.crear", [customRole], overrides)).toBe(false);
+    expect(hasPermission("obras.editar", [customRole], overrides)).toBe(false);
+    const { client } = fakeSupabase({
+      profiles: perfil,
+      user_roles: { data: [{ role: "administrativo", custom_role_id: customRole }], error: null },
+      role_permissions: {
+        data: [{ role: customRole, action_key: "obras.crear", allowed: false }],
+        error: null,
+      },
+    });
+    await expect(requirePermission(client, "user-1", "obras.crear")).rejects.toThrow(
+      "No tienes permiso",
+    );
+    expect(
+      hasPermission(
+        "obras.crear",
+        [customRole],
+        overridesFromRows([{ role: customRole, action_key: "obras.crear", allowed: true }]),
+      ),
+    ).toBe(true);
+  });
+
   it("propaga errores de roles y de overrides", async () => {
     const rolesError = fakeSupabase({
       profiles: perfil,
@@ -174,5 +203,83 @@ describe("requirePermission", () => {
     await expect(requirePermission(permisosError.client, "user-1", "obras.crear")).rejects.toThrow(
       "permisos boom",
     );
+  });
+});
+
+describe("validación de permisos con contexto de obra", () => {
+  const base = {
+    profiles: { data: { company_id: "company-1" }, error: null },
+    obras: { data: { company_id: "company-1" }, error: null },
+    user_roles: { data: [{ role: "residente" }], error: null },
+    role_permissions: { data: [], error: null },
+  };
+
+  it("aplica la denegación de obra antes del default permitido", async () => {
+    const { client } = fakeSupabase({
+      ...base,
+      obra_role_permissions: {
+        data: [{ role: "residente", action_key: "requisiciones.crear", allowed: false }],
+        error: null,
+      },
+    });
+    await expect(
+      requirePermission(client, "user-1", "requisiciones.crear", "obra-1"),
+    ).rejects.toThrow("No tienes permiso");
+  });
+
+  it("permite la excepción de obra sobre una denegación de empresa", async () => {
+    const { client } = fakeSupabase({
+      ...base,
+      role_permissions: {
+        data: [{ role: "residente", action_key: "requisiciones.crear", allowed: false }],
+        error: null,
+      },
+      obra_role_permissions: {
+        data: [{ role: "residente", action_key: "requisiciones.crear", allowed: true }],
+        error: null,
+      },
+    });
+    await expect(
+      requirePermission(client, "user-1", "requisiciones.crear", "obra-1"),
+    ).resolves.toBeUndefined();
+  });
+
+  it("rechaza una obra de otra empresa incluso para un Director", async () => {
+    const { client } = fakeSupabase({
+      ...base,
+      obras: { data: { company_id: "company-2" }, error: null },
+      user_roles: { data: [{ role: "director" }], error: null },
+    });
+    await expect(
+      requirePermission(client, "user-1", "requisiciones.crear", "obra-1"),
+    ).rejects.toThrow("sin acceso");
+  });
+
+  it("rechaza una obra inaccesible y falla cerrado cuando falla la consulta", async () => {
+    const missing = fakeSupabase({ ...base, obras: { data: null, error: null } });
+    await expect(
+      requirePermission(missing.client, "user-1", "requisiciones.crear", "obra-1"),
+    ).rejects.toThrow("sin acceso");
+    const failed = fakeSupabase({
+      ...base,
+      obra_role_permissions: { data: null, error: { message: "consulta fallida" } },
+    });
+    await expect(
+      requirePermission(failed.client, "user-1", "requisiciones.crear", "obra-1"),
+    ).rejects.toThrow("consulta fallida");
+  });
+
+  it("obtiene la obra real de documentos y de sus documentos padre", async () => {
+    const { client } = fakeSupabase({
+      cotizacion_solicitudes: { data: { requisicion_id: "req-1" }, error: null },
+      requisiciones: { data: { obra_id: "obra-real" }, error: null },
+      inexistente: { data: null, error: null },
+    });
+    await expect(
+      resolvePermissionObra(client, { table: "cotizacion_solicitudes", id: "sc-1" }),
+    ).resolves.toBe("obra-real");
+    await expect(
+      resolvePermissionObra(client, { table: "inexistente", id: "missing" }),
+    ).rejects.toThrow("sin acceso");
   });
 });

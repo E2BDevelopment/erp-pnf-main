@@ -1,3 +1,4 @@
+import { requirePermission } from "@/lib/permisos/require";
 import { createServerFn } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -182,6 +183,7 @@ export const crearDestajo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "destajos.crear", data.obraId);
     const { supabase, userId } = context;
     const { companyId, isDirector } = await getRoles(supabase, userId);
     const obraRole = await getObraRole(supabase, userId, data.obraId);
@@ -1102,6 +1104,10 @@ export const getOrCreateEstimacionDestajo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "destajos.estimar", {
+      table: "obra_destajos",
+      id: data.destajoId,
+    });
     const { supabase, userId } = context;
     const { data: d0 } = await supabase
       .from("obra_destajos")
@@ -1233,6 +1239,10 @@ export const guardarEstimacionDestajo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "destajos.estimar", {
+      table: "obra_destajo_estimaciones",
+      id: data.estimacionId,
+    });
     const { supabase, userId } = context;
     const { data: est } = await supabase
       .from("obra_destajo_estimaciones")
@@ -1338,6 +1348,10 @@ export const cerrarEstimacionDestajo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "destajos.estimar", {
+      table: "obra_destajo_estimaciones",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: est } = await supabase
       .from("obra_destajo_estimaciones")
@@ -1565,6 +1579,10 @@ export const eliminarEstimacionDestajo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "destajos.estimar", {
+      table: "obra_destajo_estimaciones",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: est } = await supabase
       .from("obra_destajo_estimaciones")
@@ -1613,6 +1631,10 @@ export const autorizarEstimacionDestajo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "destajos.autorizar_estimacion", {
+      table: "obra_destajo_estimaciones",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: est } = await supabase
       .from("obra_destajo_estimaciones")
@@ -1887,6 +1909,10 @@ export const rechazarEstimacionDestajo = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
+    await requirePermission(context.supabase, context.userId, "destajos.autorizar_estimacion", {
+      table: "obra_destajo_estimaciones",
+      id: data.id,
+    });
     const { supabase, userId } = context;
     const { data: est } = await supabase
       .from("obra_destajo_estimaciones")
@@ -2248,6 +2274,10 @@ export const pagarAnticipoDestajo = createServerFn({ method: "POST" })
     if (!isDirector && !roleSet.has("administrativo")) {
       throw new Error("Solo Director o Administrativo pueden registrar el pago");
     }
+    await requirePermission(supabase, userId, "cxp.registrar_pago", {
+      table: "obra_destajos",
+      id: data.destajoId,
+    });
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

@@ -361,3 +361,25 @@ export const CATALOGO_ACCIONES: AccionCatalogo[] = [
 ];
 
 export const MODULOS_ORDEN = Array.from(new Set(CATALOGO_ACCIONES.map((a) => a.modulo)));
+
+// Las acciones corporativas nunca reciben excepciones desde una obra.
+export function isObraAction(key: string): boolean {
+  return (
+    CATALOGO_ACCIONES.some((a) => a.key === key) &&
+    !key.startsWith("catalogos.") &&
+    !key.startsWith("gastos_oficina.") &&
+    !key.startsWith("contabilidad.") &&
+    !["obras.crear", "almacen_central.ver", "tesoreria.ver"].includes(key)
+  );
+}
+
+export const OBRA_MODULE_PERMISSIONS: Record<string, string> = {
+  requisiciones: "requisiciones.ver",
+  nomina: "nomina.ver",
+  destajos: "destajos.ver",
+  subcontratos: "subcontratos.ver",
+  rentas: "rentas.ver",
+  gasolinas: "gasolinas.ver",
+  "caja-chica": "caja_chica.ver",
+  tareas: "tareas.ver",
+};

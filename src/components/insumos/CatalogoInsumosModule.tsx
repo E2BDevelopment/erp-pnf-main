@@ -222,10 +222,11 @@ export function CatalogoInsumosModule() {
         </Card>
       )}
 
-      <Card className="p-3 flex flex-col sm:flex-row sm:flex-nowrap items-stretch sm:items-center gap-2">
+      <Card className="p-3 flex flex-col lg:flex-row lg:flex-nowrap items-stretch lg:items-center gap-2">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
+            aria-label="Buscar insumos por nombre o código"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Nombre o código…"
@@ -233,7 +234,10 @@ export function CatalogoInsumosModule() {
           />
         </div>
         <Select value={categoriaId} onValueChange={setCategoriaId}>
-          <SelectTrigger className="w-36 h-8 text-xs shrink-0">
+          <SelectTrigger
+            aria-label="Categoría de insumo"
+            className="w-full lg:w-36 h-8 text-xs shrink-0"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -246,7 +250,10 @@ export function CatalogoInsumosModule() {
           </SelectContent>
         </Select>
         <Select value={unidad} onValueChange={setUnidad}>
-          <SelectTrigger className="w-36 h-8 text-xs shrink-0">
+          <SelectTrigger
+            aria-label="Unidad de insumo"
+            className="w-full lg:w-36 h-8 text-xs shrink-0"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -467,11 +474,17 @@ export function CatalogoInsumosModule() {
                       <TableCell className="max-w-[240px] font-medium">
                         <TruncatedCell>{i.nombre}</TruncatedCell>
                       </TableCell>
-                      <TableCell><Badge variant="outline">{i.unidad}</Badge></TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{i.unidad}</Badge>
+                      </TableCell>
                       <TableCell>{i.categoria?.nombre ?? "Sin categoría"}</TableCell>
-                      <TableCell>{i.solicitante?.nombre_completo ?? i.solicitante?.email ?? "—"}</TableCell>
+                      <TableCell>
+                        {i.solicitante?.nombre_completo ?? i.solicitante?.email ?? "—"}
+                      </TableCell>
                       <TableCell>{new Date(i.created_at).toLocaleDateString("es-MX")}</TableCell>
-                      <TableCell><Badge variant="destructive">Rechazado</Badge></TableCell>
+                      <TableCell>
+                        <Badge variant="destructive">Rechazado</Badge>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -609,18 +622,28 @@ function SolicitarDialog({
         </DialogHeader>
         <div className="space-y-3">
           <div>
-            <Label>Nombre</Label>
-            <Input value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={200} />
+            <Label htmlFor="solicitar-dialog-nombre">Nombre</Label>
+            <Input
+              id="solicitar-dialog-nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              maxLength={200}
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Unidad</Label>
+              <Label htmlFor="solicitar-dialog-unidad">Unidad</Label>
               <Select value={unidad} onValueChange={(v) => setUnidad(v)}>
-                <SelectTrigger>
+                <SelectTrigger id="solicitar-dialog-unidad">
                   <SelectValue placeholder="Seleccionar..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__nueva__">{isDirector ? "+ Agregar nueva unidad" : "+ Solicitar unidad nueva"}</SelectItem>
+                  <SelectItem
+                    value="__nueva__"
+                    className="mb-1 cursor-pointer bg-accent font-semibold text-primary-ink focus:bg-primary/20 focus:text-primary-ink"
+                  >
+                    {isDirector ? "+ Agregar nueva unidad" : "+ Solicitar unidad nueva"}
+                  </SelectItem>
                   {unidades.length === 0 && (
                     <div className="px-2 py-1.5 text-xs text-muted-foreground">
                       Sin unidades. Pide al Director crearlas.
@@ -637,37 +660,80 @@ function SolicitarDialog({
               {unidad === "__nueva__" && (
                 <div className="mt-2 space-y-2">
                   <div>
-                    <Label htmlFor="unidad-nueva-codigo-catalogo" className="text-xs">Código</Label>
-                    <Input id="unidad-nueva-codigo-catalogo" value={unidadNueva} onChange={(e) => setUnidadNueva(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10))} placeholder="Ej. CUB" maxLength={10} />
+                    <Label htmlFor="unidad-nueva-codigo-catalogo" className="text-xs">
+                      Código
+                    </Label>
+                    <Input
+                      id="unidad-nueva-codigo-catalogo"
+                      value={unidadNueva}
+                      onChange={(e) =>
+                        setUnidadNueva(
+                          e.target.value
+                            .toUpperCase()
+                            .replace(/[^A-Z0-9]/g, "")
+                            .slice(0, 10),
+                        )
+                      }
+                      placeholder="Ej. CUB"
+                      maxLength={10}
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="unidad-nueva-nombre-catalogo" className="text-xs">Nombre (opcional)</Label>
-                    <Input id="unidad-nueva-nombre-catalogo" value={unidadNuevaNombre} onChange={(e) => setUnidadNuevaNombre(e.target.value)} placeholder="Ej. Cubeta" maxLength={100} />
+                    <Label htmlFor="unidad-nueva-nombre-catalogo" className="text-xs">
+                      Nombre (opcional)
+                    </Label>
+                    <Input
+                      id="unidad-nueva-nombre-catalogo"
+                      value={unidadNuevaNombre}
+                      onChange={(e) => setUnidadNuevaNombre(e.target.value)}
+                      placeholder="Ej. Cubeta"
+                      maxLength={100}
+                    />
                   </div>
-                  <p className="text-xs text-muted-foreground">{isDirector ? "Se creará autorizada al guardar." : "En espera de autorización."}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isDirector ? "Se creará autorizada al guardar." : "En espera de autorización."}
+                  </p>
                 </div>
               )}
             </div>
             <div>
-              <Label>Categoría</Label>
+              <Label htmlFor="solicitar-dialog-categoria">Categoría</Label>
               <Select value={categoriaId} onValueChange={setCategoriaId}>
-                <SelectTrigger>
+                <SelectTrigger id="solicitar-dialog-categoria">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__nueva__">{isDirector ? "+ Agregar nueva categoría" : "+ Solicitar categoría nueva"}</SelectItem>
+                  <SelectItem
+                    value="__nueva__"
+                    className="mb-1 cursor-pointer bg-accent font-semibold text-primary-ink focus:bg-primary/20 focus:text-primary-ink"
+                  >
+                    {isDirector ? "+ Agregar nueva categoría" : "+ Solicitar categoría nueva"}
+                  </SelectItem>
                   <SelectItem value="none">Sin categoría</SelectItem>
                   {categorias.map((c) => (
                     <SelectItem key={c.id} value={c.id} disabled={c.estatus !== "autorizado"}>
-                      {c.nombre}{c.estatus === "pendiente" ? " (en espera de autorización)" : c.estatus === "rechazado" ? " (rechazada)" : ""}
+                      {c.nombre}
+                      {c.estatus === "pendiente"
+                        ? " (en espera de autorización)"
+                        : c.estatus === "rechazado"
+                          ? " (rechazada)"
+                          : ""}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {categoriaId === "__nueva__" && (
                 <div className="mt-2 space-y-2">
-                  <Input value={categoriaNueva} onChange={(e) => setCategoriaNueva(e.target.value)} placeholder="Nombre de categoría" maxLength={100} />
-                  <p className="text-xs text-muted-foreground">{isDirector ? "Se creará autorizada al guardar." : "En espera de autorización."}</p>
+                  <Input
+                    aria-label="Nombre de categoría nueva"
+                    value={categoriaNueva}
+                    onChange={(e) => setCategoriaNueva(e.target.value)}
+                    placeholder="Nombre de categoría"
+                    maxLength={100}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {isDirector ? "Se creará autorizada al guardar." : "En espera de autorización."}
+                  </p>
                 </div>
               )}
             </div>
@@ -695,14 +761,23 @@ function SolicitarDialog({
             Cancelar
           </Button>
           <Button
-            disabled={!nombre.trim() || (!unidad || (unidad === "__nueva__" && !unidadNueva)) || (categoriaId === "__nueva__" && !categoriaNueva.trim()) || mut.isPending}
+            disabled={
+              !nombre.trim() ||
+              !unidad ||
+              (unidad === "__nueva__" && !unidadNueva) ||
+              (categoriaId === "__nueva__" && !categoriaNueva.trim()) ||
+              mut.isPending
+            }
             onClick={() =>
               mut.mutate({
                 data: {
                   nombre: nombre.trim(),
                   unidad: unidad === "__nueva__" ? unidadNueva : unidad,
-                  ...(unidad === "__nueva__" ? { unidadNueva: { codigo: unidadNueva, nombre: unidadNuevaNombre.trim() } } : {}),
-                  categoriaId: categoriaId === "none" || categoriaId === "__nueva__" ? null : categoriaId,
+                  ...(unidad === "__nueva__"
+                    ? { unidadNueva: { codigo: unidadNueva, nombre: unidadNuevaNombre.trim() } }
+                    : {}),
+                  categoriaId:
+                    categoriaId === "none" || categoriaId === "__nueva__" ? null : categoriaId,
                   ...(categoriaId === "__nueva__" ? { categoriaNueva: categoriaNueva.trim() } : {}),
                   ...(isDirector ? { disponibleRenta } : {}),
                 },
@@ -774,7 +849,10 @@ function CategoriasDialog({
   });
   const revisarMut = useMutation({
     mutationFn: useServerFn(revisarCategoria),
-    onSuccess: () => { toast.success("Solicitud de categoría revisada"); invalidate(); },
+    onSuccess: () => {
+      toast.success("Solicitud de categoría revisada");
+      invalidate();
+    },
     onError: (e: any) => toast.error(e.message),
   });
 
@@ -791,10 +869,13 @@ function CategoriasDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
-          <div className="grid grid-cols-[1fr_100px_auto] gap-2 items-end">
-            <div>
-              <Label className="text-xs">Nombre</Label>
+          <div className="grid grid-cols-[100px_minmax(0,1fr)] gap-2 items-end sm:grid-cols-[minmax(0,1fr)_100px_auto]">
+            <div className="col-span-2 min-w-0 sm:col-span-1">
+              <Label htmlFor="categorias-dialog-nombre" className="text-xs">
+                Nombre
+              </Label>
               <Input
+                id="categorias-dialog-nombre"
                 value={nueva}
                 onChange={(e) => setNueva(e.target.value)}
                 placeholder="Nueva categoría..."
@@ -802,8 +883,11 @@ function CategoriasDialog({
               />
             </div>
             <div>
-              <Label className="text-xs">Prefijo</Label>
+              <Label htmlFor="categorias-dialog-prefijo" className="text-xs">
+                Prefijo
+              </Label>
               <Input
+                id="categorias-dialog-prefijo"
                 value={nuevoPrefijo}
                 onChange={(e) =>
                   setNuevoPrefijo(
@@ -832,23 +916,28 @@ function CategoriasDialog({
               <Plus /> Agregar
             </Button>
           </div>
-          <div className="border rounded-md divide-y max-h-80 overflow-auto">
+          <div className="border rounded-md divide-y max-h-80 overflow-y-auto">
             {categorias.length === 0 && (
               <p className="text-sm text-muted-foreground p-4 text-center">Sin categorías aún.</p>
             )}
             {categorias.map((c) => (
-              <div key={c.id} className="flex items-center gap-2 p-2">
+              <div
+                key={c.id}
+                className="space-y-2 p-3 sm:flex sm:items-center sm:gap-2 sm:space-y-0 sm:p-2"
+              >
                 {editing && editing.id === c.id ? (
-                  <>
+                  <div className="grid grid-cols-[minmax(0,1fr)_80px] gap-2 sm:contents">
                     <Input
+                      aria-label="Nombre de categoría"
                       value={editing.nombre}
                       onChange={(e) =>
                         setEditing((prev) => (prev ? { ...prev, nombre: e.target.value } : prev))
                       }
                       maxLength={100}
-                      className="flex-1"
+                      className="min-w-0 sm:flex-1"
                     />
                     <Input
+                      aria-label="Prefijo de categoría"
                       value={editing.prefijo}
                       onChange={(e) =>
                         setEditing((prev) =>
@@ -866,61 +955,88 @@ function CategoriasDialog({
                       maxLength={3}
                       className="w-20 font-mono uppercase"
                     />
-                    <Button
-                      size="sm"
-                      onClick={() =>
-                        editing &&
-                        editMut.mutate({
-                          data: {
-                            id: editing.id,
-                            nombre: editing.nombre.trim(),
-                            prefijo: editing.prefijo.length === 3 ? editing.prefijo : undefined,
-                          },
-                        })
-                      }
-                    >
-                      Guardar
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setEditing(null)}>
-                      Cancelar
-                    </Button>
-                  </>
+                    <div className="col-span-2 flex gap-2 sm:contents">
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          editing &&
+                          editMut.mutate({
+                            data: {
+                              id: editing.id,
+                              nombre: editing.nombre.trim(),
+                              prefijo: editing.prefijo.length === 3 ? editing.prefijo : undefined,
+                            },
+                          })
+                        }
+                      >
+                        Guardar
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => setEditing(null)}>
+                        Cancelar
+                      </Button>
+                    </div>
+                  </div>
                 ) : (
                   <>
-                    <span className="flex-1 text-sm">{c.nombre}</span>
-                    {c.estatus === "pendiente" && <Badge variant="secondary">En espera de autorización</Badge>}
-                    <Badge variant="outline" className="font-mono">
-                      {c.prefijo ?? "—"}
-                    </Badge>
-                    {c.estatus === "pendiente" ? <>
-                      <Button size="sm" onClick={() => revisarMut.mutate({ data: { id: c.id, aprobar: true } })}><Check className="size-4 mr-1" /> Autorizar</Button>
-                      <Button size="sm" variant="outline" onClick={() => revisarMut.mutate({ data: { id: c.id, aprobar: false } })}><X className="size-4 mr-1" /> Rechazar</Button>
-                    </> : <Button
-                      size="icon"
-                      variant="ghost"
-                      aria-label={`Editar categoría ${c.nombre}`}
-                      onClick={() =>
-                        setEditing({ id: c.id, nombre: c.nombre, prefijo: c.prefijo ?? "" })
-                      }
-                    >
-                      <Pencil />
-                    </Button>}
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      aria-label={`Eliminar categoría ${c.nombre}`}
-                      onClick={async () => {
-                        const confirmed = await confirm({
-                          title: `¿Eliminar "${c.nombre}"?`,
-                          description: "La categoría se quitará del catálogo de insumos.",
-                          confirmLabel: "Eliminar",
-                          destructive: true,
-                        });
-                        if (confirmed) delMut.mutate({ data: { id: c.id } });
-                      }}
-                    >
-                      <Trash2 />
-                    </Button>
+                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                      <span className="min-w-0 flex-1 basis-32 break-words text-sm">
+                        {c.nombre}
+                      </span>
+                      <Badge variant="outline" className="shrink-0 font-mono">
+                        {c.prefijo ?? "—"}
+                      </Badge>
+                      {c.estatus === "pendiente" && (
+                        <Badge variant="secondary">En espera de autorización</Badge>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
+                      {c.estatus === "pendiente" ? (
+                        <>
+                          <Button
+                            size="sm"
+                            onClick={() => revisarMut.mutate({ data: { id: c.id, aprobar: true } })}
+                          >
+                            <Check className="size-4 mr-1" /> Autorizar
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() =>
+                              revisarMut.mutate({ data: { id: c.id, aprobar: false } })
+                            }
+                          >
+                            <X className="size-4 mr-1" /> Rechazar
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          aria-label={`Editar categoría ${c.nombre}`}
+                          onClick={() =>
+                            setEditing({ id: c.id, nombre: c.nombre, prefijo: c.prefijo ?? "" })
+                          }
+                        >
+                          <Pencil />
+                        </Button>
+                      )}
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        aria-label={`Eliminar categoría ${c.nombre}`}
+                        onClick={async () => {
+                          const confirmed = await confirm({
+                            title: `¿Eliminar "${c.nombre}"?`,
+                            description: "La categoría se quitará del catálogo de insumos.",
+                            confirmLabel: "Eliminar",
+                            destructive: true,
+                          });
+                          if (confirmed) delMut.mutate({ data: { id: c.id } });
+                        }}
+                      >
+                        <Trash2 />
+                      </Button>
+                    </div>
                   </>
                 )}
               </div>
@@ -972,8 +1088,9 @@ function EditarInsumoDialog({
         <div className="space-y-3">
           <div className="grid grid-cols-[140px_1fr] gap-3">
             <div>
-              <Label>Código</Label>
+              <Label htmlFor="editar-insumo-dialog-codigo">Código</Label>
               <Input
+                id="editar-insumo-dialog-codigo"
                 value={codigo}
                 onChange={(e) => setCodigo(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ""))}
                 placeholder="CEM-0001"
@@ -987,15 +1104,20 @@ function EditarInsumoDialog({
               )}
             </div>
             <div>
-              <Label>Nombre</Label>
-              <Input value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={200} />
+              <Label htmlFor="editar-insumo-dialog-nombre">Nombre</Label>
+              <Input
+                id="editar-insumo-dialog-nombre"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                maxLength={200}
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Unidad</Label>
+              <Label htmlFor="editar-insumo-dialog-unidad">Unidad</Label>
               <Select value={unidad} onValueChange={(v) => setUnidad(v)}>
-                <SelectTrigger>
+                <SelectTrigger id="editar-insumo-dialog-unidad">
                   <SelectValue placeholder="Seleccionar..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -1009,9 +1131,9 @@ function EditarInsumoDialog({
               </Select>
             </div>
             <div>
-              <Label>Categoría</Label>
+              <Label htmlFor="editar-insumo-dialog-categoria">Categoría</Label>
               <Select value={categoriaId} onValueChange={setCategoriaId}>
-                <SelectTrigger>
+                <SelectTrigger id="editar-insumo-dialog-categoria">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -1168,7 +1290,10 @@ function UnidadesDialog({
   });
   const revisarMut = useMutation({
     mutationFn: useServerFn(revisarUnidad),
-    onSuccess: () => { toast.success("Solicitud de unidad revisada"); invalidate(); },
+    onSuccess: () => {
+      toast.success("Solicitud de unidad revisada");
+      invalidate();
+    },
     onError: (e: any) => toast.error(e.message),
   });
 
@@ -1185,8 +1310,11 @@ function UnidadesDialog({
         <div className="space-y-3">
           <div className="grid grid-cols-[110px_1fr_auto] gap-2 items-end">
             <div>
-              <Label className="text-xs">Código</Label>
+              <Label htmlFor="unidades-dialog-codigo" className="text-xs">
+                Código
+              </Label>
               <Input
+                id="unidades-dialog-codigo"
                 value={codigo}
                 onChange={(e) =>
                   setCodigo(
@@ -1202,8 +1330,11 @@ function UnidadesDialog({
               />
             </div>
             <div>
-              <Label className="text-xs">Nombre (opcional)</Label>
+              <Label htmlFor="unidades-dialog-nombre-opcional" className="text-xs">
+                Nombre (opcional)
+              </Label>
               <Input
+                id="unidades-dialog-nombre-opcional"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 placeholder="Pieza"
@@ -1233,6 +1364,7 @@ function UnidadesDialog({
                 {editing && editing.id === u.id ? (
                   <>
                     <Input
+                      aria-label="Código de unidad"
                       value={editing.codigo}
                       onChange={(e) =>
                         setEditing((prev) =>
@@ -1251,6 +1383,7 @@ function UnidadesDialog({
                       className="w-24 font-mono uppercase"
                     />
                     <Input
+                      aria-label="Nombre de unidad"
                       value={editing.nombre}
                       onChange={(e) =>
                         setEditing((prev) => (prev ? { ...prev, nombre: e.target.value } : prev))
@@ -1283,20 +1416,37 @@ function UnidadesDialog({
                       {u.codigo}
                     </Badge>
                     <span className="flex-1 text-sm text-muted-foreground">{u.nombre ?? "—"}</span>
-                    {u.estatus === "pendiente" && <Badge variant="secondary">En espera de autorización</Badge>}
-                    {u.estatus === "pendiente" ? <>
-                      <Button size="sm" onClick={() => revisarMut.mutate({ data: { id: u.id, aprobar: true } })}><Check className="size-4 mr-1" /> Autorizar</Button>
-                      <Button size="sm" variant="outline" onClick={() => revisarMut.mutate({ data: { id: u.id, aprobar: false } })}><X className="size-4 mr-1" /> Rechazar</Button>
-                    </> : <Button
-                      size="icon"
-                      variant="ghost"
-                      aria-label={`Editar unidad ${u.codigo}`}
-                      onClick={() =>
-                        setEditing({ id: u.id, codigo: u.codigo, nombre: u.nombre ?? "" })
-                      }
-                    >
-                      <Pencil />
-                    </Button>}
+                    {u.estatus === "pendiente" && (
+                      <Badge variant="secondary">En espera de autorización</Badge>
+                    )}
+                    {u.estatus === "pendiente" ? (
+                      <>
+                        <Button
+                          size="sm"
+                          onClick={() => revisarMut.mutate({ data: { id: u.id, aprobar: true } })}
+                        >
+                          <Check className="size-4 mr-1" /> Autorizar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => revisarMut.mutate({ data: { id: u.id, aprobar: false } })}
+                        >
+                          <X className="size-4 mr-1" /> Rechazar
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        aria-label={`Editar unidad ${u.codigo}`}
+                        onClick={() =>
+                          setEditing({ id: u.id, codigo: u.codigo, nombre: u.nombre ?? "" })
+                        }
+                      >
+                        <Pencil />
+                      </Button>
+                    )}
                     <Button
                       size="icon"
                       variant="ghost"
@@ -1323,4 +1473,3 @@ function UnidadesDialog({
     </Dialog>
   );
 }
-

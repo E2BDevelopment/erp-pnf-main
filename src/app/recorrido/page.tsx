@@ -63,7 +63,7 @@ export default function RecorridoPage() {
     <main className="landing-page landing-tour min-h-screen bg-background">
       <header className="landing-tour-header">
         <div className="landing-container landing-tour-header-inner">
-          <Link to="/" className="landing-brand" aria-label="ERP PNF, inicio">
+          <Link to="/" className="landing-brand">
             <Image
               src="/assets/img/icon-1.png"
               alt=""

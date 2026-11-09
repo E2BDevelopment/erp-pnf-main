@@ -1,0 +1,21 @@
+{
+  "keyboard": {
+    "menus": 0,
+    "dialogs": 0,
+    "domDialogs": [
+      {
+        "hidden": "true",
+        "text": "CerrarAdriana Guzmán RodríguezAyudanteAlta activa EditarGeneralIMSSDocumentosAsignaciónDatos personalesNombre completoAdriana Guzmán RodríguezFecha de nacimiento6 abr 1986SexoFemen"
+      }
+    ],
+    "titles": []
+  },
+  "alert": {
+    "violations": [],
+    "motion": {
+      "name": "enter",
+      "duration": "0.2s",
+      "opacity": "1"
+    }
+  }
+}

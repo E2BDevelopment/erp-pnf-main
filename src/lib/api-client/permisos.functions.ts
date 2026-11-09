@@ -10,3 +10,5 @@ export type * from "@/lib/api/permisos.functions";
 
 export const listRolePermissions = clientFn<typeof Impl.listRolePermissions>("api/permisos.functions.listRolePermissions");
 export const setRolePermission = clientFn<typeof Impl.setRolePermission>("api/permisos.functions.setRolePermission");
+export const listCompanyRoles = clientFn<typeof Impl.listCompanyRoles>("api/permisos.functions.listCompanyRoles");
+export const createCompanyRole = clientFn<typeof Impl.createCompanyRole>("api/permisos.functions.createCompanyRole");
