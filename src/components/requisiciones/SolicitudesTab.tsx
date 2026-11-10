@@ -55,6 +55,7 @@ import {
 } from "@/lib/pdf/solicitud-cotizacion-pdf";
 import { CapturarRespuestaDialog } from "./CapturarRespuestaDialog";
 import { usePermisos } from "@/hooks/usePermisos";
+import { TerceroFormDialog } from "@/components/terceros/TerceroFormDialog";
 
 const SC_BADGE: Record<string, { label: string; className: string }> = {
   borrador: { label: "Borrador", className: "bg-slate-100 text-slate-700" },
@@ -266,6 +267,7 @@ function NuevaSolicitudForm({
   const pdfFn = useServerFn(getDatosPDF);
 
   const [proveedorId, setProveedorId] = useState<string>("");
+  const [crearProveedor, setCrearProveedor] = useState(false);
   const [notas, setNotas] = useState("");
   const [seleccion, setSeleccion] = useState<
     Record<string, { incluido: boolean; cantidad: number }>
@@ -312,11 +314,18 @@ function NuevaSolicitudForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="text-xs text-muted-foreground">Proveedor</label>
-          <ProveedorCombobox
-            proveedores={proveedores}
-            value={proveedorId}
-            onChange={setProveedorId}
-          />
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="min-w-0 flex-1">
+              <ProveedorCombobox
+                proveedores={proveedores}
+                value={proveedorId}
+                onChange={setProveedorId}
+              />
+            </div>
+            <Button type="button" variant="outline" onClick={() => setCrearProveedor(true)}>
+              <Plus className="size-4" /> Añadir proveedor
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -393,6 +402,26 @@ function NuevaSolicitudForm({
           Guardar solicitud
         </Button>
       </div>
+
+      {crearProveedor && (
+        <TerceroFormDialog
+          open
+          categoriaFija="proveedor"
+          onClose={() => setCrearProveedor(false)}
+          onSaved={async (id) => {
+            await qc.invalidateQueries({ queryKey: ["proveedores-list"] });
+            if (!id) return;
+            const proveedor = (qc.getQueryData<any[]>(["proveedores-list"]) ?? []).find(
+              (p) => p.id === id,
+            );
+            if (proveedor?.estatus_autorizacion === "autorizado") {
+              setProveedorId(id);
+            } else {
+              toast.info("El proveedor requiere autorización antes de usarlo en una cotización.");
+            }
+          }}
+        />
+      )}
     </Card>
   );
 }

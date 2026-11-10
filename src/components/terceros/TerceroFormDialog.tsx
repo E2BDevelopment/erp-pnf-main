@@ -98,14 +98,19 @@ export function TerceroFormDialog({
   onClose,
   initial,
   onSaved,
+  categoriaFija,
 }: {
   open: boolean;
   onClose: () => void;
   initial?: TerceroFormInitial | null;
   onSaved?: (id?: string) => void;
+  categoriaFija?: TerceroCategoria;
 }) {
   const isEdit = !!initial?.id;
-  const base: TerceroFormInitial = initial ?? EMPTY;
+  const base: TerceroFormInitial = initial ?? {
+    ...EMPTY,
+    categoria: categoriaFija ?? EMPTY.categoria,
+  };
 
   const [f, setF] = useState<TerceroFormInitial>(base);
   const set = <K extends keyof TerceroFormInitial>(k: K, v: TerceroFormInitial[K]) =>
@@ -217,6 +222,7 @@ export function TerceroFormDialog({
                 <Label>Categoría</Label>
                 <Select
                   value={f.categoria}
+                  disabled={!!categoriaFija}
                   onValueChange={(v) => set("categoria", v as TerceroCategoria)}
                 >
                   <SelectTrigger>

@@ -169,7 +169,7 @@ export const listProveedores = createServerFn({ method: "POST" })
     const { companyId } = await getCtx(supabase, userId);
     const { data, error } = await supabase
       .from("terceros")
-      .select("id, razon_social, categoria")
+      .select("id, razon_social, categoria, estatus_autorizacion")
       .eq("company_id", companyId)
       .in("categoria", ["proveedor", "ambos"])
       .order("razon_social", { ascending: true });
