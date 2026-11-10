@@ -1,16 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@/lib/navigation";
 import { Bell, CheckCheck, RotateCw } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ContadorLatido } from "@/components/anim/ContadorLatido";
 import { useStagger } from "@/components/anim/useStagger";
 import { cn } from "@/lib/utils";
 import { formatDateTime, formatRelativeTime } from "@/lib/format";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthStore } from "@/stores/auth";
 import {
   listMisNotificaciones,
   marcarNotificacionLeida,
@@ -20,6 +23,7 @@ import {
 export function NotificacionesBell() {
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const userId = useAuthStore((s) => s.userId);
   const [open, setOpen] = useState(false);
   const fetchList = useServerFn(listMisNotificaciones);
   const markOneFn = useServerFn(marcarNotificacionLeida);
@@ -30,6 +34,31 @@ export function NotificacionesBell() {
     queryFn: () => fetchList({ data: { limit: 30 } }),
     refetchInterval: 30_000,
   });
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const channel = supabase
+      .channel(`notificaciones-${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notificaciones",
+          filter: `user_id=eq.${userId}`,
+        },
+        ({ new: notification }) => {
+          qc.invalidateQueries({ queryKey: ["notificaciones"] });
+          toast(notification.titulo, { description: notification.mensaje });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [qc, userId]);
 
   const items = (q.data as any)?.items ?? [];
   const noLeidas = (q.data as any)?.noLeidas ?? 0;
