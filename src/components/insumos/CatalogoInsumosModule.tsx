@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -110,6 +111,10 @@ export function CatalogoInsumosModule() {
   const [openImportar, setOpenImportar] = useState(false);
   const [openCategorias, setOpenCategorias] = useState(false);
   const [openUnidades, setOpenUnidades] = useState(false);
+  const [catalogoPendiente, setCatalogoPendiente] = useState<{
+    tipo: "unidad" | "categoria";
+    nombre: string;
+  } | null>(null);
   const [editInsumo, setEditInsumo] = useState<any | null>(null);
   const [historialFor, setHistorialFor] = useState<any | null>(null);
 
@@ -142,7 +147,20 @@ export function CatalogoInsumosModule() {
       qc.invalidateQueries({ queryKey: ["insumos"] });
       qc.invalidateQueries({ queryKey: ["insumos-metricas"] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => {
+      const unidadError = e.message.match(/Unidad \"([^\"]+)\" no existe/i);
+      if (unidadError) {
+        setCatalogoPendiente({ tipo: "unidad", nombre: unidadError[1] });
+        setOpenUnidades(true);
+        return;
+      }
+      if (e.message.includes("Autoriza primero la categoría asociada")) {
+        setCatalogoPendiente({ tipo: "categoria", nombre: "la categoría asociada" });
+        setOpenCategorias(true);
+        return;
+      }
+      toast.error(e.message);
+    },
   });
   const rechazarMut = useMutation({
     mutationFn: useServerFn(rechazarInsumo),
@@ -427,7 +445,35 @@ export function CatalogoInsumosModule() {
                           <>
                             <Button
                               size="sm"
-                              onClick={() => autorizarMut.mutate({ data: { id: i.id } })}
+                              onClick={() => {
+                                const unidadCatalogo = (unidadesQ.data ?? []).find(
+                                  (u: any) => u.codigo.toUpperCase() === i.unidad.toUpperCase(),
+                                );
+                                if (
+                                  unidadesQ.isSuccess &&
+                                  unidadCatalogo?.estatus !== "autorizado"
+                                ) {
+                                  setCatalogoPendiente({ tipo: "unidad", nombre: i.unidad });
+                                  setOpenUnidades(true);
+                                  return;
+                                }
+                                const categoriaCatalogo = (categoriasQ.data ?? []).find(
+                                  (c: any) => c.id === i.categoria_id,
+                                );
+                                if (
+                                  categoriasQ.isSuccess &&
+                                  i.categoria_id &&
+                                  categoriaCatalogo?.estatus !== "autorizado"
+                                ) {
+                                  setCatalogoPendiente({
+                                    tipo: "categoria",
+                                    nombre: i.categoria?.nombre ?? "la categoría asociada",
+                                  });
+                                  setOpenCategorias(true);
+                                  return;
+                                }
+                                autorizarMut.mutate({ data: { id: i.id } });
+                              }}
                             >
                               <Check className="size-4 mr-1" /> Autorizar
                             </Button>
@@ -505,15 +551,23 @@ export function CatalogoInsumosModule() {
       {director && (
         <CategoriasDialog
           open={openCategorias}
-          onOpenChange={setOpenCategorias}
+          onOpenChange={(open) => {
+            setOpenCategorias(open);
+            if (!open && catalogoPendiente?.tipo === "categoria") setCatalogoPendiente(null);
+          }}
           categorias={categoriasQ.data ?? []}
+          aviso={catalogoPendiente?.tipo === "categoria" ? catalogoPendiente.nombre : null}
         />
       )}
       {director && (
         <UnidadesDialog
           open={openUnidades}
-          onOpenChange={setOpenUnidades}
+          onOpenChange={(open) => {
+            setOpenUnidades(open);
+            if (!open && catalogoPendiente?.tipo === "unidad") setCatalogoPendiente(null);
+          }}
           unidades={unidadesQ.data ?? []}
+          aviso={catalogoPendiente?.tipo === "unidad" ? catalogoPendiente.nombre : null}
         />
       )}
       {editInsumo && (
@@ -801,10 +855,12 @@ function CategoriasDialog({
   open,
   onOpenChange,
   categorias,
+  aviso,
 }: {
   open: boolean;
   onOpenChange: (b: boolean) => void;
   categorias: any[];
+  aviso: string | null;
 }) {
   const confirm = useConfirm();
   const qc = useQueryClient();
@@ -868,6 +924,16 @@ function CategoriasDialog({
             <span className="font-mono">CEM-0001</span>.
           </DialogDescription>
         </DialogHeader>
+        {aviso && (
+          <Alert>
+            <AlertTriangle className="size-4" />
+            <AlertTitle>Falta autorizar la categoría</AlertTitle>
+            <AlertDescription>
+              Autoriza {aviso} en este catálogo. Después vuelve a Pendientes para autorizar el
+              insumo.
+            </AlertDescription>
+          </Alert>
+        )}
         <div className="space-y-3">
           <div className="grid grid-cols-[100px_minmax(0,1fr)] gap-2 items-end sm:grid-cols-[minmax(0,1fr)_100px_auto]">
             <div className="col-span-2 min-w-0 sm:col-span-1">
@@ -1243,10 +1309,12 @@ function UnidadesDialog({
   open,
   onOpenChange,
   unidades,
+  aviso,
 }: {
   open: boolean;
   onOpenChange: (b: boolean) => void;
   unidades: any[];
+  aviso: string | null;
 }) {
   const confirm = useConfirm();
   const qc = useQueryClient();
@@ -1290,12 +1358,22 @@ function UnidadesDialog({
   });
   const revisarMut = useMutation({
     mutationFn: useServerFn(revisarUnidad),
-    onSuccess: () => {
+    onSuccess: (_result, variables) => {
       toast.success("Solicitud de unidad revisada");
       invalidate();
+      if (
+        variables.data.aprobar &&
+        unidades.some((unidad) => unidad.id === variables.data.id && unidad.codigo === aviso)
+      ) {
+        onOpenChange(false);
+      }
     },
     onError: (e: any) => toast.error(e.message),
   });
+
+  const unidadPendiente = unidades.find(
+    (unidad) => unidad.codigo.toUpperCase() === aviso?.toUpperCase(),
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -1307,6 +1385,18 @@ function UnidadesDialog({
             El nombre es opcional para mayor claridad.
           </DialogDescription>
         </DialogHeader>
+        {aviso && (
+          <Alert>
+            <AlertTriangle className="size-4" />
+            <AlertTitle>Autoriza primero la unidad {aviso}</AlertTitle>
+            <AlertDescription>
+              {unidadPendiente
+                ? "Este insumo no se puede autorizar hasta que esta unidad de medida esté autorizada."
+                : "Esta unidad aún no está en el catálogo. Regístrala primero para poder autorizar el insumo."} {" "}
+              Al terminar, vuelve a Pendientes y autoriza el insumo.
+            </AlertDescription>
+          </Alert>
+        )}
         <div className="space-y-3">
           <div className="grid grid-cols-[110px_1fr_auto] gap-2 items-end">
             <div>
@@ -1324,7 +1414,7 @@ function UnidadesDialog({
                       .slice(0, 10),
                   )
                 }
-                placeholder="PZA"
+                placeholder={aviso ?? "PZA"}
                 maxLength={10}
                 className="font-mono uppercase"
               />
@@ -1415,6 +1505,9 @@ function UnidadesDialog({
                     <Badge variant="outline" className="font-mono">
                       {u.codigo}
                     </Badge>
+                    {aviso?.toUpperCase() === u.codigo.toUpperCase() && (
+                      <Badge variant="secondary">Requerida por insumo pendiente</Badge>
+                    )}
                     <span className="flex-1 text-sm text-muted-foreground">{u.nombre ?? "—"}</span>
                     {u.estatus === "pendiente" && (
                       <Badge variant="secondary">En espera de autorización</Badge>
