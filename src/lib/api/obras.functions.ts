@@ -1,4 +1,5 @@
 import { createServerFn } from "@/lib/server-fn";
+import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requirePermission } from "@/lib/permisos/require";
@@ -126,6 +127,7 @@ export const crearObra = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     await requirePermission(supabase, userId, "obras.crear");
+    await requirePermission(supabase, userId, "obras.asignar_team");
 
     const { data: profile } = await supabase
       .from("profiles")
@@ -136,10 +138,14 @@ export const crearObra = createServerFn({ method: "POST" })
 
     const errorEquipo = validarEquipoObra(data.team);
     if (errorEquipo) throw new Error(errorEquipo);
+    const errorComisiones = validarComisionesEquipo(data.team, data.comisiones);
+    if (errorComisiones) throw new Error(errorComisiones);
 
-    const { data: obra, error } = await supabase
+    const obraId = randomUUID();
+    const { error } = await supabase
       .from("obras")
       .insert({
+        id: obraId,
         company_id: profile.company_id,
         nombre: data.nombre,
         unidad_negocio_id: data.unidad_negocio_id,
@@ -151,22 +157,20 @@ export const crearObra = createServerFn({ method: "POST" })
         presupuesto_url: data.presupuesto_url || null,
         monto_contratado: null,
         created_by: userId,
-      })
-      .select("id")
-      .single();
+      });
     if (error) throw new Error(error.message);
 
     if (data.team.length > 0) {
       const { error: teamError } = await supabase
         .from("obra_team")
-        .insert(data.team.map((m) => ({ obra_id: obra.id, user_id: m.user_id, role: m.role })));
+        .insert(data.team.map((m) => ({ obra_id: obraId, user_id: m.user_id, role: m.role })));
       if (teamError) throw new Error(teamError.message);
     }
 
     if (data.comisiones.length > 0) {
       const { error: comError } = await supabase.from("obra_comisiones").insert(
         data.comisiones.map((c) => ({
-          obra_id: obra.id,
+          obra_id: obraId,
           user_id: c.user_id,
           porcentaje: c.porcentaje,
           base_calculo: c.base_calculo,
@@ -175,7 +179,7 @@ export const crearObra = createServerFn({ method: "POST" })
       if (comError) throw new Error(comError.message);
     }
 
-    return { obraId: obra.id };
+    return { obraId };
   });
 
 export const listCompanyUsers = createServerFn({ method: "GET" })

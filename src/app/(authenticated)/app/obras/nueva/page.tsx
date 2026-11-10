@@ -11,6 +11,7 @@ import {
   crearUnidadNegocio,
 } from "@/lib/api-client/unidades-negocio.functions";
 import { usePermisos } from "@/hooks/usePermisos";
+import { InviteDialog } from "@/components/equipo/EquipoModule";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,6 +60,7 @@ function NuevaObra() {
   const qc = useQueryClient();
   const { can } = usePermisos();
   const puedeCrearObra = can("obras.crear");
+  const puedeAsignarEquipo = can("obras.asignar_team");
 
   const [step, setStep] = useState<1 | 2>(1);
 
@@ -75,6 +77,7 @@ function NuevaObra() {
   const [team, setTeam] = useState<TeamRow[]>([]);
   const [comisiones, setComisiones] = useState<ComisionRow[]>([]);
   const [teamError, setTeamError] = useState<string | null>(null);
+  const [invitingUser, setInvitingUser] = useState(false);
 
   const teamValido = team.length > 0 && team.every((t) => !!t.user_id);
   const comisionesValidas =
@@ -148,8 +151,12 @@ function NuevaObra() {
     });
   };
 
-  if (!puedeCrearObra) {
-    return <p className="text-sm text-destructive">No tienes permiso para crear obras.</p>;
+  if (!puedeCrearObra || !puedeAsignarEquipo) {
+    return (
+      <p className="text-sm text-destructive">
+        Necesitas permiso para crear obras y asignar su equipo.
+      </p>
+    );
   }
 
   return (
@@ -241,13 +248,18 @@ function NuevaObra() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <Label>Equipo asignado *</Label>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setTeam([...team, { user_id: "", role: siguienteRolEquipo(team) }])}
-              >
-                <Plus className="size-3.5 mr-1" /> Agregar
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => setInvitingUser(true)}>
+                  <Plus className="size-3.5 mr-1" /> Crear usuario
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setTeam([...team, { user_id: "", role: siguienteRolEquipo(team) }])}
+                >
+                  <Plus className="size-3.5 mr-1" /> Agregar
+                </Button>
+              </div>
             </div>
             <p className="text-xs text-muted-foreground mb-3">
               Mínimo un Residente y un Administrativo (máximo uno de cada uno).
@@ -258,9 +270,18 @@ function NuevaObra() {
                   <Select
                     value={row.user_id}
                     onValueChange={(v) => {
+                      const userIdAnterior = team[idx].user_id;
                       const next = [...team];
                       next[idx] = { ...next[idx], user_id: v };
                       setTeam(next);
+                      if (
+                        userIdAnterior &&
+                        !next.some((member) => member.user_id === userIdAnterior)
+                      ) {
+                        setComisiones((prev) =>
+                          prev.filter((commission) => commission.user_id !== userIdAnterior),
+                        );
+                      }
                     }}
                   >
                     <SelectTrigger className="flex-1">
@@ -329,6 +350,10 @@ function NuevaObra() {
               <Button
                 variant="outline"
                 size="sm"
+                disabled={
+                  usuariosDisponiblesComision.length === 0 ||
+                  comisiones.length >= usuariosEquipo.length
+                }
                 onClick={() =>
                   setComisiones([
                     ...comisiones,
@@ -354,11 +379,19 @@ function NuevaObra() {
                       <SelectValue placeholder="Usuario" />
                     </SelectTrigger>
                     <SelectContent>
-                      {(usersQ.data ?? []).map((u) => (
-                        <SelectItem key={u.id} value={u.id}>
-                          {u.nombre_completo || u.email}
-                        </SelectItem>
-                      ))}
+                      {usuariosEquipo
+                        .filter(
+                          (user) =>
+                            !comisiones.some(
+                              (commission, commissionIndex) =>
+                                commissionIndex !== idx && commission.user_id === user.id,
+                            ),
+                        )
+                        .map((u) => (
+                          <SelectItem key={u.id} value={u.id}>
+                            {u.nombre_completo || u.email}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                   <Input
@@ -367,7 +400,7 @@ function NuevaObra() {
                     max={100}
                     step={0.01}
                     className="w-24"
-                    value={row.porcentaje}
+                    value={row.porcentaje || ""}
                     onChange={(e) => {
                       const next = [...comisiones];
                       next[idx] = { ...next[idx], porcentaje: Number(e.target.value) };
@@ -417,7 +450,7 @@ function NuevaObra() {
               <Button variant="outline" onClick={() => setStep(1)} disabled={createObraM.isPending}>
                 Atrás
               </Button>
-              {puedeCrearObra && (
+              {puedeCrearObra && puedeAsignarEquipo && (
                 <Button onClick={handleSubmit} disabled={createObraM.isPending || !puedeCrear}>
                   {createObraM.isPending ? "Creando…" : "Crear obra"}
                 </Button>
@@ -425,6 +458,20 @@ function NuevaObra() {
             </div>
           </div>
         </Card>
+      )}
+
+      {invitingUser && (
+        <InviteDialog
+          onClose={() => setInvitingUser(false)}
+          onReturnFocus={() => undefined}
+          onCreated={(userId) => {
+            void qc.invalidateQueries({ queryKey: ["company-users"] });
+            setTeam((current) => [
+              ...current,
+              { user_id: userId, role: siguienteRolEquipo(current) },
+            ]);
+          }}
+        />
       )}
     </div>
   );

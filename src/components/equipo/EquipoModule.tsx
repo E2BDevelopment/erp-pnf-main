@@ -224,13 +224,13 @@ export function EquipoModule() {
   );
 }
 
-function InviteDialog({
+export function InviteDialog({
   onClose,
   onCreated,
   onReturnFocus,
 }: {
   onClose: () => void;
-  onCreated: () => void;
+  onCreated: (userId: string) => void;
   onReturnFocus: () => void;
 }) {
   const options = useRoleOptions();
@@ -242,9 +242,9 @@ function InviteDialog({
   const invite = useServerFn(inviteTeamMember);
   const m = useMutation({
     mutationFn: invite,
-    onSuccess: () => {
+    onSuccess: ({ userId }) => {
       toast.success("Cuenta creada. Comparte la contraseña manualmente.");
-      onCreated();
+      onCreated(userId);
       onClose();
     },
     onError: (e: Error) => toast.error(e.message),
