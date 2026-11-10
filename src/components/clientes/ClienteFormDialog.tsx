@@ -26,6 +26,14 @@ import { crearCliente, actualizarCliente } from "@/lib/api-client/clientes.funct
 
 import { ESTADOS_MX } from "@/lib/mx-estados";
 
+function clienteErrorMessage(error: Error) {
+  const message = error.message;
+  if (message.includes('"rfc"') && (message.includes("too_small") || message.includes("invalid_string"))) {
+    return "Revisa el RFC. Debe tener el formato correcto: 12 caracteres para persona moral o 13 para persona física.";
+  }
+  return message;
+}
+
 export type ClienteFormInitial = {
   id?: string;
   tipo_persona: "moral" | "fisica";
@@ -118,7 +126,7 @@ export function ClienteFormDialog({
       onSaved?.(c?.id);
       onClose();
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(clienteErrorMessage(e)),
   });
   const updateM = useMutation({
     mutationFn: update,
@@ -129,7 +137,7 @@ export function ClienteFormDialog({
       onSaved?.(initial?.id);
       onClose();
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => toast.error(clienteErrorMessage(e)),
   });
 
   const submit = () => {
@@ -140,6 +148,9 @@ export function ClienteFormDialog({
       return toast.error(
         `RFC debe tener ${len} caracteres para persona ${f.tipo_persona === "moral" ? "moral" : "física"}`,
       );
+    }
+    if (!/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{3}$/.test(rfc)) {
+      return toast.error("El RFC no tiene un formato válido. Verifica las letras, la fecha y los últimos 3 caracteres.");
     }
     if (f.clabe && !/^\d{18}$/.test(f.clabe)) {
       return toast.error("CLABE debe ser 18 dígitos numéricos");
