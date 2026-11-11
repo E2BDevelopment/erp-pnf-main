@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   Dialog,
   DialogContent,

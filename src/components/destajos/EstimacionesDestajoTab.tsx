@@ -44,7 +44,7 @@ import {
   RefreshCw,
   AlertTriangle,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN } from "@/lib/format";
 import { CapturaEstimacionDestajoSheet } from "./CapturaEstimacionDestajoSheet";
 

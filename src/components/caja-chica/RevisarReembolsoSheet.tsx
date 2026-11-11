@@ -25,7 +25,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { Check, X, Send, Eye, FileText, Ban } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN, formatDate } from "@/lib/format";
 import { montoGastoObra } from "@/lib/caja-chica-utils";
 import { supabase } from "@/integrations/supabase/client";

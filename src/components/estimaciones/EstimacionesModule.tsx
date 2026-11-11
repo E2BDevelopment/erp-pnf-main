@@ -29,7 +29,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Plus, FileText, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN } from "@/lib/format";
 import { CapturaEstimacionSheet } from "./CapturaEstimacionSheet";
 import { VerEstimacionSheet } from "./VerEstimacionSheet";

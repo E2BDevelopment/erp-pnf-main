@@ -5,7 +5,8 @@ import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@/lib/navigation";
 import { Bell, CheckCheck, RotateCw } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
+import { safeNotificationText } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ContadorLatido } from "@/components/anim/ContadorLatido";
@@ -50,7 +51,9 @@ export function NotificacionesBell() {
         },
         ({ new: notification }) => {
           qc.invalidateQueries({ queryKey: ["notificaciones"] });
-          toast(notification.titulo, { description: notification.mensaje });
+          toast(safeNotificationText(notification.titulo, "Nueva notificación"), {
+            description: safeNotificationText(notification.mensaje, "Tienes un aviso nuevo."),
+          });
         },
       )
       .subscribe();
@@ -180,13 +183,13 @@ export function NotificacionesBell() {
                           "block truncate text-sm text-foreground",
                           !n.leida_at && "font-semibold",
                         )}
-                        title={n.titulo}
+                        title={safeNotificationText(n.titulo, "Notificación")}
                       >
                         {!n.leida_at && <span className="sr-only">Sin leer: </span>}
-                        {n.titulo}
+                        {safeNotificationText(n.titulo, "Notificación")}
                       </span>
                       <span className="mt-0.5 line-clamp-2 block text-xs text-muted-foreground">
-                        {n.mensaje}
+                        {safeNotificationText(n.mensaje, "Tienes un aviso nuevo.")}
                       </span>
                       <span
                         className="mt-1 block text-xs text-muted-foreground"

@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatMXN } from "@/lib/format";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { useSacudir } from "@/components/anim/useSacudir";
 import { Save, Lock, AlertTriangle, Search } from "lucide-react";
 

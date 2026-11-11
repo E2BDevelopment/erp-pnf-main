@@ -33,7 +33,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Plus, Pencil, Trash2, Send, Banknote, Wallet, Receipt, Eye } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN, formatDate } from "@/lib/format";
 import { montoGastoObra } from "@/lib/caja-chica-utils";
 import { NuevoGastoDialog } from "./NuevoGastoDialog";

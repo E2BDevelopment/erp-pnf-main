@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 const REMEMBER_EMAIL_KEY = "login:remember-email";
 const KEEP_SESSION_KEY = "login:keep-session";

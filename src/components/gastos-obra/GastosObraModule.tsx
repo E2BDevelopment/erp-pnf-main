@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Plus, Check, X, Eye, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

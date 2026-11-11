@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { TrabajadorFormDialog } from "@/components/trabajadores/TrabajadorFormDialog";
 import { useEffectiveRoles } from "@/stores/auth";
 

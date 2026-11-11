@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatMXN } from "@/lib/format";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { useSacudir } from "@/components/anim/useSacudir";
 import { Save, AlertTriangle, Search } from "lucide-react";
 

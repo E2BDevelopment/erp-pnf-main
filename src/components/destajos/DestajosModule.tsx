@@ -22,7 +22,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Plus, Eye, Trash2, Users, FileText } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN } from "@/lib/format";
 import { NuevoDestajoDialog } from "./NuevoDestajoDialog";
 import { DestajoDetalleSheet } from "./DestajoDetalleSheet";

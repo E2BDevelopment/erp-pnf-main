@@ -43,7 +43,12 @@ function AdminRequisicionesPage() {
   const [obraFilter, setObraFilter] = useState<string>("todas");
   const [residenteFilter, setResidenteFilter] = useState("todos");
   const [solicitanteFilter, setSolicitanteFilter] = useState("todos");
-  const abrirVisor = (id: string) => setCotizacion({ id, tab: "requisicion", readOnly: true });
+  const abrirRequisicion = (row: any) =>
+    setCotizacion({
+      id: row.id,
+      tab: director && row.estatus === "pendiente_autorizacion" ? "comparativa" : "requisicion",
+      readOnly: !director,
+    });
   const [cotizacion, setCotizacion] = useState<{
     id: string;
     tab: CotizacionTab;
@@ -153,7 +158,7 @@ function AdminRequisicionesPage() {
             rows={filtered}
             loading={loading}
             emptyText="Sin requisiciones activas en tus obras."
-            onRowClick={abrirVisor}
+            onRowClick={abrirRequisicion}
             onAction={(r, t) => setCotizacion({ id: r.id, tab: t })}
             fetchDetalle={fetchOne}
           />
@@ -164,7 +169,7 @@ function AdminRequisicionesPage() {
             rows={filtered}
             loading={loading}
             emptyText="Sin historial de requisiciones."
-            onRowClick={abrirVisor}
+            onRowClick={abrirRequisicion}
             onAction={(r, t) => setCotizacion({ id: r.id, tab: t })}
             fetchDetalle={fetchOne}
           />
@@ -241,7 +246,19 @@ function AccionCell({ row, onAction }: { row: any; onAction: (r: any, t: Cotizac
       </Button>
     );
   }
-  if (["pendiente_autorizacion", "oc_generada", "completada"].includes(estatus)) {
+  if (estatus === "pendiente_autorizacion") {
+    return (
+      <Button
+        size="sm"
+        variant="outline"
+        className="h-6 px-2 text-xs"
+        onClick={() => onAction(row, "comparativa")}
+      >
+        Revisar OC
+      </Button>
+    );
+  }
+  if (["oc_generada", "completada"].includes(estatus)) {
     return (
       <Button
         size="sm"
@@ -267,7 +284,7 @@ function RequisicionesTable({
   rows: any[];
   loading: boolean;
   emptyText: string;
-  onRowClick: (id: string) => void;
+  onRowClick: (row: any) => void;
   onAction: (r: any, t: CotizacionTab) => void;
   fetchDetalle: any;
 }) {
@@ -319,7 +336,7 @@ function RequisicionesTable({
                   <TableRow
                     key={r.id}
                     className="border-b border-border/60 last:border-0 hover:bg-muted/30 transition-colors group cursor-pointer"
-                    onClick={() => onRowClick(r.id)}
+                    onClick={() => onRowClick(r)}
                   >
                     {/* Folio */}
                     <TableCell className="py-3 pl-4 align-middle">

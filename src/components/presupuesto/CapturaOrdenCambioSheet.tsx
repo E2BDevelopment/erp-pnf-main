@@ -30,7 +30,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Plus, Trash2, AlertCircle, CheckCircle2, Search, Eye } from "lucide-react";
 import { VigenteViewerDialog } from "./VigenteViewerDialog";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { useSacudir } from "@/components/anim/useSacudir";
 import { formatMXN } from "@/lib/format";
 

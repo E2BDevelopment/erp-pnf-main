@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthStore } from "@/stores/auth";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Upload, X } from "lucide-react";
 import { montoGastoObra } from "@/lib/caja-chica-utils";
 

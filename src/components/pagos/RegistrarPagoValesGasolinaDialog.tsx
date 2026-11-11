@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   Dialog,
   DialogContent,

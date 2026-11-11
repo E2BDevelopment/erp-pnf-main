@@ -35,7 +35,7 @@ import {
   Trash2,
   RefreshCw,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN, formatDate } from "@/lib/format";
 import { CotizarRentaDialog } from "./CotizarRentaDialog";
 import { MarcarLlegadaDialog } from "./MarcarLlegadaDialog";

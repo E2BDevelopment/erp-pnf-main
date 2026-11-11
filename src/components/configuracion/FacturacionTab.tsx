@@ -4,7 +4,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import { useServerFn } from "@/lib/server-fn/client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { getCompanyConfig, updateCompanyFacturacion } from "@/lib/api-client/company.functions";
 
 import { Input } from "@/components/ui/input";

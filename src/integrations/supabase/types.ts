@@ -1104,6 +1104,8 @@ export type Database = {
           folio: string
           id: string
           notas: string | null
+          pdf_nombre: string | null
+          pdf_path: string | null
           proveedor_id: string
           recibida_at: string | null
           requisicion_id: string
@@ -1118,6 +1120,8 @@ export type Database = {
           folio: string
           id?: string
           notas?: string | null
+          pdf_nombre?: string | null
+          pdf_path?: string | null
           proveedor_id: string
           recibida_at?: string | null
           requisicion_id: string
@@ -1131,6 +1135,8 @@ export type Database = {
           folio?: string
           id?: string
           notas?: string | null
+          pdf_nombre?: string | null
+          pdf_path?: string | null
           proveedor_id?: string
           recibida_at?: string | null
           requisicion_id?: string

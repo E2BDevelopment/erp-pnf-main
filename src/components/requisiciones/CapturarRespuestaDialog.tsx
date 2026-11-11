@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
+import { toast } from "@/lib/toast";
+import { FileText, Plus, Trash2, Upload } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/table";
 import { capturarRespuesta } from "@/lib/api-client/solicitudes-cotizacion.functions";
 import { formatMXN } from "@/lib/format";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   solicitud: any;
@@ -48,6 +49,7 @@ type ExtraCharge = { id: string; concepto: string; monto: number };
 
 const IVA_RATE = 0.16;
 const EXTRAS_MARKER = "[Cargos prorrateados]";
+const COTIZACIONES_PDF_BUCKET = "cotizaciones-proveedores";
 const noSpinner =
   "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -55,11 +57,18 @@ function newExtraId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+function createUploadId() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
 export function CapturarRespuestaDialog({ solicitud, open, onOpenChange, requisicionId }: Props) {
   const qc = useQueryClient();
   const fn = useServerFn(capturarRespuesta);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [items, setItems] = useState<DraftItem[]>([]);
   const [extras, setExtras] = useState<ExtraCharge[]>([]);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -75,6 +84,7 @@ export function CapturarRespuestaDialog({ solicitud, open, onOpenChange, requisi
       })),
     );
     setExtras([]);
+    setPdfFile(null);
   }, [open, solicitud]);
 
   const subtotalBase = useMemo(
@@ -137,13 +147,28 @@ export function CapturarRespuestaDialog({ solicitud, open, onOpenChange, requisi
         notasOut = beforeMarker ? `${beforeMarker}\n\n${block}` : block;
       }
 
-      return fn({
-        data: {
-          solicitudId: solicitud.id,
-          items: itemsOut,
-          notas: notasOut,
-        },
-      });
+      let pdfPath: string | undefined;
+      if (pdfFile) {
+        pdfPath = `${solicitud.company_id}/${solicitud.id}/${createUploadId()}.pdf`;
+        const { error } = await supabase.storage
+          .from(COTIZACIONES_PDF_BUCKET)
+          .upload(pdfPath, pdfFile, { contentType: "application/pdf", upsert: false });
+        if (error) throw new Error(`No se pudo cargar el PDF: ${error.message}`);
+      }
+
+      try {
+        return await fn({
+          data: {
+            solicitudId: solicitud.id,
+            items: itemsOut,
+            notas: notasOut,
+            ...(pdfPath ? { pdfPath, pdfNombre: pdfFile?.name } : {}),
+          },
+        });
+      } catch (error) {
+        if (pdfPath) await supabase.storage.from(COTIZACIONES_PDF_BUCKET).remove([pdfPath]);
+        throw error;
+      }
     },
     onSuccess: () => {
       toast.success("Cotización registrada");
@@ -236,6 +261,61 @@ export function CapturarRespuestaDialog({ solicitud, open, onOpenChange, requisi
               })}
             </TableBody>
           </Table>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border p-3">
+          <div className="min-w-0">
+            <p className="text-sm font-medium">PDF de la cotización (opcional)</p>
+            {pdfFile ? (
+              <p className="truncate text-xs text-muted-foreground">{pdfFile.name}</p>
+            ) : solicitud.pdf_url ? (
+              <a
+                href={solicitud.pdf_url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 text-xs text-primary hover:underline"
+              >
+                <FileText className="size-3.5" /> {solicitud.pdf_nombre ?? "Ver PDF adjunto"}
+              </a>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Adjunta el documento recibido del proveedor.
+              </p>
+            )}
+          </div>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".pdf,application/pdf"
+            className="hidden"
+            aria-label="Seleccionar PDF de cotización"
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0] ?? null;
+              event.currentTarget.value = "";
+              if (!file) return;
+              if (
+                !file.name.toLowerCase().endsWith(".pdf") ||
+                (file.type && file.type !== "application/pdf")
+              ) {
+                toast.error("Selecciona un archivo PDF");
+                return;
+              }
+              if (file.size > 20 * 1024 * 1024) {
+                toast.error("El PDF no puede superar 20 MB");
+                return;
+              }
+              setPdfFile(file);
+            }}
+          />
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => fileRef.current?.click()}
+          >
+            <Upload className="size-4 mr-1" />
+            {solicitud.pdf_path || pdfFile ? "Cambiar PDF" : "Adjuntar PDF"}
+          </Button>
         </div>
 
         {/* Cargos adicionales */}

@@ -43,7 +43,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN } from "@/lib/format";
 import { UserPlus, Lock, Plus, MessageSquare, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";

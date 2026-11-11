@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "@/lib/navigation";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   getObraConfiguracion,
   actualizarObra,
@@ -82,7 +82,7 @@ function ConfiguracionObra() {
     return <p className="text-sm text-destructive">No se pudo cargar la configuración.</p>;
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
+    <div className="w-full space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Configuración de la obra</h1>
         <p className="text-sm text-muted-foreground mt-1">

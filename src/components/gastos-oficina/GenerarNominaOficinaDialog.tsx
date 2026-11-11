@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   Dialog,
   DialogContent,

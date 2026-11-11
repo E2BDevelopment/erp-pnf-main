@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,7 @@ import {
 import { RecepcionDialog } from "./RecepcionDialog";
 import { SemanaActualPanel } from "./SemanaActualPanel";
 import { useObraRole } from "@/hooks/useObraRole";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   obraId: string;
@@ -37,6 +38,35 @@ const OC_BADGE: Record<string, { label: string; className: string }> = {
 export function AlmacenModule({ obraId }: Props) {
   const [tab, setTab] = useState("semana");
   const [recepcionOCId, setRecepcionOCId] = useState<string | null>(null);
+  const qc = useQueryClient();
+  const listOCsFn = useServerFn(listOCsPorRecibir);
+  const {
+    data: ocsPorRecibir = [],
+    isLoading: cargandoOCsPorRecibir,
+  } = useQuery({
+    queryKey: ["almacen", "por-recibir", obraId],
+    queryFn: () => listOCsFn({ data: { obraId } }),
+  });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel(`almacen-por-recibir-${obraId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "ordenes_compra",
+          filter: `obra_id=eq.${obraId}`,
+        },
+        () => qc.invalidateQueries({ queryKey: ["almacen", "por-recibir", obraId] }),
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [obraId, qc]);
 
   return (
     <div className="space-y-4">
@@ -50,7 +80,14 @@ export function AlmacenModule({ obraId }: Props) {
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="semana">Semana actual</TabsTrigger>
-          <TabsTrigger value="recibir">Por recibir</TabsTrigger>
+          <TabsTrigger value="recibir" className="gap-2">
+            Por recibir
+            {ocsPorRecibir.length > 0 && (
+              <Badge className="h-5 min-w-5 justify-center rounded-full bg-orange-100 px-1.5 text-orange-800 hover:bg-orange-100">
+                {ocsPorRecibir.length}
+              </Badge>
+            )}
+          </TabsTrigger>
           <TabsTrigger value="historial">Historial</TabsTrigger>
         </TabsList>
 
@@ -59,7 +96,12 @@ export function AlmacenModule({ obraId }: Props) {
         </TabsContent>
 
         <TabsContent value="recibir" className="mt-4">
-          <PorRecibirTab obraId={obraId} onRecibir={setRecepcionOCId} />
+          <PorRecibirTab
+            obraId={obraId}
+            ocs={ocsPorRecibir}
+            isLoading={cargandoOCsPorRecibir}
+            onRecibir={setRecepcionOCId}
+          />
         </TabsContent>
 
         <TabsContent value="historial" className="mt-4">
@@ -80,17 +122,20 @@ export function AlmacenModule({ obraId }: Props) {
   );
 }
 
-function PorRecibirTab({ obraId, onRecibir }: { obraId: string; onRecibir: (id: string) => void }) {
-  const fn = useServerFn(listOCsPorRecibir);
+function PorRecibirTab({
+  obraId,
+  ocs,
+  isLoading,
+  onRecibir,
+}: {
+  obraId: string;
+  ocs: any[];
+  isLoading: boolean;
+  onRecibir: (id: string) => void;
+}) {
   const { role, isDirector } = useObraRole(obraId);
   const puedeRecibir = isDirector || role === "residente" || role === "supervisor";
-  const { data, isLoading } = useQuery({
-    queryKey: ["almacen", "por-recibir", obraId],
-    queryFn: () => fn({ data: { obraId } }),
-  });
-
   if (isLoading) return <p className="text-sm text-muted-foreground">Cargando…</p>;
-  const ocs = data ?? [];
   if (ocs.length === 0) {
     return (
       <Card className="p-8 text-center text-sm text-muted-foreground">

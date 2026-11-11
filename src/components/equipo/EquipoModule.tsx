@@ -50,7 +50,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 const ROLE_OPTIONS: { value: AppRole; label: string }[] = [
   { value: "director", label: "Director" },

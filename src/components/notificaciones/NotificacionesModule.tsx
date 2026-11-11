@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { formatDateTime } from "@/lib/format";
 import { useStagger } from "@/components/anim/useStagger";
+import { safeNotificationText } from "@/lib/toast";
 import {
   listMisNotificaciones,
   marcarNotificacionLeida,
@@ -188,7 +189,7 @@ export function NotificacionesModule() {
                       <p
                         className={`text-sm truncate ${!n.leida_at ? "font-semibold" : "font-medium"}`}
                       >
-                        {n.titulo}
+                        {safeNotificationText(n.titulo, "Notificación")}
                       </p>
                       {n.tipo && (
                         <Badge variant="outline" className="text-xs shrink-0">
@@ -196,7 +197,9 @@ export function NotificacionesModule() {
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.mensaje}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                      {safeNotificationText(n.mensaje, "Tienes un aviso nuevo.")}
+                    </p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {formatDateTime(n.created_at)}
                     </p>

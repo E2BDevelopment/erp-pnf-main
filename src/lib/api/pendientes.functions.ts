@@ -187,7 +187,7 @@ export const getPendientes = createServerFn({ method: "GET" })
                 .from("ordenes_compra")
                 .select("id", { count: "exact", head: true })
                 .eq("obra_id", obraId)
-                .in("estatus", ["autorizada", "enviada", "recibida_parcial"]),
+                .in("estatus", ["enviada", "recibida_parcial"]),
             );
           })(),
         );

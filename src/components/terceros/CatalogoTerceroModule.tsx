@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearch } from "@/lib/navigation";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   Building2,
   CheckCircle2,

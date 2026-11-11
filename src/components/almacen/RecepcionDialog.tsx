@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +41,11 @@ function todayIso() {
 }
 
 const ACCEPT = "image/*,application/pdf";
+
+function createUploadId() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
 
 export function RecepcionDialog({ ocId, open, onOpenChange }: Props) {
   const qc = useQueryClient();
@@ -143,7 +148,7 @@ export function RecepcionDialog({ ocId, open, onOpenChange }: Props) {
         try {
           const oc = data!.oc as any;
           const ext = file.name.includes(".") ? file.name.split(".").pop() : "bin";
-          const path = `${oc.company_id ?? "c"}/${oc.obra_id}/${oc.id}/${crypto.randomUUID()}.${ext}`;
+          const path = `${oc.company_id ?? "c"}/${oc.obra_id}/${oc.id}/${createUploadId()}.${ext}`;
           const { error: upErr } = await supabase.storage
             .from("almacen-remisiones")
             .upload(path, file, { contentType: file.type, upsert: false });

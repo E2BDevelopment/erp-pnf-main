@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { CheckCircle2, FileText, Send, Wallet, Trash2 } from "lucide-react";
 import {
   Dialog,

@@ -43,7 +43,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, FileText, Trash2, Eye, Send, Check, X, RotateCcw } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { CapturaPresupuestoSheet } from "./CapturaPresupuestoSheet";
 import { CapturaOrdenCambioSheet } from "./CapturaOrdenCambioSheet";
 import { VerPresupuestoSheet } from "./VerPresupuestoSheet";

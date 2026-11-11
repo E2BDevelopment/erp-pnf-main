@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -251,7 +251,9 @@ export function PermisosTab({ obraId }: { obraId?: string }) {
         <Table>
           <TableHeader className="sticky top-0 z-20 bg-background">
             <TableRow>
-              <TableHead className={obraId ? "min-w-32 md:min-w-[280px]" : "min-w-[280px]"}>
+              <TableHead
+                className={obraId ? "min-w-32 md:min-w-[220px]" : "min-w-[280px]"}
+              >
                 Acción
               </TableHead>
               <TableHead
@@ -331,7 +333,7 @@ export function PermisosTab({ obraId }: { obraId?: string }) {
                               className={`text-center ${obraId && r.id !== mobileRole ? "hidden md:table-cell" : ""}`}
                             >
                               {obraId ? (
-                                <div className="min-w-44 space-y-1">
+                                <div className="mx-auto w-32 space-y-1">
                                   <Select
                                     value={exception ? String(exception.allowed) : "heredar"}
                                     disabled={
@@ -349,13 +351,14 @@ export function PermisosTab({ obraId }: { obraId?: string }) {
                                       })
                                     }
                                   >
-                                    <SelectTrigger aria-label={`${r.name} — ${a.label}`}>
+                                    <SelectTrigger
+                                      className="h-8 px-2 text-xs"
+                                      aria-label={`${r.name} — ${a.label}`}
+                                    >
                                       <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="heredar">
-                                        Heredar ({checked ? "permitido" : "denegado"})
-                                      </SelectItem>
+                                      <SelectItem value="heredar">Heredar</SelectItem>
                                       <SelectItem value="true">Permitir</SelectItem>
                                       <SelectItem value="false">Denegar</SelectItem>
                                     </SelectContent>

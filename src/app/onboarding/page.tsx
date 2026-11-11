@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { useAuthStore } from "@/stores/auth";
 import { gsap, MOTION_OK, useGSAP } from "@/lib/anim/gsap";
 

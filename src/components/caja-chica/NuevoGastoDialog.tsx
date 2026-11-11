@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { GastoForm, emptyGasto, type GastoFormValue } from "./GastoForm";
 
 type Props = {

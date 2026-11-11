@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   Sparkles,
   Plus,
@@ -61,7 +61,6 @@ interface Props {
 }
 
 const mxn = (n: number) => n.toLocaleString("es-MX", { style: "currency", currency: "MXN" });
-
 type Asignacion = { proveedorId: string; cantidad: number };
 
 const OC_BADGE: Record<string, { label: string; className: string }> = {
@@ -587,7 +586,6 @@ export function ComparativaTable({
   });
 
   const sinCotizar = reqItems.filter((ri) => !matrix.has(ri.insumo.id)).length;
-
   return (
     <div className="space-y-3">
       {sinRecibidas && resumenPorProveedor.size === 0 && (

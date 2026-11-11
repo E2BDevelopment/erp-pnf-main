@@ -3,6 +3,8 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requirePermission } from "@/lib/permisos/require";
 
+const COTIZACIONES_PDF_BUCKET = "cotizaciones-proveedores";
+
 async function getCtx(supabase: any, userId: string) {
   const { data: profile } = await supabase
     .from("profiles")
@@ -61,7 +63,7 @@ export const getSolicitudesRequisicion = createServerFn({ method: "POST" })
       .from("cotizacion_solicitudes")
       .select(
         `
-        id, folio, estatus, proveedor_id, enviada_at, recibida_at, notas, created_at,
+        id, company_id, folio, estatus, proveedor_id, enviada_at, recibida_at, notas, created_at, pdf_path, pdf_nombre,
         proveedor:terceros(id, razon_social, contacto_nombre, correo, telefono),
         items:cotizacion_solicitud_insumos(id, insumo_id, cantidad, precio_unitario, disponible, nota, subtotal, insumo:insumos(nombre, unidad))
       `,
@@ -69,7 +71,22 @@ export const getSolicitudesRequisicion = createServerFn({ method: "POST" })
       .eq("requisicion_id", data.requisicionId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    return solicitudes ?? [];
+    const filas = solicitudes ?? [];
+    const rutas = filas.flatMap((solicitud: any) => (solicitud.pdf_path ? [solicitud.pdf_path] : []));
+    const signedByPath = new Map<string, string>();
+    if (rutas.length > 0) {
+      const { data: signed, error: signedError } = await supabase.storage
+        .from(COTIZACIONES_PDF_BUCKET)
+        .createSignedUrls(rutas, 3600);
+      if (signedError) throw new Error(`No se pudieron abrir los PDF de cotización: ${signedError.message}`);
+      for (const item of signed ?? []) {
+        if (item.path && item.signedUrl) signedByPath.set(item.path, item.signedUrl);
+      }
+    }
+    return filas.map((solicitud: any) => ({
+      ...solicitud,
+      pdf_url: solicitud.pdf_path ? (signedByPath.get(solicitud.pdf_path) ?? null) : null,
+    }));
   });
 
 export const crearSolicitud = createServerFn({ method: "POST" })
@@ -241,6 +258,8 @@ export const capturarRespuesta = createServerFn({ method: "POST" })
         solicitudId: z.string().uuid(),
         items: z.array(RespuestaInput).min(1),
         notas: z.string().nullable().optional(),
+        pdfPath: z.string().trim().max(500).optional(),
+        pdfNombre: z.string().trim().min(1).max(255).optional(),
       })
       .parse(d),
   )
@@ -252,7 +271,7 @@ export const capturarRespuesta = createServerFn({ method: "POST" })
     });
     const { data: sc } = await supabase
       .from("cotizacion_solicitudes")
-      .select("id, estatus, requisicion_id")
+      .select("id, company_id, estatus, requisicion_id, pdf_path")
       .eq("id", data.solicitudId)
       .maybeSingle();
     if (!sc) throw new Error("Solicitud no encontrada");
@@ -264,6 +283,25 @@ export const capturarRespuesta = createServerFn({ method: "POST" })
       .neq("estatus", "rechazada");
     if ((ocCount ?? 0) > 0)
       throw new Error("Ya existen órdenes de compra; no se puede editar la respuesta.");
+
+    const scPatch: any = { estatus: "recibida", recibida_at: new Date().toISOString() };
+    if (data.notas !== undefined) scPatch.notas = data.notas;
+    if (data.pdfPath !== undefined || data.pdfNombre !== undefined) {
+      if (!data.pdfPath || !data.pdfNombre?.toLowerCase().endsWith(".pdf")) {
+        throw new Error("La cotización requiere un archivo PDF válido");
+      }
+      const prefix = `${sc.company_id}/${sc.id}/`;
+      const filename = data.pdfPath.startsWith(prefix) ? data.pdfPath.slice(prefix.length) : "";
+      if (!/^[0-9a-f]{32}\.pdf$/i.test(filename)) {
+        throw new Error("El archivo debe ser un PDF de esta solicitud");
+      }
+      const { error: fileError } = await supabase.storage
+        .from(COTIZACIONES_PDF_BUCKET)
+        .createSignedUrl(data.pdfPath, 60);
+      if (fileError) throw new Error("No se encontró el PDF cargado para esta cotización");
+      scPatch.pdf_path = data.pdfPath;
+      scPatch.pdf_nombre = data.pdfNombre.trim();
+    }
 
     for (const it of data.items) {
       const patch: any = {
@@ -280,13 +318,18 @@ export const capturarRespuesta = createServerFn({ method: "POST" })
       if (error) throw new Error(error.message);
     }
 
-    const scPatch: any = { estatus: "recibida", recibida_at: new Date().toISOString() };
-    if (data.notas !== undefined) scPatch.notas = data.notas;
     const { error: updErr } = await supabase
       .from("cotizacion_solicitudes")
       .update(scPatch)
       .eq("id", data.solicitudId);
     if (updErr) throw new Error(updErr.message);
+    if (sc.pdf_path && sc.pdf_path !== scPatch.pdf_path && scPatch.pdf_path) {
+      const { error: removeError } = await supabase.storage
+        .from(COTIZACIONES_PDF_BUCKET)
+        .remove([sc.pdf_path]);
+      if (removeError)
+        console.error("[cotizacion-pdf] no se pudo quitar el PDF anterior", removeError.message);
+    }
     return { ok: true };
   });
 

@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Trash2, AlertCircle, CheckCircle2, Eye } from "lucide-react";
 import { VigenteViewerDialog } from "@/components/presupuesto/VigenteViewerDialog";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { useSacudir } from "@/components/anim/useSacudir";
 import { formatMXN } from "@/lib/format";
 

@@ -37,7 +37,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Send, CheckCircle2, XCircle, RefreshCw, Users } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN } from "@/lib/format";
 import { CapturaDestajoSheet } from "./CapturaDestajoSheet";
 import { CapturaOrdenCambioDestajoSheet } from "./CapturaOrdenCambioDestajoSheet";

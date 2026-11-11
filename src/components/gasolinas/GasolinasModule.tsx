@@ -24,7 +24,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Plus, Check, X, Link2, CheckCheck, Fuel } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { formatMXN, formatDate } from "@/lib/format";
 import { NuevoValeDialog } from "./NuevoValeDialog";
 import { AutorizarValeDialog } from "./AutorizarValeDialog";
