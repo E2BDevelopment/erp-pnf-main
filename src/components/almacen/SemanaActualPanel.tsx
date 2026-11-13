@@ -240,31 +240,34 @@ export function SemanaActualPanel({ obraId }: { obraId: string }) {
         )}
 
         <Card>
-          <Table className="text-xs w-full table-fixed min-w-[420px]">
+          <Table className="text-xs w-full table-fixed min-w-[640px]">
             <TableHeader>
               <TableRow>
-                <TableHead className="text-xs uppercase tracking-wide py-1.5 px-1.5 w-[26%]">
+                <TableHead className="text-xs uppercase tracking-wide py-1.5 px-1.5 w-[22%]">
                   Insumo
                 </TableHead>
-                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[16%]">
+                <TableHead className="text-xs uppercase tracking-wide py-1.5 px-1 w-[13%]">
+                  Requisición
+                </TableHead>
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[15%]">
                   Proveedor
                 </TableHead>
                 <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[7%]">
                   Ud
                 </TableHead>
-                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[11%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[10%]">
                   PU
                 </TableHead>
-                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[8%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[7%]">
                   Ini
                 </TableHead>
-                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[8%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[7%]">
                   Rec
                 </TableHead>
-                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[14%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[10%]">
                   Util
                 </TableHead>
-                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[10%]">
+                <TableHead className="text-xs uppercase tracking-wide text-center py-1.5 px-1 w-[9%]">
                   Final
                 </TableHead>
               </TableRow>
@@ -280,7 +283,7 @@ export function SemanaActualPanel({ obraId }: { obraId: string }) {
               ))}
               {items.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
+                  <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
                     Aún no hay material en el almacén esta semana. Registra recepciones desde la
                     pestaña "Por recibir".
                   </TableCell>
@@ -365,6 +368,7 @@ function MovRow({
   const max = Number(mov.inv_inicial) + Number(mov.recibido);
   const overflow = Number(val) > max + 1e-6;
   const insumoNombre = mov.insumo?.nombre ?? "—";
+  const requisiciones = (mov.requisiciones ?? []).join(", ") || "—";
   const proveedor = mov.proveedor || "—";
 
   return (
@@ -376,6 +380,9 @@ function MovRow({
           </TooltipTrigger>
           <TooltipContent side="top">{insumoNombre}</TooltipContent>
         </Tooltip>
+      </TableCell>
+      <TableCell className="py-1.5 px-1 truncate" title={requisiciones}>
+        {requisiciones}
       </TableCell>
       <TableCell className="py-1.5 px-1 text-center text-muted-foreground">
         <Tooltip>

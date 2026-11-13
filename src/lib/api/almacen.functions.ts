@@ -505,11 +505,12 @@ export const getSemanaActual = createServerFn({ method: "POST" })
     // Proveedor más reciente por insumo (de la última partida recibida en esta obra)
     const insumoIds = (movs ?? []).map((m: any) => m.insumo_id);
     const proveedorPorInsumo: Record<string, string> = {};
+    const requisicionesPorInsumo: Record<string, Set<string>> = {};
     if (insumoIds.length > 0) {
       const { data: ultimasParts } = await supabase
         .from("almacen_recepcion_partidas")
         .select(
-          "insumo_id, recepcion:almacen_recepciones!inner(obra_id, fecha, oc:ordenes_compra(proveedor:terceros(razon_social)))",
+          "insumo_id, recepcion:almacen_recepciones!inner(obra_id, fecha, oc:ordenes_compra(proveedor:terceros(razon_social), requisicion:requisiciones(folio)))",
         )
         .in("insumo_id", insumoIds)
         .eq("recepcion.obra_id", data.obraId)
@@ -518,12 +519,18 @@ export const getSemanaActual = createServerFn({ method: "POST" })
         if (!proveedorPorInsumo[p.insumo_id]) {
           proveedorPorInsumo[p.insumo_id] = p.recepcion?.oc?.proveedor?.razon_social ?? "";
         }
+        const folio = p.recepcion?.oc?.requisicion?.folio;
+        if (folio) {
+          requisicionesPorInsumo[p.insumo_id] ??= new Set<string>();
+          requisicionesPorInsumo[p.insumo_id].add(folio);
+        }
       }
     }
 
     const items = (movs ?? []).map((m: any) => ({
       ...m,
       proveedor: proveedorPorInsumo[m.insumo_id] ?? "",
+      requisiciones: [...(requisicionesPorInsumo[m.insumo_id] ?? [])],
     }));
     items.sort((a: any, b: any) => {
       const byName = (a.insumo?.nombre ?? "").localeCompare(b.insumo?.nombre ?? "");
