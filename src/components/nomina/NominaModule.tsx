@@ -88,9 +88,7 @@ export function NominaModule({ obraId }: { obraId: string }) {
       <header className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">Nómina</h1>
-          <p className="text-xs text-muted-foreground">
-            Asignación de trabajadores y asistencia semanal (Lun–Dom).
-          </p>
+
         </div>
         <div className="flex gap-2">
           {canEdit && (

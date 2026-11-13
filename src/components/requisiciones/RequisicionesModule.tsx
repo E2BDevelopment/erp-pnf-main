@@ -116,7 +116,7 @@ export function RequisicionesModule({ obraId }: Props) {
       <div className="flex items-start justify-between gap-2">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Requisiciones</h1>
-          <p className="text-sm text-muted-foreground">Material solicitado para esta obra</p>
+
         </div>
         {puedeCrear && (
           <Button

@@ -125,9 +125,7 @@ export default function AuditoriaPage() {
         <div className="rounded-xl border bg-card p-6 sm:p-8">
           <ShieldCheck className="mb-4 h-7 w-7 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-xl font-semibold">Acceso restringido</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            La bitácora de auditoría está disponible únicamente para el perfil Director.
-          </p>
+
         </div>
       </section>
     );
@@ -141,10 +139,7 @@ export default function AuditoriaPage() {
             <LockKeyhole className="h-5 w-5" aria-hidden="true" />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">Bitácora de auditoría</h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            Confirma tu contraseña para consultar los cambios registrados en la empresa. La
-            contraseña se valida antes de cada consulta.
-          </p>
+
           <form className="mt-6 max-w-md space-y-3" onSubmit={(event) => loadPage(0, event)}>
             <label htmlFor="audit-password" className="text-sm font-medium">
               Contraseña de tu cuenta
@@ -182,9 +177,7 @@ export default function AuditoriaPage() {
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Bitácora de auditoría
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Historial de cambios registrados en las tablas de la empresa.
-          </p>
+
         </div>
         <Button type="button" variant="outline" onClick={lock}>
           <LockKeyhole className="mr-2 h-4 w-4" aria-hidden="true" />

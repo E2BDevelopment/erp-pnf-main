@@ -241,11 +241,7 @@ export function GasolinasModule({ obraId, scope = "obra" }: Props) {
           <h2 className="text-2xl font-semibold flex items-center gap-2">
             <Fuel className="w-6 h-6" /> Gasolinas
           </h2>
-          <p className="text-sm text-muted-foreground">
-            {scope === "admin"
-              ? "Vales de gasolina de toda la empresa"
-              : "Vales de gasolina de esta obra"}
-          </p>
+
         </div>
         {canCreate && (
           <Button onClick={() => setCreating(true)}>

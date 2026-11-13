@@ -93,7 +93,7 @@ export function TareasModule({ obraId }: { obraId: string }) {
       <header className="flex items-center justify-between flex-wrap gap-2">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Tareas</h1>
-          <p className="text-sm text-muted-foreground">Gestión de pendientes de la obra</p>
+
         </div>
         <Button onClick={() => setOpenNueva(true)}>
           <Plus className="size-4" /> Nueva tarea

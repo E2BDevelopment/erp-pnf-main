@@ -147,9 +147,7 @@ export function CuentasPorPagarModule() {
       <div className="space-y-6">
         <header>
           <h1 className="text-2xl font-semibold tracking-tight">Cuentas por pagar</h1>
-          <p className="text-sm text-muted-foreground">
-            Saldos pendientes con proveedores y solicitudes de anticipo de destajo.
-          </p>
+
         </header>
 
         <Tabs defaultValue="proveedores">

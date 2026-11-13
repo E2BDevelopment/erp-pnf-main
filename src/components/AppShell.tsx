@@ -128,6 +128,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [logoFailed, setLogoFailed] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [navQuery, setNavQuery] = useState("");
+  const [fechaActual, setFechaActual] = useState("");
 
   const fetchCfg = useServerFn(getCompanyConfig);
   const signFn = useServerFn(getCompanyLogoSignedUrl);
@@ -146,6 +147,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const effRoles = useEffectiveRoles();
   const director = useEffectiveIsDirector();
   const showAdmin = director || effRoles.includes("administrativo");
+
+  useEffect(() => {
+    setFechaActual(
+      new Intl.DateTimeFormat("es-MX", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "America/Mexico_City",
+      })
+        .format(new Date())
+        .replace(",", ""),
+    );
+  }, []);
 
   const {
     counts: adminPendientes,
@@ -543,84 +558,89 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Main */}
       <div className="flex min-w-0 flex-1 flex-col md:pl-64">
-        <header className="sticky top-0 z-20 flex min-h-14 items-center justify-between border-b border-border bg-card px-4 pt-[env(safe-area-inset-top)] md:px-6">
-          <div className="flex items-center gap-2">
-            <Link
-              to="/app/dashboard"
-              className="flex items-center gap-2 transition-opacity hover:opacity-80"
-            >
-              {logoUrl && !logoFailed ? (
-                <img
-                  src={logoUrl}
-                  alt="Logo de la empresa"
-                  width={160}
-                  height={32}
-                  decoding="async"
-                  onError={() => setLogoFailed(true)}
-                  className="h-8 w-auto max-w-[112px] object-contain md:max-w-[160px]"
-                />
-              ) : (
-                <>
-                  <Image
-                    src="/assets/img/icon-1.png"
-                    alt="Naranja Forte"
-                    width={28}
-                    height={28}
-                    className="size-7 object-contain md:hidden"
+        <header className="sticky top-0 z-20 border-b border-border bg-card pt-[env(safe-area-inset-top)]">
+          <div className="mx-auto flex min-h-14 w-full max-w-7xl items-center justify-between px-4 md:px-6">
+            <div className="flex items-center gap-2">
+              <Link
+                to="/app/dashboard"
+                className="flex items-center gap-2 transition-opacity hover:opacity-80"
+              >
+                {logoUrl && !logoFailed ? (
+                  <img
+                    src={logoUrl}
+                    alt="Logo de la empresa"
+                    width={160}
+                    height={32}
+                    decoding="async"
+                    onError={() => setLogoFailed(true)}
+                    className="h-8 w-auto max-w-[112px] object-contain md:max-w-[160px]"
                   />
-                  <span className="hidden items-center gap-2 md:flex">
-                    <Building2 className="size-5 text-muted-foreground" aria-hidden />
-                    <span className="text-sm font-medium text-foreground">ERP PNF</span>
-                  </span>
-                </>
-              )}
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <NotificacionesBell />
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-11 gap-2 md:h-8">
-                  {/* Sin `aria-label`: el nombre accesible se compone del texto
-                      visible ("Cuenta de", las iniciales y el nombre), así que
-                      también coincide con lo que se ve (WCAG 2.5.3). */}
-                  <span className="sr-only">Cuenta de </span>
-                  <Avatar className="size-7">
-                    <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-                  </Avatar>
-                  <span className="hidden max-w-[160px] truncate text-sm sm:inline">
-                    {profile?.nombre_completo}
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col">
-                    <span className="font-medium">{profile?.nombre_completo}</span>
-                    <span className="text-xs text-muted-foreground">{profile?.email}</span>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {director && (
-                  <DropdownMenuItem onClick={() => navigate({ to: "/app/configuracion" })}>
-                    <Building2 className="size-4 mr-2" />
-                    Configuración de empresa
-                  </DropdownMenuItem>
+                ) : (
+                  <>
+                    <Image
+                      src="/assets/img/icon-1.png"
+                      alt="Naranja Forte"
+                      width={28}
+                      height={28}
+                      className="size-7 object-contain md:hidden"
+                    />
+                    <span className="hidden items-center gap-2 md:flex">
+                      <Building2 className="size-5 text-muted-foreground" aria-hidden />
+                      <span className="text-sm font-medium text-foreground">ERP PNF</span>
+                    </span>
+                  </>
                 )}
-                <DropdownMenuItem onClick={() => navigate({ to: "/app/mi-cuenta" })}>
-                  <User className="size-4 mr-2" />
-                  Mi cuenta
-                </DropdownMenuItem>
+              </Link>
+            </div>
 
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setLogoutOpen(true)}>
-                  <LogOut className="size-4 mr-2" />
-                  Cerrar sesión
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-3">
+              <NotificacionesBell />
+              <time className="hidden whitespace-nowrap text-sm text-muted-foreground sm:inline">
+                {fechaActual}
+              </time>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-11 gap-2 md:h-8">
+                    {/* Sin `aria-label`: el nombre accesible se compone del texto
+                        visible ("Cuenta de", las iniciales y el nombre), así que
+                        también coincide con lo que se ve (WCAG 2.5.3). */}
+                    <span className="sr-only">Cuenta de </span>
+                    <Avatar className="size-7">
+                      <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                    </Avatar>
+                    <span className="hidden max-w-[160px] truncate text-sm sm:inline">
+                      {profile?.nombre_completo}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{profile?.nombre_completo}</span>
+                      <span className="text-xs text-muted-foreground">{profile?.email}</span>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {director && (
+                    <DropdownMenuItem onClick={() => navigate({ to: "/app/configuracion" })}>
+                      <Building2 className="size-4 mr-2" />
+                      Configuración de empresa
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => navigate({ to: "/app/mi-cuenta" })}>
+                    <User className="size-4 mr-2" />
+                    Mi cuenta
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setLogoutOpen(true)}>
+                    <LogOut className="size-4 mr-2" />
+                    Cerrar sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </header>
 
@@ -628,7 +648,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ref={mainCom}
           id="contenido"
           tabIndex={-1}
-          className="flex-1 p-4 md:p-6 lg:p-8 pb-24 md:pb-8 max-w-7xl w-full mx-auto focus:outline-none"
+          className={`flex-1 p-2 md:p-2 lg:px-4 lg:pb-2 ${isInsideObra ? "lg:pt-2" : "lg:pt-8"} pb-24 md:pb-2 max-w-7xl w-full mx-auto focus:outline-none`}
         >
           {children}
         </main>

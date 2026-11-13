@@ -251,11 +251,7 @@ export function DashboardModule() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">
-            {data
-              ? `${formatRangoSemana(data.periodo.inicio, data.periodo.fin)} · producción y gasto al corte de hoy; la semana en curso sigue en captura.`
-              : "Producción, gasto y pendientes de la operación."}
-          </p>
+
         </div>
 
         <div className="flex items-center gap-2">
@@ -432,9 +428,7 @@ export function DashboardModule() {
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h2 className="text-sm font-medium">Producción vs. gasto</h2>
-                  <p className="text-xs text-muted-foreground">
-                    Semana por semana, sumando todas las obras del periodo.
-                  </p>
+
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1.5">
@@ -486,7 +480,7 @@ export function DashboardModule() {
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <h2 className="text-sm font-medium">En qué se fue el gasto</h2>
-                  <p className="text-xs text-muted-foreground">Categorías del periodo.</p>
+
                 </div>
                 <span className="text-sm font-semibold tabular-nums">
                   {formatMXN(data.kpis.costo)}
@@ -695,9 +689,7 @@ function CarteraTable({
       <div className="flex flex-wrap items-start justify-between gap-2 border-b border-border px-4 py-3">
         <div>
           <h2 className="text-sm font-medium">Cartera de obras</h2>
-          <p className="text-xs text-muted-foreground">
-            Presupuesto autorizado contra lo estimado a la fecha.
-          </p>
+
         </div>
         <Button asChild variant="ghost" size="sm">
           <Link to="/app/obras">
@@ -905,7 +897,7 @@ function PendientesPanel({
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="text-sm font-medium">{titulo}</h2>
-          <p className="text-xs text-muted-foreground">{descripcion}</p>
+
         </div>
         {total > 0 && (
           <span className="shrink-0 text-xs text-muted-foreground">
@@ -965,9 +957,7 @@ function CxPPanel({ cxp, tesoreria }: { cxp: DashboardCxP; tesoreria: DashboardT
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-sm font-medium">Cuentas por pagar</h2>
-          <p className="text-xs text-muted-foreground">
-            {cxp.pendientes === 1 ? "1 documento abierto" : `${cxp.pendientes} documentos abiertos`}
-          </p>
+
         </div>
         <div className="text-right">
           <p className="text-lg font-semibold tabular-nums">{formatMXN(cxp.total)}</p>

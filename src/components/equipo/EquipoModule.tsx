@@ -110,10 +110,7 @@ export function EquipoModule() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">
-          Usuarios de la empresa y su rol. El Director crea cuentas y comparte la contraseña
-          manualmente.
-        </p>
+        
         <Button ref={inviteTrigger} onClick={() => setInviting(true)}>
           <Plus className="size-4 mr-1" /> Crear usuario
         </Button>

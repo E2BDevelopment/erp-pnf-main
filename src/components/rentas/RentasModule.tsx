@@ -83,10 +83,7 @@ export function RentasModule({ obraId }: { obraId: string }) {
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Rentas</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Equipos rentados con cobro periódico. El residente solicita, el administrativo cotiza,
-            el supervisor autoriza. Marca la llegada y reporta averías o inactividad.
-          </p>
+
         </div>
         {puedeSolicitar && (
           <Button onClick={() => setCreating(true)}>

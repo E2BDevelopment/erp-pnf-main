@@ -82,9 +82,7 @@ export function EstimacionesModule({ obraId }: { obraId: string }) {
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Estimaciones</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Producción semanal (Lun–Dom) ejecutada en obra contra el presupuesto vigente.
-          </p>
+
         </div>
         <div className="flex gap-2">
           {canEdit && (

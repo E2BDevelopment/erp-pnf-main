@@ -209,10 +209,7 @@ export function CatalogoTerceroModule() {
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Proveedores y Contratistas</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Proveedores y contratistas que te suministran materiales o ejecutan trabajos
-            contratados.
-          </p>
+
         </div>
         <div className="flex items-center gap-2">
           {canManage && (

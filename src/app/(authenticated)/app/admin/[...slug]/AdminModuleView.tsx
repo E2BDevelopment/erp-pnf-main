@@ -61,9 +61,7 @@ export function AdminModuleView() {
       <div className="space-y-6">
         <header>
           <h1 className="text-2xl font-semibold tracking-tight">Tesorería</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Cuentas activas de la empresa, saldos y movimientos.
-          </p>
+
         </header>
         <TesoreriaModule />
       </div>

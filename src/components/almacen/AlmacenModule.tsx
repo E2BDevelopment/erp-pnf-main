@@ -72,9 +72,7 @@ export function AlmacenModule({ obraId }: Props) {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Almacén de obra</h1>
-        <p className="text-sm text-muted-foreground">
-          Recepción de material, control semanal de inventario (lun–dom) y consumo.
-        </p>
+
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>

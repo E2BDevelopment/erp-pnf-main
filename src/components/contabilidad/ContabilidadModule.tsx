@@ -52,9 +52,7 @@ export function ContabilidadModule() {
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Contabilidad</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Balance General gerencial. Los saldos se derivan en vivo de las operaciones registradas.
-          </p>
+
         </div>
         {q.data && (
           <p className="text-xs text-muted-foreground">

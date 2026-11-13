@@ -109,9 +109,7 @@ export function CondensadoSemanalModule() {
     <div className="space-y-6">
       <header className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Condensado semanal de gastos</h1>
-        <p className="text-sm text-muted-foreground">
-          Vista consolidada de gastos devengados y pagados de todas las obras y oficina.
-        </p>
+
       </header>
 
       {/* Selector de semana */}

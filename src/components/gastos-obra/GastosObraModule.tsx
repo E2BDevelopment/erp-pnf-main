@@ -119,10 +119,7 @@ export function GastosObraModule({ obraId }: { obraId: string }) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Gastos de obra</h2>
-          <p className="text-sm text-muted-foreground">
-            Pagos directos a proveedores que no pasaron por requisición. El supervisor autoriza y el
-            administrativo paga.
-          </p>
+
         </div>
         {puedeCrear && (
           <Button

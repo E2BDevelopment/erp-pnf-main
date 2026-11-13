@@ -96,10 +96,7 @@ export function SubcontratosModule({ obraId }: { obraId: string }) {
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-xl font-semibold tracking-tight">Subcontratos</h1>
-          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-            Trabajos contratados con un tercero con presupuesto, órdenes de cambio y estimaciones
-            semanales.
-          </p>
+
         </div>
         {canEditDraft && (
           <Button size="sm" onClick={() => setCreating(true)} className="shrink-0">

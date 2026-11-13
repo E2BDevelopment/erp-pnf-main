@@ -106,9 +106,7 @@ export function NotificacionesModule() {
               <Badge className="bg-rose-600 text-white border-0">{noLeidas} nuevas</Badge>
             )}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Historial completo de notificaciones de tu cuenta.
-          </p>
+
         </div>
         {noLeidas > 0 && (
           <Button

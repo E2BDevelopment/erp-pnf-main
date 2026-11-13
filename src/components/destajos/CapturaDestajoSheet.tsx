@@ -175,9 +175,7 @@ export function CapturaDestajoSheet({
               </Badge>
             )}
           </SheetTitle>
-          <SheetDescription>
-            Captura clave WBS (ej. 1, 1.1, 1.2.3). Los grupos suman automáticamente.
-          </SheetDescription>
+          
         </SheetHeader>
 
         {isLoading ? (

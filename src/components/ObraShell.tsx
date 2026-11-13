@@ -48,7 +48,7 @@ export function ObraShell({ children }: { children: React.ReactNode }) {
   return (
     <div ref={raiz} className="flex min-h-full flex-col bg-background">
       <div className="border-b border-border">
-        <div className="mx-auto flex w-full max-w-5xl items-center gap-3 py-3">
+        <div className="mx-auto flex w-full max-w-7xl items-center gap-3 py-2">
           <Link
             to="/app/obras"
             aria-label="Volver a obras"
@@ -60,9 +60,8 @@ export function ObraShell({ children }: { children: React.ReactNode }) {
 
           <div className="min-w-0 flex-1">
             {dashboard.isPending ? (
-              <div className="space-y-2 py-0.5" aria-hidden>
+              <div className="py-0.5" aria-hidden>
                 <div className="h-5 w-48 rounded-md bg-muted motion-safe:animate-pulse" />
-                <div className="h-3 w-64 rounded-md bg-muted/70 motion-safe:animate-pulse" />
               </div>
             ) : dashboard.isError ? (
               <div className="-my-1 flex flex-wrap items-center gap-3">
@@ -73,28 +72,22 @@ export function ObraShell({ children }: { children: React.ReactNode }) {
                 </Button>
               </div>
             ) : (
-              <div data-obra-cabecera>
+              <div data-obra-cabecera className="min-w-0">
                 {/* El encabezado de la página es el módulo; la obra es contexto,
                     no un segundo h1 dentro de la misma pantalla. */}
                 <p
-                  className="truncate text-base font-semibold tracking-tight sm:text-lg"
+                  className="min-w-0 truncate text-base font-semibold tracking-tight sm:text-lg"
                   title={obra?.nombre ?? undefined}
                 >
                   {obra?.nombre ?? "Obra"}
                 </p>
-                {obra && (obra.cliente?.razon_social || obra.numero_contrato) && (
-                  <p className="truncate text-xs text-muted-foreground">
-                    {obra.cliente?.razon_social ?? "Sin cliente"}
-                    {obra.numero_contrato ? ` · ${obra.numero_contrato}` : ""}
-                  </p>
-                )}
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-5xl flex-1 pt-4">
+      <div className="mx-auto w-full max-w-7xl flex-1 pt-4">
         {permission && permissionsLoading ? (
           <p className="text-sm text-muted-foreground">Cargando permisos…</p>
         ) : permission && !can(permission) ? (

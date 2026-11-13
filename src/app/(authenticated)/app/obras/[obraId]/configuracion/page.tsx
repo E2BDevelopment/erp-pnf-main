@@ -85,9 +85,7 @@ function ConfiguracionObra() {
     <div className="w-full space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Configuración de la obra</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Edita los datos generales, presupuesto, equipo, comisiones y permisos de esta obra.
-        </p>
+
       </div>
 
       <Tabs defaultValue={defaultTab} className="space-y-4">

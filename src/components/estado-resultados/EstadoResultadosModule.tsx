@@ -139,14 +139,7 @@ export function EstadoResultadosModule({ obraId }: { obraId: string }) {
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Estado de resultados</h1>
-          <p className="text-sm text-muted-foreground">
-            Producción contra costos ·{" "}
-            {modo === "semana"
-              ? fechaInicio
-                ? `Semana ${numSeleccion} de la obra`
-                : "semana seleccionada"
-              : "acumulado de la obra"}
-          </p>
+
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <ToggleGroup
@@ -260,9 +253,7 @@ export function EstadoResultadosModule({ obraId }: { obraId: string }) {
           <Card className="p-0 overflow-hidden">
             <div className="px-4 py-3 border-b border-border">
               <h2 className="text-sm font-medium">Desglose de la semana</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Expande cada categoría para ver documentos y conceptos.
-              </p>
+
             </div>
             <Accordion type="multiple" className="divide-y divide-border">
               {/* Producción */}

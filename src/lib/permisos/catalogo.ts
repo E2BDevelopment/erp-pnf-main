@@ -93,7 +93,7 @@ export const CATALOGO_ACCIONES: AccionCatalogo[] = [
   {
     key: "cotizaciones.gestionar",
     modulo: "Cotizaciones",
-    label: "Gestionar cotizaciones (SC, capturar respuestas, paquetes)",
+    label: "Gestionar cotizaciones",
     defaults: A,
   },
 
@@ -113,7 +113,7 @@ export const CATALOGO_ACCIONES: AccionCatalogo[] = [
   {
     key: "oc.cancelar",
     modulo: "Órdenes de compra",
-    label: "Rechazar / cancelar / reabrir orden de compra",
+    label: "Rechazar / cancelar / reabrir \n orden de compra",
     defaults: AS,
   },
 

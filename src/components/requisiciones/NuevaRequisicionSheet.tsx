@@ -296,14 +296,11 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-dvh max-h-dvh w-screen max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 sm:h-[min(90dvh,900px)] sm:max-h-[min(90dvh,900px)] sm:w-full sm:max-w-6xl sm:rounded-lg">
-        <DialogHeader className="border-b px-6 py-4 pr-12">
+      <DialogContent className="flex h-dvh max-h-dvh w-screen max-w-none flex-col gap-0 overflow-hidden rounded-none p-0 sm:h-[min(90dvh,900px)] sm:max-h-[min(90dvh,900px)] sm:w-full sm:max-w-6xl sm:rounded-lg sm:p-0">
+        <DialogHeader className="min-h-14 shrink-0 flex-row items-center space-y-0 border-b px-6 pr-12">
           <DialogTitle>
             {currentBorradorId ? "Editar borrador de requisición" : "Nueva requisición"}
           </DialogTitle>
-          <p className="text-sm text-muted-foreground">
-            Agrega y organiza los materiales solicitados para esta obra.
-          </p>
         </DialogHeader>
 
         <div className="border-b px-4 py-3 md:hidden">
@@ -327,7 +324,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
           </div>
         </div>
 
-        <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto md:grid-cols-[minmax(0,1.1fr)_minmax(340px,0.9fr)] md:overflow-hidden">
+        <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto md:grid-cols-[minmax(0,3fr)_minmax(0,7fr)] md:overflow-hidden">
           <section
             className={`${mobileStep === 0 ? "flex" : "hidden"} min-h-0 flex-col border-b md:flex md:min-h-0 md:border-b-0 md:border-r`}
             aria-label="Catálogo de insumos"
@@ -385,7 +382,9 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                     className="flex min-h-16 items-center gap-3 rounded-md border-b p-3 last:border-0 hover:bg-muted/40 md:min-h-0"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{insumo.nombre}</p>
+                      <p className="truncate text-sm font-medium" title={insumo.nombre}>
+                        {insumo.nombre}
+                      </p>
                       <p className="truncate text-xs text-muted-foreground">
                         {insumo.categoria?.nombre ?? "Sin categoría"} · {insumo.unidad}
                         {insumo.estatus === "pendiente" && (
@@ -460,7 +459,9 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                               ) : (
                                 <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                               )}
-                              <span className="truncate text-sm font-medium">{nombre}</span>
+                              <span className="truncate text-sm font-medium" title={nombre}>
+                                {nombre}
+                              </span>
                               {insumoSel?.estatus === "pendiente" && (
                                 <span className="shrink-0 text-xs text-amber-700">
                                   (en espera de autorización)
@@ -595,15 +596,6 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                 </details>
               ))}
             </div>
-            <div className="hidden space-y-1 border-t p-4 md:block">
-              <Label>Notas generales</Label>
-              <Textarea
-                rows={2}
-                value={notas}
-                onChange={(e) => setNotas(e.target.value)}
-                placeholder="Observaciones para administración…"
-              />
-            </div>
           </section>
 
           <section
@@ -674,9 +666,20 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
           </section>
         </div>
 
-        <div className="hidden flex-col gap-2 border-t bg-background px-6 py-3 sm:flex-row sm:justify-end md:flex">
+        <div className="hidden items-end gap-3 border-t bg-background px-6 py-3 md:flex">
+          <div className="min-w-0 flex-1 space-y-1">
+            <Label htmlFor="desktop-notas">Notas generales</Label>
+            <Textarea
+              id="desktop-notas"
+              rows={1}
+              value={notas}
+              onChange={(e) => setNotas(e.target.value)}
+              placeholder="Observaciones para administración…"
+              className="h-10 min-h-10 resize-none"
+            />
+          </div>
           {mut.error && (
-            <p role="alert" className="mr-auto self-center text-sm text-destructive">
+            <p role="alert" className="max-w-56 text-sm text-destructive">
               {mut.error instanceof Error ? mut.error.message : "No se pudo enviar la requisición."}
             </p>
           )}

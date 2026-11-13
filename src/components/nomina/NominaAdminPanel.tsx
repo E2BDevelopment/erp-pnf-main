@@ -122,9 +122,7 @@ export function NominaAdminPanel() {
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Nómina — Panel global</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Vista consolidada de todos los trabajadores de la semana, cruzando obras.
-          </p>
+
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button

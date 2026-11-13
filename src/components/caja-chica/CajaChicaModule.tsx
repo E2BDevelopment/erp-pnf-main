@@ -237,9 +237,7 @@ export function CajaChicaModule({ obraId, scope = "obra" }: Props) {
           <h2 className="text-2xl font-semibold flex items-center gap-2">
             <Wallet className="w-6 h-6" /> Caja Chica
           </h2>
-          <p className="text-sm text-muted-foreground">
-            {scope === "admin" ? "Caja chica de toda la empresa" : "Caja chica de esta obra"}
-          </p>
+
         </div>
       </div>
 

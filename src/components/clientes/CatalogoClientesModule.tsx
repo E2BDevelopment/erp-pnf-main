@@ -177,9 +177,7 @@ export function CatalogoClientesModule({ initialClienteId }: { initialClienteId?
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Clientes</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Empresas y personas a las que facturas tus obras.
-          </p>
+
         </div>
         <div className="flex items-center gap-2">
           {canManage && (

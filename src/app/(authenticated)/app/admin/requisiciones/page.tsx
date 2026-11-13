@@ -112,7 +112,7 @@ function AdminRequisicionesPage() {
     <div className="space-y-4">
       <header>
         <h1 className="text-2xl font-bold text-foreground">Requisiciones</h1>
-        <p className="text-sm text-muted-foreground">De tus obras asignadas</p>
+
       </header>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as "activas" | "historial")}>

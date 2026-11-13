@@ -61,9 +61,7 @@ export default function ConfiguracionPage() {
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Configuración de empresa</h1>
-          <p className="text-sm text-muted-foreground">
-            Datos fiscales, identidad, equipo y otras opciones.
-          </p>
+
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => navigate({ to: "/app" })} disabled={saving}>
