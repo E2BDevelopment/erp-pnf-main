@@ -12,19 +12,26 @@ import {
   descargarPlantillaPresupuesto,
 } from "@/lib/api-client/presupuestos.functions";
 import { usePermisos } from "@/hooks/usePermisos";
-import { procesarRenglones, calcularClavesPadre, type RenglonInput } from "@/lib/presupuesto-utils";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+  procesarRenglones,
+  calcularClavesPadre,
+  claseFilaPresupuesto,
+  esGrupoPresupuesto,
+  normalizarEntradaDecimal,
+  nivelDeClave,
+  type RenglonInput,
+} from "@/lib/presupuesto-utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Plus, Trash2, Upload, Download, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { Plus, Trash2, Upload, Download, AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "@/lib/toast";
 import { formatMXN } from "@/lib/format";
 import { useSacudir } from "@/components/anim/useSacudir";
@@ -61,6 +68,8 @@ export function CapturaPresupuestoSheet({
 
   const [rows, setRows] = useState<RowDraft[]>([emptyRow()]);
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
+  const [cantidadDrafts, setCantidadDrafts] = useState<Record<string, string>>({});
+  const [precioDrafts, setPrecioDrafts] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (data?.renglones && data.renglones.length > 0) {
@@ -129,6 +138,21 @@ export function CapturaPresupuestoSheet({
     }
     return map;
   }, [calc.errores]);
+
+  const irAlPrimerError = () => {
+    const renglon = rows.find((r) => erroresPorClave.has(r.clave.trim()));
+    if (!renglon) return;
+
+    setActiveRowId(renglon._id);
+    const elemento = document.getElementById(`renglon-${renglon._id}`);
+    elemento?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const campoConcepto = (erroresPorClave.get(renglon.clave.trim()) ?? []).some((error) =>
+      error.toLowerCase().includes("concepto"),
+    );
+    elemento?.querySelectorAll<HTMLInputElement>("input")[campoConcepto ? 1 : 0]?.focus({
+      preventScroll: true,
+    });
+  };
 
   // Importes por clave (cuando no hay errores)
   const importePorClave = useMemo(() => {
@@ -269,6 +293,12 @@ export function CapturaPresupuestoSheet({
       }
       aplicarRenglonesImportados(res.renglones);
       toast.success(`${res.renglones.length} renglones importados. Revísalos antes de guardar.`);
+      if (res.subtitulosAgregados > 0) {
+        const cantidad = res.subtitulosAgregados;
+        toast.info(
+          `Se agreg${cantidad === 1 ? "ó" : "aron"} ${cantidad} subtítulo${cantidad === 1 ? "" : "s"} faltante${cantidad === 1 ? "" : "s"} automáticamente.`,
+        );
+      }
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
@@ -315,16 +345,15 @@ export function CapturaPresupuestoSheet({
   const yaAutorizado = presupuesto?.estatus === "autorizado";
 
   return (
-    <Sheet
+    <Dialog
       open
       onOpenChange={(o) => {
         if (!o && !importing) onClose();
       }}
     >
-      <SheetContent
+      <DialogContent
         ref={sacudirRef}
-        side="right"
-        className="w-full sm:max-w-5xl flex flex-col h-full p-0"
+        className="w-[calc(100%-2rem)] max-w-[90vw] h-[85vh] max-h-[calc(100dvh-2rem)] flex flex-col gap-0 overflow-hidden p-0 sm:p-0"
         onPointerDownOutside={(e) => {
           if (importing) e.preventDefault();
         }}
@@ -342,21 +371,17 @@ export function CapturaPresupuestoSheet({
             </p>
           </div>
         )}
-        <SheetHeader className="shrink-0 px-6 pt-6">
-          <SheetTitle>
+        <DialogHeader className="min-h-14 shrink-0 flex-row items-center space-y-0 px-6 pr-14">
+          <DialogTitle>
             {presupuesto?.nombre ?? "Editar presupuesto"}
             {yaAutorizado && <Badge className="ml-2">Autorizado</Badge>}
-          </SheetTitle>
-          <SheetDescription>
-            Captura clave WBS (ej. 1, 1.1, 1.2.3). Los grupos suman automáticamente. Máximo 5
-            niveles.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogTitle>
+        </DialogHeader>
 
         {isLoading ? (
           <p className="text-sm text-muted-foreground mt-6 px-6">Cargando…</p>
         ) : (
-          <div className="mt-4 flex flex-col flex-1 min-h-0">
+          <div className="flex flex-col flex-1 min-h-0">
             {/* Toolbar */}
             <div className="flex items-center gap-2 flex-wrap shrink-0 px-6 pb-3">
               <Button
@@ -409,34 +434,51 @@ export function CapturaPresupuestoSheet({
                 <Plus className="size-4 mr-1" /> Agregar renglón
               </Button>
 
-              <div className="ml-auto flex items-center gap-3">
+              <div className="ml-auto flex items-center gap-4">
                 {calc.errores.length > 0 ? (
-                  <Badge variant="destructive" className="gap-1">
+                  <button
+                    type="button"
+                    className={`${badgeVariants({ variant: "destructive" })} gap-1 cursor-pointer`}
+                    onClick={irAlPrimerError}
+                    aria-label={`${calc.errores.length} errores; ir al primero`}
+                  >
                     <AlertCircle className="size-3" />
                     {calc.errores.length} error(es)
-                  </Badge>
+                  </button>
                 ) : (
-                  <Badge variant="secondary" className="gap-1">
-                    <CheckCircle2 className="size-3" />
-                    Total {formatMXN(calc.montoTotal)}
-                  </Badge>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right text-xs">
+                      <p className="text-muted-foreground">Subtotal</p>
+                      <p className="font-medium tabular-nums">{formatMXN(calc.montoTotal)}</p>
+                    </div>
+                    <div className="text-right text-xs">
+                      <p className="text-muted-foreground">IVA (16%)</p>
+                      <p className="font-medium tabular-nums">{formatMXN(calc.montoTotal * 0.16)}</p>
+                    </div>
+                    <div className="border-l pl-4 text-right text-xs">
+                      <p className="text-muted-foreground">Total</p>
+                      <p className="font-semibold tabular-nums">
+                        {formatMXN(calc.montoTotal * 1.16)}
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Tabla editable */}
-            <div className="flex-1 min-h-0 overflow-y-auto px-6">
-              <Card className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted text-xs uppercase tracking-wider text-muted-foreground">
+            <div className="flex-1 min-h-0 overflow-auto px-6">
+              <Card className="overflow-visible">
+                <table className="w-full min-w-[960px] text-sm">
+                  <thead className="sticky top-0 z-20 bg-muted text-xs uppercase tracking-wider text-muted-foreground">
                     <tr>
-                      <th className="text-left p-2 w-24 sticky top-0 z-10 bg-muted">Clave</th>
-                      <th className="text-left p-2 sticky top-0 z-10 bg-muted">Concepto</th>
-                      <th className="text-left p-2 w-20 sticky top-0 z-10 bg-muted">Unidad</th>
-                      <th className="text-right p-2 w-24 sticky top-0 z-10 bg-muted">Cantidad</th>
-                      <th className="text-right p-2 w-24 sticky top-0 z-10 bg-muted">PU</th>
-                      <th className="text-right p-2 w-28 sticky top-0 z-10 bg-muted">Importe</th>
-                      <th className="w-10 sticky top-0 z-10 bg-muted"></th>
+                      <th className="sticky top-0 z-20 text-center p-2 w-24 bg-muted">Clave</th>
+                      <th className="sticky top-0 z-20 text-center p-2 bg-muted">Concepto</th>
+                      <th className="sticky top-0 z-20 text-center p-2 w-20 bg-muted">Unidad</th>
+                      <th className="sticky top-0 z-20 text-center p-2 w-15 bg-muted">Cantidad</th>
+                      <th className="sticky top-0 z-20 text-center p-2 w-32 bg-muted">PU</th>
+                      <th className="sticky top-0 z-20 text-center p-2 w-28 bg-muted">Importe</th>
+                      <th className="sticky top-0 z-20 text-center w-10 bg-muted"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -444,22 +486,19 @@ export function CapturaPresupuestoSheet({
                       const claveTrim = r.clave.trim();
                       const errs = erroresPorClave.get(claveTrim) ?? [];
                       const importe = importePorClave.get(claveTrim) ?? 0;
-                      const esPadre = claveTrim !== "" && clavesPadre.has(claveTrim);
+                      const claveValida = /^\d+(\.\d+){0,4}$/.test(claveTrim);
+                      const nivel = claveValida ? nivelDeClave(claveTrim) : 3;
+                      const esPadre = claveValida && esGrupoPresupuesto(r, clavesPadre.has(claveTrim));
                       const esActivo = activeRowId === r._id;
                       return (
                         <tr
                           key={r._id}
+                          id={`renglon-${r._id}`}
                           onFocus={handleRowActivate(r._id)}
                           onMouseDown={handleRowActivate(r._id)}
                           className={`border-t border-border cursor-pointer transition-colors ${
-                            errs.length
-                              ? "bg-destructive/5"
-                              : esPadre
-                                ? "bg-accent/40 font-medium"
-                                : esActivo
-                                  ? "bg-muted/60"
-                                  : "hover:bg-muted/20"
-                          } ${esActivo ? "ring-1 ring-inset ring-primary/20" : ""}`}
+                            errs.length ? "bg-destructive/5" : claseFilaPresupuesto(nivel, esPadre)
+                          } ${esActivo ? "ring-1 ring-inset ring-primary/20" : "hover:brightness-[0.99]"}`}
                         >
                           <td className="p-1">
                             <Input
@@ -484,8 +523,8 @@ export function CapturaPresupuestoSheet({
                           </td>
                           {esPadre ? (
                             <>
-                              <td className="p-2 text-center text-muted-foreground">—</td>
-                              <td className="p-2 text-center text-muted-foreground">—</td>
+                              <td className="w-20 p-2 text-center text-muted-foreground">—</td>
+                              <td className="w-32 p-2 text-center text-muted-foreground">—</td>
                               <td className="p-2 text-center text-muted-foreground">—</td>
                             </>
                           ) : (
@@ -499,33 +538,65 @@ export function CapturaPresupuestoSheet({
                                   disabled={importing}
                                 />
                               </td>
-                              <td className="p-1">
+                              <td className="w-20 p-1">
                                 <Input
-                                  type="number"
-                                  value={r.cantidad ?? ""}
-                                  onChange={(e) =>
+                                  type="text"
+                                  inputMode="decimal"
+                                  value={cantidadDrafts[r._id] ?? (r.cantidad != null ? r.cantidad.toFixed(2) : "")}
+                                  onFocus={(e) => {
+                                    const value = e.currentTarget.value;
+                                    setCantidadDrafts((drafts) => ({ ...drafts, [r._id]: value }));
+                                  }}
+                                  onChange={(e) => {
+                                    const normalized = normalizarEntradaDecimal(e.target.value);
+                                    const cantidad = normalized === "" ? null : Number(normalized);
+                                    setCantidadDrafts((drafts) => ({ ...drafts, [r._id]: normalized }));
                                     updateRow(r._id, {
-                                      cantidad:
-                                        e.target.value === "" ? null : Number(e.target.value),
+                                      cantidad: cantidad == null || Number.isFinite(cantidad) ? cantidad : null,
+                                    });
+                                  }}
+                                  onBlur={() =>
+                                    setCantidadDrafts((drafts) => {
+                                      const { [r._id]: _draft, ...rest } = drafts;
+                                      return rest;
                                     })
                                   }
                                   className="h-8 text-right"
                                   disabled={importing}
                                 />
                               </td>
-                              <td className="p-1">
-                                <Input
-                                  type="number"
-                                  value={r.precio_unitario ?? ""}
-                                  onChange={(e) =>
-                                    updateRow(r._id, {
-                                      precio_unitario:
-                                        e.target.value === "" ? null : Number(e.target.value),
-                                    })
-                                  }
-                                  className="h-8 text-right"
-                                  disabled={importing}
-                                />
+                              <td className="w-32 p-1">
+                                <div className="relative">
+                                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                    $
+                                  </span>
+                                  <Input
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={precioDrafts[r._id] ?? (r.precio_unitario != null ? r.precio_unitario.toFixed(2) : "")}
+                                    onFocus={(e) => {
+                                      const value = e.currentTarget.value;
+                                      setPrecioDrafts((drafts) => ({ ...drafts, [r._id]: value }));
+                                    }}
+                                    onChange={(e) => {
+                                      const normalized = normalizarEntradaDecimal(e.target.value);
+                                      const precio = normalized === "" ? null : Number(normalized);
+                                      setPrecioDrafts((drafts) => ({ ...drafts, [r._id]: normalized }));
+                                      updateRow(r._id, {
+                                        precio_unitario:
+                                          precio == null || Number.isFinite(precio) ? precio : null,
+                                      });
+                                    }}
+                                    onBlur={() =>
+                                      setPrecioDrafts((drafts) => {
+                                        const { [r._id]: _draft, ...rest } = drafts;
+                                        return rest;
+                                      })
+                                    }
+                                    className="h-8 pl-6"
+                                    disabled={importing}
+                                  />
+                                </div>
                               </td>
                             </>
                           )}
@@ -580,8 +651,8 @@ export function CapturaPresupuestoSheet({
             </div>
           </div>
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
 

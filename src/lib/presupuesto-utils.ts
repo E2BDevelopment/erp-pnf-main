@@ -25,6 +25,68 @@ export type ValidacionRenglon = {
 
 const CLAVE_REGEX = /^\d+(\.\d+){0,4}$/;
 
+export function esClavePresupuesto(clave: string): boolean {
+  return CLAVE_REGEX.test(clave.trim());
+}
+
+export function normalizarEntradaDecimal(valor: string): string {
+  const entrada = valor.replace(/[^\d.,]/g, "");
+  const punto = entrada.lastIndexOf(".");
+  const coma = entrada.lastIndexOf(",");
+  const numerico =
+    punto >= 0 && coma >= 0
+      ? coma > punto
+        ? entrada.replace(/\./g, "").replace(",", ".")
+        : entrada.replace(/,/g, "")
+      : entrada.replace(/,/g, ".");
+  const puntoDecimal = numerico.indexOf(".");
+  return puntoDecimal < 0
+    ? numerico
+    : `${numerico.slice(0, puntoDecimal + 1)}${numerico.slice(puntoDecimal + 1).replace(/\./g, "")}`;
+}
+
+export function claseFilaPresupuesto(nivel: number, esGrupo = nivel < 3): string {
+  if (nivel === 1) return "bg-primary/15 font-semibold";
+  if (esGrupo) return "bg-muted/70 font-medium";
+  return "bg-card";
+}
+
+export function esGrupoPresupuesto(renglon: RenglonInput, tieneHijos: boolean): boolean {
+  const nivel = nivelDeClave(renglon.clave);
+  if (nivel === 1 || tieneHijos) return true;
+  if (nivel === 2) {
+    return !(
+      renglon.unidad?.trim() ||
+      renglon.cantidad != null ||
+      renglon.precio_unitario != null
+    );
+  }
+  return false;
+}
+
+/** Completa padres omitidos en una importación de presupuesto. */
+export function completarJerarquiaPresupuesto(input: RenglonInput[]): RenglonInput[] {
+  const rows = input.map((r) => ({ ...r, clave: r.clave.trim() }));
+  const claves = new Set(rows.filter((r) => esClavePresupuesto(r.clave)).map((r) => r.clave));
+
+  for (const clave of [...claves]) {
+    let parent = parentDeClave(clave);
+    while (parent) {
+      if (!claves.has(parent)) {
+        claves.add(parent);
+        rows.push({ clave: parent, concepto: parent });
+      }
+      parent = parentDeClave(parent);
+    }
+  }
+
+  for (const row of rows) {
+    if (nivelDeClave(row.clave) < 3 && !row.concepto.trim()) row.concepto = row.clave;
+  }
+
+  return rows.sort((a, b) => ordenSort(a.clave, b.clave));
+}
+
 export function nivelDeClave(clave: string): number {
   return clave.split(".").length;
 }
@@ -118,7 +180,7 @@ export function procesarRenglones(input: RenglonInput[]): {
   );
 
   for (const r of ordenPorNivel) {
-    const esGrupo = hijosPorPadre.has(r.clave);
+    const esGrupo = esGrupoPresupuesto(r, hijosPorPadre.has(r.clave));
     if (esGrupo) {
       const hijos = hijosPorPadre.get(r.clave) ?? [];
       const total = hijos.reduce((s, c) => s + (importes.get(c) ?? 0), 0);
@@ -131,7 +193,7 @@ export function procesarRenglones(input: RenglonInput[]): {
   }
 
   const renglones: RenglonCalculado[] = ordenadas.map((r, i) => {
-    const esGrupo = hijosPorPadre.has(r.clave);
+    const esGrupo = esGrupoPresupuesto(r, hijosPorPadre.has(r.clave));
     return {
       clave: r.clave,
       concepto: r.concepto.trim(),

@@ -3,11 +3,12 @@
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery } from "@tanstack/react-query";
 import { getPresupuesto } from "@/lib/api-client/presupuestos.functions";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatMXN } from "@/lib/format";
+import { claseFilaPresupuesto } from "@/lib/presupuesto-utils";
 
 type Renglon = {
   id: string;
@@ -51,10 +52,10 @@ export function VerPresupuestoSheet({
   const esOC = presupuesto?.tipo === "adenda";
 
   return (
-    <Sheet open onOpenChange={(o) => !o && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-5xl overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2 flex-wrap pr-10">
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="w-[calc(100%-2rem)] max-w-6xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 flex-wrap pr-10">
             {presupuesto?.nombre ?? "Presupuesto"}
             {presupuesto &&
               (() => {
@@ -84,8 +85,8 @@ export function VerPresupuestoSheet({
                   ? `Δ ${formatMXN(presupuesto.monto_total)}`
                   : formatMXN(presupuesto.monto_total))}
             </span>
-          </SheetTitle>
-        </SheetHeader>
+          </DialogTitle>
+        </DialogHeader>
 
         <div className="mt-6">
           {isLoading ? (
@@ -121,7 +122,7 @@ export function VerPresupuestoSheet({
                       return (
                         <tr
                           key={r.id}
-                          className={`border-t border-border ${r.es_grupo ? "bg-muted/30 font-medium" : ""}`}
+                          className={`border-t border-border ${claseFilaPresupuesto(r.nivel, r.es_grupo)}`}
                         >
                           <td
                             className="px-2 py-1 tabular-nums whitespace-nowrap overflow-hidden text-ellipsis"
@@ -180,8 +181,8 @@ export function VerPresupuestoSheet({
             </TooltipProvider>
           )}
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
 

@@ -114,7 +114,7 @@ export function PresupuestoModule({ obraId }: { obraId: string }) {
   const search = useSearch({ strict: false }) as { tab?: string; ver?: string };
   const navigate = useNavigate();
 
-  const [creating, setCreating] = useState<null | "base" | "adenda">(null);
+  const [creating, setCreating] = useState<null | "adenda">(null);
   const [editing, setEditing] = useState<{ id: string; tipo: "base" | "adenda" } | null>(null);
   const [viewing, setViewing] = useState<string | null>(null);
   const [verVigente, setVerVigente] = useState(false);
@@ -179,6 +179,17 @@ export function PresupuestoModule({ obraId }: { obraId: string }) {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const crearBase = useServerFn(crearPresupuesto);
+  const crearBaseM = useMutation({
+    mutationFn: crearBase,
+    onSuccess: (res) => {
+      toast.success("Presupuesto base creado");
+      qc.invalidateQueries({ queryKey: ["presupuestos", obraId] });
+      setEditing({ id: res.id, tipo: "base" });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const presupuestos = (listQ.data ?? []) as Presupuesto[];
   const base = presupuestos.find((p) => p.tipo === "base");
   const adendas = presupuestos.filter((p) => p.tipo === "adenda");
@@ -210,10 +221,7 @@ export function PresupuestoModule({ obraId }: { obraId: string }) {
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Presupuesto</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Presupuesto base + órdenes de cambio. Envío a autorización y aprobación según permisos
-            por rol.
-          </p>
+
         </div>
         <div className="flex gap-2 flex-wrap">
           {base?.estatus === "autorizado" && (
@@ -222,8 +230,14 @@ export function PresupuestoModule({ obraId }: { obraId: string }) {
             </Button>
           )}
           {puedeCrearBase && !base && (
-            <Button onClick={() => setCreating("base")}>
-              <Plus className="size-4 mr-1" /> Crear presupuesto base
+            <Button
+              disabled={crearBaseM.isPending}
+              onClick={() =>
+                crearBaseM.mutate({ data: { obraId, tipo: "base", nombre: "Presupuesto base" } })
+              }
+            >
+              <Plus className="size-4 mr-1" />
+              {crearBaseM.isPending ? "Creando…" : "Crear presupuesto base"}
             </Button>
           )}
           {puedeCrearOC && base?.estatus === "autorizado" && (
@@ -312,19 +326,16 @@ export function PresupuestoModule({ obraId }: { obraId: string }) {
         </TabsContent>
       </Tabs>
 
-      {creating && (
+      {creating === "adenda" && (
         <CrearPresupuestoDialog
           obraId={obraId}
-          tipo={creating}
-          numeroSugerido={
-            creating === "adenda" ? Math.max(0, ...adendas.map((a) => a.numero)) + 1 : 0
-          }
+          tipo="adenda"
+          numeroSugerido={Math.max(0, ...adendas.map((a) => a.numero)) + 1}
           onClose={() => setCreating(null)}
           onCreated={(id) => {
-            const tipo = creating;
             setCreating(null);
             refresh();
-            if (tipo) setEditing({ id, tipo });
+            setEditing({ id, tipo: "adenda" });
           }}
         />
       )}

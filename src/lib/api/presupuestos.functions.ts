@@ -5,6 +5,9 @@ import { requirePermission } from "@/lib/permisos/require";
 import { notifySupervisoresOC, notifyResidenteOC } from "./_oc-notify.server";
 
 import {
+  completarJerarquiaPresupuesto,
+  esClavePresupuesto,
+  nivelDeClave,
   procesarRenglones,
   procesarOrdenCambio,
   reconstruirVigente,
@@ -151,7 +154,7 @@ export const crearPresupuesto = createServerFn({ method: "POST" })
         company_id: companyId,
         tipo: data.tipo,
         numero,
-        nombre: data.nombre,
+        nombre: data.tipo === "base" ? "Presupuesto base" : data.nombre,
         descripcion: data.descripcion ?? null,
         created_by: userId,
       })
@@ -163,7 +166,7 @@ export const crearPresupuesto = createServerFn({ method: "POST" })
 
 const renglonSchema = z.object({
   clave: z.string().trim().min(1).max(50),
-  concepto: z.string().trim().min(1).max(500),
+  concepto: z.string().trim().min(1),
   unidad: z.string().trim().max(20).nullable().optional(),
   cantidad: z.number().finite().nullable().optional(),
   precio_unitario: z.number().finite().nullable().optional(),
@@ -491,37 +494,75 @@ export const parsearExcelPresupuesto = createServerFn({ method: "POST" })
     const XLSX = await import("xlsx");
     const buffer = Uint8Array.from(atob(data.fileBase64), (c) => c.charCodeAt(0));
     const wb = XLSX.read(buffer, { type: "array" });
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    if (!ws) throw new Error("El archivo no tiene hojas");
-    const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: null });
-    const normalized: RenglonInput[] = rows
-      .map((r) => {
-        // Buscar columnas por nombre (case-insensitive, sin acentos)
-        const norm = (s: string) =>
-          s
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .trim();
-        const entries: Record<string, unknown> = {};
-        for (const [k, v] of Object.entries(r)) entries[norm(k)] = v;
+    const hojaPresupuesto = wb.SheetNames.find(
+      (nombre) => nombre.toLocaleLowerCase() === "presupuesto",
+    );
+    if (!hojaPresupuesto) throw new Error('El archivo debe incluir una hoja llamada "Presupuesto"');
+    const ws = wb.Sheets[hojaPresupuesto];
+    const norm = (s: unknown) =>
+      String(s ?? "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+    const values = XLSX.utils.sheet_to_json<unknown[]>(ws, {
+      header: 1,
+      defval: null,
+      blankrows: true,
+    });
+    const aliases = {
+      clave: ["clave", "codigo", "clave wbs"],
+      concepto: ["concepto"],
+      unidad: ["unidad"],
+      cantidad: ["cantidad"],
+      precio_unitario: ["pu", "precio", "precio unitario", "p unitario"],
+    };
+    const headerIndex = values.findIndex((row) =>
+      row.some((value) => Object.values(aliases).flat().includes(norm(value))),
+    );
+    const hasHeader = headerIndex >= 0;
+    const dataStart = hasHeader ? headerIndex + 1 : 0;
+    const headers = hasHeader ? values[headerIndex].map(norm) : [];
+    const columnIndex = (names: string[]) => headers.findIndex((header) => names.includes(header));
+    const columns = Object.fromEntries(
+      Object.entries(aliases).map(([key, names]) => [key, columnIndex(names)]),
+    ) as Record<keyof typeof aliases, number>;
+    const requiredMissing = hasHeader && columns.concepto < 0 ? ["Concepto"] : [];
+    if (requiredMissing.length) {
+      const found = values[headerIndex].filter((value) => value != null && String(value).trim());
+      throw new Error(
+        `Faltan columnas requeridas: ${requiredMissing.join(", ")}. Encabezados detectados: ${found.join(", ") || "ninguno"}.`,
+      );
+    }
+    const firstSheetRow = ws["!ref"] ? XLSX.utils.decode_range(ws["!ref"]).s.r : 0;
+    const normalized: RenglonInput[] = values.slice(dataStart)
+      .map((row, rowIndex) => {
+        const cell = (column: number) => column < 0 ? null : row[column] ?? null;
+        const claveCell = ws[
+          XLSX.utils.encode_cell({ r: firstSheetRow + dataStart + rowIndex, c: 0 })
+        ];
+        const clave = String(claveCell?.w ?? claveCell?.v ?? row[0] ?? "").trim();
         const numOrNull = (v: unknown): number | null => {
           if (v === null || v === undefined || v === "") return null;
           const n = Number(v);
           return Number.isFinite(n) ? n : null;
         };
         return {
-          clave: String(entries["clave"] ?? "").trim(),
-          concepto: String(entries["concepto"] ?? "").trim(),
-          unidad: entries["unidad"] ? String(entries["unidad"]).trim() : null,
-          cantidad: numOrNull(entries["cantidad"]),
-          precio_unitario: numOrNull(
-            entries["pu"] ?? entries["precio unitario"] ?? entries["precio_unitario"],
-          ),
+          clave,
+          concepto: String(cell(hasHeader ? columns.concepto : 1) ?? "").trim(),
+          unidad: cell(hasHeader ? columns.unidad : 2) ? String(cell(hasHeader ? columns.unidad : 2)).trim() : null,
+          cantidad: numOrNull(cell(hasHeader ? columns.cantidad : 3)),
+          precio_unitario: numOrNull(cell(hasHeader ? columns.precio_unitario : 4)),
         };
       })
-      .filter((r) => r.clave || r.concepto);
-    return { renglones: normalized };
+      .filter((r) => esClavePresupuesto(r.clave));
+    const clavesOriginales = new Set(normalized.map((r) => r.clave));
+    const renglones = completarJerarquiaPresupuesto(normalized);
+    const subtitulosAgregados = renglones.filter(
+      (r) => nivelDeClave(r.clave) === 2 && !clavesOriginales.has(r.clave),
+    ).length;
+    return { renglones, subtitulosAgregados };
   });
 
 /** Parsea un PDF (base64) con IA y devuelve los renglones detectados (sin guardar). */
@@ -664,10 +705,12 @@ export const descargarPlantillaPresupuesto = createServerFn({ method: "GET" })
     const data = [
       ["Clave", "Concepto", "Unidad", "Cantidad", "PU"],
       ["1", "Preliminares", "", "", ""],
-      ["1.1", "Trazo y nivelación", "m2", 100, 50],
-      ["1.2", "Limpieza del terreno", "m2", 100, 20],
+      ["1.1", "Preparación del terreno", "", "", ""],
+      ["1.1.1", "Trazo y nivelación", "m2", 100, 50],
+      ["1.1.2", "Limpieza del terreno", "m2", 100, 20],
       ["2", "Cimentación", "", "", ""],
-      ["2.1", "Excavación", "m3", 50, 250],
+      ["2.1", "Excavación", "", "", ""],
+      ["2.1.1", "Excavación de cepas", "m3", 50, 250],
     ];
     const ws = XLSX.utils.aoa_to_sheet(data);
     ws["!cols"] = [{ wch: 12 }, { wch: 40 }, { wch: 10 }, { wch: 12 }, { wch: 12 }];
@@ -753,7 +796,7 @@ export const getVigente = createServerFn({ method: "POST" })
 const ocInputSchema = z.object({
   clave: z.string().trim().min(1).max(50),
   tipo_movimiento: z.enum(["modificacion", "adicion", "eliminacion"]),
-  concepto: z.string().trim().max(500).optional(),
+  concepto: z.string().trim().optional(),
   unidad: z.string().trim().max(20).nullable().optional(),
   cantidad: z.number().finite().nullable().optional(),
   precio_unitario: z.number().finite().nullable().optional(),

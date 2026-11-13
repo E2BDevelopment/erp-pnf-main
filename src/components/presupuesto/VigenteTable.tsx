@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatMXN } from "@/lib/format";
+import { claseFilaPresupuesto } from "@/lib/presupuesto-utils";
 
 export type VigenteRow = {
   clave: string;
@@ -58,9 +59,7 @@ export function VigenteTable({ rows }: { rows: VigenteRow[] }) {
               const modPU = r.pu_modificado && !eliminada;
               const rowClass = eliminada
                 ? "bg-muted/30 text-muted-foreground/70"
-                : r.es_grupo
-                  ? "bg-muted/30 font-medium"
-                  : "";
+                : claseFilaPresupuesto(r.nivel ?? (r.es_grupo ? 2 : 3), r.es_grupo);
               const highlightClass =
                 "bg-amber-100 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 font-medium rounded-sm";
               return (

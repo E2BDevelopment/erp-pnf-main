@@ -12,6 +12,7 @@ import {
 import {
   procesarOrdenCambio,
   calcularClavesPadre,
+  normalizarEntradaDecimal,
   type OCInput,
   type VigenteNode,
 } from "@/lib/presupuesto-utils";
@@ -89,6 +90,8 @@ export function CapturaOrdenCambioSheet({
   const [mods, setMods] = useState<ModRow[]>([]);
   const [adds, setAdds] = useState<AddRow[]>([]);
   const [dels, setDels] = useState<DelRow[]>([]);
+  const [cantidadDrafts, setCantidadDrafts] = useState<Record<string, string>>({});
+  const [precioDrafts, setPrecioDrafts] = useState<Record<string, string>>({});
 
   // Cargar renglones existentes de la OC (si la estamos editando)
   useEffect(() => {
@@ -373,47 +376,80 @@ export function CapturaOrdenCambioSheet({
                               </td>
                               <td className="p-1">
                                 <Input
-                                  type="number"
-                                  value={r.cantidad ?? ""}
-                                  onChange={(e) =>
+                                  type="text"
+                                  inputMode="decimal"
+                                  value={cantidadDrafts[r._id] ?? (r.cantidad != null ? r.cantidad.toFixed(2) : "")}
+                                  onFocus={(e) => {
+                                    const value = e.currentTarget.value;
+                                    setCantidadDrafts((drafts) => ({ ...drafts, [r._id]: value }));
+                                  }}
+                                  onChange={(e) => {
+                                    const cantidadTexto = normalizarEntradaDecimal(e.target.value);
+                                    const cantidad = cantidadTexto === "" ? null : Number(cantidadTexto);
+                                    setCantidadDrafts((drafts) => ({ ...drafts, [r._id]: cantidadTexto }));
                                     setMods((rs) =>
                                       rs.map((x) =>
                                         x._id === r._id
                                           ? {
                                               ...x,
                                               cantidad:
-                                                e.target.value === ""
-                                                  ? null
-                                                  : Number(e.target.value),
+                                                cantidad == null || Number.isFinite(cantidad)
+                                                  ? cantidad
+                                                  : null,
                                             }
                                           : x,
                                       ),
-                                    )
+                                    );
+                                  }}
+                                  onBlur={() =>
+                                    setCantidadDrafts((drafts) => {
+                                      const { [r._id]: _draft, ...rest } = drafts;
+                                      return rest;
+                                    })
                                   }
                                   className="h-8 text-right"
                                 />
                               </td>
                               <td className="p-1">
-                                <Input
-                                  type="number"
-                                  value={r.precio_unitario ?? ""}
-                                  onChange={(e) =>
-                                    setMods((rs) =>
-                                      rs.map((x) =>
-                                        x._id === r._id
-                                          ? {
-                                              ...x,
-                                              precio_unitario:
-                                                e.target.value === ""
-                                                  ? null
-                                                  : Number(e.target.value),
-                                            }
-                                          : x,
-                                      ),
-                                    )
-                                  }
-                                  className="h-8 text-right"
-                                />
+                                <div className="relative">
+                                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                    $
+                                  </span>
+                                  <Input
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={precioDrafts[r._id] ?? (r.precio_unitario != null ? r.precio_unitario.toFixed(2) : "")}
+                                    onFocus={(e) => {
+                                      const value = e.currentTarget.value;
+                                      setPrecioDrafts((drafts) => ({ ...drafts, [r._id]: value }));
+                                    }}
+                                    onChange={(e) => {
+                                      const normalized = normalizarEntradaDecimal(e.target.value);
+                                      const precio = normalized === "" ? null : Number(normalized);
+                                      setPrecioDrafts((drafts) => ({ ...drafts, [r._id]: normalized }));
+                                      setMods((rs) =>
+                                        rs.map((x) =>
+                                          x._id === r._id
+                                            ? {
+                                                ...x,
+                                                precio_unitario:
+                                                  precio == null || Number.isFinite(precio)
+                                                    ? precio
+                                                    : null,
+                                              }
+                                            : x,
+                                        ),
+                                      );
+                                    }}
+                                    onBlur={() =>
+                                      setPrecioDrafts((drafts) => {
+                                        const { [r._id]: _draft, ...rest } = drafts;
+                                        return rest;
+                                      })
+                                    }
+                                    className="h-8 pl-6"
+                                  />
+                                </div>
                               </td>
                               <td
                                 className={`p-2 text-right tabular-nums ${
@@ -560,47 +596,80 @@ export function CapturaOrdenCambioSheet({
                                   </td>
                                   <td className="p-1">
                                     <Input
-                                      type="number"
-                                      value={r.cantidad ?? ""}
+                                      type="text"
+                                      inputMode="decimal"
+                                      value={cantidadDrafts[r._id] ?? (r.cantidad != null ? r.cantidad.toFixed(2) : "")}
                                       className="h-8 text-right"
-                                      onChange={(e) =>
+                                      onFocus={(e) => {
+                                        const value = e.currentTarget.value;
+                                        setCantidadDrafts((drafts) => ({ ...drafts, [r._id]: value }));
+                                      }}
+                                      onChange={(e) => {
+                                        const cantidadTexto = normalizarEntradaDecimal(e.target.value);
+                                        const cantidad = cantidadTexto === "" ? null : Number(cantidadTexto);
+                                        setCantidadDrafts((drafts) => ({ ...drafts, [r._id]: cantidadTexto }));
                                         setAdds((rs) =>
                                           rs.map((x) =>
                                             x._id === r._id
                                               ? {
                                                   ...x,
                                                   cantidad:
-                                                    e.target.value === ""
-                                                      ? null
-                                                      : Number(e.target.value),
+                                                    cantidad == null || Number.isFinite(cantidad)
+                                                      ? cantidad
+                                                      : null,
                                                 }
                                               : x,
                                           ),
-                                        )
+                                        );
+                                      }}
+                                      onBlur={() =>
+                                        setCantidadDrafts((drafts) => {
+                                          const { [r._id]: _draft, ...rest } = drafts;
+                                          return rest;
+                                        })
                                       }
                                     />
                                   </td>
                                   <td className="p-1">
-                                    <Input
-                                      type="number"
-                                      value={r.precio_unitario ?? ""}
-                                      className="h-8 text-right"
-                                      onChange={(e) =>
-                                        setAdds((rs) =>
-                                          rs.map((x) =>
-                                            x._id === r._id
-                                              ? {
-                                                  ...x,
-                                                  precio_unitario:
-                                                    e.target.value === ""
-                                                      ? null
-                                                      : Number(e.target.value),
-                                                }
-                                              : x,
-                                          ),
-                                        )
-                                      }
-                                    />
+                                    <div className="relative">
+                                      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                                        $
+                                      </span>
+                                      <Input
+                                        type="text"
+                                        inputMode="decimal"
+                                        value={precioDrafts[r._id] ?? (r.precio_unitario != null ? r.precio_unitario.toFixed(2) : "")}
+                                        className="h-8 pl-6"
+                                        onFocus={(e) => {
+                                          const value = e.currentTarget.value;
+                                          setPrecioDrafts((drafts) => ({ ...drafts, [r._id]: value }));
+                                        }}
+                                        onChange={(e) => {
+                                          const normalized = normalizarEntradaDecimal(e.target.value);
+                                          const precio = normalized === "" ? null : Number(normalized);
+                                          setPrecioDrafts((drafts) => ({ ...drafts, [r._id]: normalized }));
+                                          setAdds((rs) =>
+                                            rs.map((x) =>
+                                              x._id === r._id
+                                                ? {
+                                                    ...x,
+                                                    precio_unitario:
+                                                      precio == null || Number.isFinite(precio)
+                                                        ? precio
+                                                        : null,
+                                                  }
+                                                : x,
+                                            ),
+                                          );
+                                        }}
+                                        onBlur={() =>
+                                          setPrecioDrafts((drafts) => {
+                                            const { [r._id]: _draft, ...rest } = drafts;
+                                            return rest;
+                                          })
+                                        }
+                                      />
+                                    </div>
                                   </td>
                                 </>
                               )}
