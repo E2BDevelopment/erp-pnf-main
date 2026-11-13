@@ -30,7 +30,8 @@ import {
   ListTodo,
 } from "lucide-react";
 import { formatMXN, formatDate } from "@/lib/format";
-import { buildMapsHref, ubicacionDisplayText } from "@/lib/ubicacion";
+import { buildMapsHref, isUrl, ubicacionDisplayText } from "@/lib/ubicacion";
+import { roleColorText } from "@/lib/roles/colors";
 import { NuevaTareaDialog } from "@/components/tareas/NuevaTareaDialog";
 import { gsap, MOTION, MOTION_OK, useGSAP } from "@/lib/anim/gsap";
 import { useStagger } from "@/components/anim/useStagger";
@@ -152,7 +153,13 @@ function ObraHeader({
     fecha_terminacion: string | null;
     cliente: { razon_social: string; rfc: string | null } | null;
   };
-  team: Array<{ id: string; role: string; user: { nombre_completo: string } | null }>;
+  team: Array<{
+    id: string;
+    role: string;
+    roleLabel: string | null;
+    color: string;
+    user: { nombre_completo: string } | null;
+  }>;
 }) {
   const copiarUbicacion = async () => {
     if (!obra.ubicacion) return;
@@ -166,6 +173,7 @@ function ObraHeader({
 
   const mapsHref = buildMapsHref(obra.ubicacion);
   const ubicacionTexto = ubicacionDisplayText(obra.ubicacion);
+  const ubicacionEsUrl = Boolean(obra.ubicacion && isUrl(obra.ubicacion));
 
   const initials = (name?: string | null) =>
     (name ?? "?")
@@ -179,28 +187,60 @@ function ObraHeader({
   const extra = team.length - visibleTeam.length;
 
   return (
-    <header data-panel-obra className="border-b border-border pb-4 space-y-2">
-      {/* Línea 1: título + cliente + contrato + avatares */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-2 flex-wrap min-w-0">
+    <header data-panel-obra className="border-b border-border pb-4">
+      <div className="flex min-w-0 flex-nowrap items-center gap-3 overflow-x-auto text-sm text-muted-foreground">
+        <div className="flex min-w-0 items-center gap-2">
           {obra.unidad_negocio && (
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="shrink-0 text-xs">
               {obra.unidad_negocio.nombre}
             </Badge>
           )}
-          <span className="text-sm text-muted-foreground">
+          <span className="min-w-0 truncate whitespace-nowrap">
             {obra.cliente?.razon_social ?? "Sin cliente"}
             {obra.numero_contrato && ` · ${obra.numero_contrato}`}
           </span>
         </div>
 
+        {obra.ubicacion && (
+          <div className="flex min-w-0 items-center gap-1.5">
+            <a
+              href={mapsHref!}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Abrir en Google Maps"
+              aria-label="Abrir ubicación en Google Maps"
+              className="shrink-0 hover:text-foreground transition-colors"
+            >
+              <MapPin className="size-3.5 shrink-0" />
+              {!ubicacionEsUrl && <span className="min-w-0 truncate">{ubicacionTexto}</span>}
+            </a>
+
+            <button
+              onClick={copiarUbicacion}
+              title="Copiar ubicación"
+              aria-label="Copiar ubicación"
+              className="shrink-0 hover:text-foreground transition-colors"
+            >
+              <Copy className="size-3.5" />
+            </button>
+          </div>
+        )}
+
+        <div className="flex shrink-0 items-center gap-1.5">
+          <Calendar className="size-3.5" />
+          <span className="whitespace-nowrap">
+            {formatDate(obra.fecha_inicio) || "—"} → {formatDate(obra.fecha_terminacion) || "—"}
+          </span>
+        </div>
+
         {team.length > 0 && (
-          <div className="flex -space-x-2">
+          <div className="ml-auto flex shrink-0 -space-x-2">
             {visibleTeam.map((m) => (
               <div
                 key={m.id}
-                title={`${m.user?.nombre_completo ?? "—"} · ${ROLE_LABELS[m.role] ?? m.role}`}
-                className="size-7 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[11px] font-medium"
+                title={`${m.user?.nombre_completo ?? "—"} · ${m.roleLabel ?? ROLE_LABELS[m.role] ?? m.role}`}
+                className="size-7 rounded-full border-2 border-background flex items-center justify-center text-[11px] font-medium"
+                style={{ backgroundColor: m.color, color: roleColorText(m.color) }}
               >
                 {initials(m.user?.nombre_completo)}
               </div>
@@ -212,45 +252,6 @@ function ObraHeader({
             )}
           </div>
         )}
-      </div>
-
-      {/* Línea 2: meta (ubicación + fechas) */}
-      <div className="flex items-center gap-x-4 gap-y-1 flex-wrap text-sm text-muted-foreground">
-        {obra.ubicacion ? (
-          <div className="flex min-w-0 max-w-full items-center gap-1.5">
-            <MapPin className="size-3.5 shrink-0" />
-            <span className="truncate max-w-[calc(100vw-6rem)] sm:max-w-[260px]">
-              {ubicacionTexto}
-            </span>
-            <a
-              href={mapsHref!}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Abrir en Google Maps"
-              className="shrink-0 hover:text-foreground transition-colors"
-            >
-              <ExternalLink className="size-3.5" />
-            </a>
-            <button
-              onClick={copiarUbicacion}
-              title="Copiar ubicación"
-              className="shrink-0 hover:text-foreground transition-colors"
-            >
-              <Copy className="size-3.5" />
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5">
-            <MapPin className="size-3.5" /> <span>Sin ubicación</span>
-          </div>
-        )}
-
-        <div className="flex items-center gap-1.5">
-          <Calendar className="size-3.5" />
-          <span>
-            {formatDate(obra.fecha_inicio) || "—"} → {formatDate(obra.fecha_terminacion) || "—"}
-          </span>
-        </div>
       </div>
     </header>
   );

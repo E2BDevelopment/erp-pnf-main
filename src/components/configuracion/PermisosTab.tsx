@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import { useEffectiveIsDirector } from "@/stores/auth";
 import { Input } from "@/components/ui/input";
+import { ROLE_DEFAULT_COLORS } from "@/lib/roles/colors";
 import {
   CATALOGO_ACCIONES,
   MODULOS_ORDEN,
@@ -60,6 +61,7 @@ export function PermisosTab({ obraId }: { obraId?: string }) {
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [baseRole, setBaseRole] = useState<PermRole>("residente");
+  const [color, setColor] = useState<string>(ROLE_DEFAULT_COLORS.residente);
   const [mobileRole, setMobileRole] = useState("residente");
   const listRolesFn = useServerFn(listCompanyRoles);
   const createRoleFn = useServerFn(createCompanyRole);
@@ -80,12 +82,13 @@ export function PermisosTab({ obraId }: { obraId?: string }) {
   });
 
   const createRole = useMutation({
-    mutationFn: () => createRoleFn({ data: { name, base_role: baseRole } }),
+    mutationFn: () => createRoleFn({ data: { name, base_role: baseRole, color } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["company-roles"] });
       qc.invalidateQueries({ queryKey: ["role_permissions"] });
       setCreating(false);
       setName("");
+      setColor(ROLE_DEFAULT_COLORS[baseRole]);
       toast.success("Rol creado. Ya puedes ajustar sus permisos y asignarlo al equipo.");
     },
     onError: (error: Error) => toast.error(error.message),
@@ -195,7 +198,14 @@ export function PermisosTab({ obraId }: { obraId?: string }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="role-base">Perfil base</Label>
-              <Select value={baseRole} onValueChange={(value) => setBaseRole(value as PermRole)}>
+              <Select
+                value={baseRole}
+                onValueChange={(value) => {
+                  const role = value as PermRole;
+                  setBaseRole(role);
+                  setColor(ROLE_DEFAULT_COLORS[role]);
+                }}
+              >
                 <SelectTrigger id="role-base">
                   <SelectValue />
                 </SelectTrigger>
@@ -207,6 +217,36 @@ export function PermisosTab({ obraId }: { obraId?: string }) {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role-color">Color del rol (RGB)</Label>
+              <div className="flex items-center gap-3">
+                <Input
+                  id="role-color"
+                  type="color"
+                  value={color}
+                  onChange={(event) => setColor(event.target.value.toUpperCase())}
+                  aria-label="Elegir color RGB del rol"
+                  className="h-10 w-14 cursor-pointer p-1"
+                />
+                <span className="font-mono text-sm uppercase">{color}</span>
+              </div>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                {Object.entries(ROLE_DEFAULT_COLORS).map(([role, defaultColor]) => (
+                  <span key={role} className="inline-flex items-center gap-1.5">
+                    <span
+                      aria-hidden
+                      title={defaultColor}
+                      className="size-2.5 rounded-full"
+                      style={{ backgroundColor: defaultColor }}
+                    />
+                    {role === "director" ? "Director" : ROLE_LABEL[role as PermRole]}
+                  </span>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                El perfil base propone un color predeterminado; puedes ajustarlo con el selector RGB.
+              </p>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setCreating(false)}>
@@ -220,14 +260,7 @@ export function PermisosTab({ obraId }: { obraId?: string }) {
         </DialogContent>
       </Dialog>
 
-      <Alert>
-        <Info className="size-4" />
-        <AlertDescription>
-          {obraId
-            ? "Esta obra hereda los permisos de la empresa. Cambia solo las excepciones; selecciona Heredar para restablecer la regla de empresa. Los permisos no sustituyen la asignación a la obra ni los vistos buenos del proceso."
-            : "Los cambios se aplican de inmediato. Las obras heredan estos permisos salvo sus excepciones. El Director siempre conserva acceso total."}
-        </AlertDescription>
-      </Alert>
+
 
       {obraId && (
         <div className="space-y-2 md:hidden">

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requirePermission } from "@/lib/permisos/require";
 import { validarComisionesEquipo, validarEquipoObra } from "@/lib/obra-utils";
+import { roleColor } from "@/lib/roles/colors";
 
 export const listObras = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -58,7 +59,7 @@ export const getObraDashboard = createServerFn({ method: "POST" })
     const { data: obra, error: obraError } = await supabase
       .from("obras")
       .select(
-        "id, nombre, unidad_negocio:unidades_negocio(id, nombre), numero_contrato, ubicacion, fecha_inicio, fecha_terminacion, presupuesto_url, cliente:clientes(id, razon_social, rfc, tipo_persona)",
+        "id, company_id, nombre, unidad_negocio:unidades_negocio(id, nombre), numero_contrato, ubicacion, fecha_inicio, fecha_terminacion, presupuesto_url, cliente:clientes(id, razon_social, rfc, tipo_persona)",
       )
       .eq("id", data.obraId)
       .maybeSingle();
@@ -73,21 +74,51 @@ export const getObraDashboard = createServerFn({ method: "POST" })
 
     const userIds = (teamRows ?? []).map((r) => r.user_id);
     let profiles: Array<{ id: string; nombre_completo: string; email: string }> = [];
+    let roleAssignments: Array<{ user_id: string; role: string; custom_role_id: string | null }> = [];
+    let customRoles: Array<{ id: string; name: string; color: string }> = [];
     if (userIds.length > 0) {
-      const { data: profileRows, error: profErr } = await supabase
-        .from("profiles")
-        .select("id, nombre_completo, email")
-        .in("id", userIds);
+      const [
+        { data: profileRows, error: profErr },
+        { data: assignments, error: assignmentErr },
+        { data: companyRoles, error: customRoleErr },
+      ] = await Promise.all([
+        supabase.from("profiles").select("id, nombre_completo, email").in("id", userIds),
+        supabase
+          .from("user_roles")
+          .select("user_id, role, custom_role_id")
+          .eq("company_id", obra.company_id)
+          .in("user_id", userIds),
+        supabase
+          .from("company_roles")
+          .select("id, name, color")
+          .eq("company_id", obra.company_id),
+      ]);
       if (profErr) throw new Error(profErr.message);
+      if (assignmentErr) throw new Error(assignmentErr.message);
+      if (customRoleErr) throw new Error(customRoleErr.message);
       profiles = profileRows ?? [];
+      roleAssignments = assignments ?? [];
+      customRoles = companyRoles ?? [];
     }
     const profileMap = new Map(profiles.map((p) => [p.id, p]));
+    const assignedCustomRole = new Map(
+      roleAssignments
+        .filter((assignment) => assignment.custom_role_id)
+        .map((assignment) => [`${assignment.user_id}:${assignment.role}`, assignment.custom_role_id!]),
+    );
+    const customRoleColors = new Map(customRoles.map((role) => [role.id, role.color]));
+    const customRoleNames = new Map(customRoles.map((role) => [role.id, role.name]));
 
-    const team = (teamRows ?? []).map((r) => ({
-      id: r.id,
-      role: r.role,
-      user: profileMap.get(r.user_id) ?? null,
-    }));
+    const team = (teamRows ?? []).map((r) => {
+      const customRoleId = assignedCustomRole.get(`${r.user_id}:${r.role}`);
+      return {
+        id: r.id,
+        role: r.role,
+        roleLabel: (customRoleId && customRoleNames.get(customRoleId)) || null,
+        color: roleColor(r.role, customRoleId && customRoleColors.get(customRoleId)),
+        user: profileMap.get(r.user_id) ?? null,
+      };
+    });
 
     return { obra, team };
   });

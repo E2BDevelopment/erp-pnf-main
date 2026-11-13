@@ -151,7 +151,7 @@ export const listCompanyRoles = createServerFn({ method: "GET" })
     if (!profile?.company_id) return [];
     const { data, error } = await context.supabase
       .from("company_roles")
-      .select("id, name, base_role")
+      .select("id, name, base_role, color")
       .eq("company_id", profile.company_id)
       .order("created_at");
     if (error) throw new Error(error.message);
@@ -161,6 +161,7 @@ export const listCompanyRoles = createServerFn({ method: "GET" })
 const createRoleSchema = z.object({
   name: z.string().trim().min(1).max(60),
   base_role: z.enum(["residente", "auxiliar", "administrativo", "supervisor"]),
+  color: z.string().regex(/^#[\da-f]{6}$/i),
 });
 
 export const createCompanyRole = createServerFn({ method: "POST" })
@@ -174,6 +175,7 @@ export const createCompanyRole = createServerFn({ method: "POST" })
       _name: data.name,
       _base_role: data.base_role,
       _defaults: defaults,
+      _color: data.color,
     });
     if (error)
       throw new Error(error.code === "23505" ? "Ya existe un rol con ese nombre" : error.message);

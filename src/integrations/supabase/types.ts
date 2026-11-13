@@ -917,6 +917,7 @@ export type Database = {
         Row: {
           base_role: Database["public"]["Enums"]["app_role"]
           company_id: string
+          color: string
           created_at: string
           id: string
           name: string
@@ -925,6 +926,7 @@ export type Database = {
         Insert: {
           base_role: Database["public"]["Enums"]["app_role"]
           company_id: string
+          color?: string
           created_at?: string
           id?: string
           name: string
@@ -932,6 +934,7 @@ export type Database = {
         Update: {
           base_role?: Database["public"]["Enums"]["app_role"]
           company_id?: string
+          color?: string
           created_at?: string
           id?: string
           name?: string
@@ -4820,6 +4823,7 @@ export type Database = {
       create_company_role: {
         Args: {
           _base_role: Database["public"]["Enums"]["app_role"]
+          _color: string
           _defaults: Json
           _name: string
         }
