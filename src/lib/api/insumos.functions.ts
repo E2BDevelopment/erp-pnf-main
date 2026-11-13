@@ -82,7 +82,6 @@ async function notificarSolicitudCatalogo(
   }
 }
 
-const CODIGO_REGEX = /^[A-Z0-9]{2,5}-\d{3,6}$/;
 const PREFIJO_REGEX = /^[A-Z0-9]{3}$/;
 
 function derivarPrefijo(nombre: string): string {
@@ -152,12 +151,16 @@ export const listInsumos = createServerFn({ method: "POST" })
     );
 
     const priceMap = new Map<string, { precio: number; proveedor: string | null; fecha: string }>();
+    const requisitionMap = new Map<string, string>();
     if (ids.length > 0) {
-      const { data: precios } = await supabase
-        .from("insumos_historial_precios")
-        .select("insumo_id, precio_unitario, proveedor, fecha")
-        .in("insumo_id", ids)
-        .order("fecha", { ascending: false });
+      const [{ data: precios }, { data: requisitionItems }] = await Promise.all([
+        supabase
+          .from("insumos_historial_precios")
+          .select("insumo_id, precio_unitario, proveedor, fecha")
+          .in("insumo_id", ids)
+          .order("fecha", { ascending: false }),
+        supabase.from("requisicion_insumos").select("insumo_id, requisicion_id").in("insumo_id", ids),
+      ]);
       for (const p of precios ?? []) {
         if (!priceMap.has(p.insumo_id)) {
           priceMap.set(p.insumo_id, {
@@ -165,6 +168,31 @@ export const listInsumos = createServerFn({ method: "POST" })
             proveedor: p.proveedor,
             fecha: p.fecha,
           });
+        }
+      }
+
+      const requisitionIds = [
+        ...new Set((requisitionItems ?? []).map((item) => item.requisicion_id)),
+      ];
+      if (requisitionIds.length > 0) {
+        const { data: requisitions } = await supabase
+          .from("requisiciones")
+          .select("id, folio, created_at")
+          .in("id", requisitionIds)
+          .order("created_at", { ascending: true });
+        const requisitionById = new Map(
+          (requisitions ?? []).map((requisition) => [requisition.id, requisition]),
+        );
+        const orderedItems = [...(requisitionItems ?? [])].sort((a, b) => {
+          const dateA = requisitionById.get(a.requisicion_id)?.created_at ?? "";
+          const dateB = requisitionById.get(b.requisicion_id)?.created_at ?? "";
+          return dateA.localeCompare(dateB);
+        });
+        for (const item of orderedItems) {
+          const requisition = requisitionById.get(item.requisicion_id);
+          if (requisition && !requisitionMap.has(item.insumo_id)) {
+            requisitionMap.set(item.insumo_id, requisition.folio);
+          }
         }
       }
     }
@@ -181,6 +209,7 @@ export const listInsumos = createServerFn({ method: "POST" })
     return (rows ?? []).map((r: any) => ({
       ...r,
       ultimo_precio: priceMap.get(r.id) ?? null,
+      requisicion_origen: requisitionMap.get(r.id) ?? null,
       solicitante: r.solicitado_por ? (profileMap.get(r.solicitado_por) ?? null) : null,
     }));
   });
@@ -309,12 +338,6 @@ export const editarInsumo = createServerFn({ method: "POST" })
         nombre: z.string().trim().min(1).max(200),
         unidad: unidadSchema,
         categoriaId: z.string().uuid().nullable(),
-        codigo: z
-          .string()
-          .trim()
-          .toUpperCase()
-          .regex(CODIGO_REGEX, "Formato inválido (ej. CEM-0001)")
-          .optional(),
         disponibleRenta: z.boolean().optional(),
       })
       .parse(d),
@@ -324,24 +347,33 @@ export const editarInsumo = createServerFn({ method: "POST" })
     const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
     if (!isDirector) throw new Error("Solo el Director puede editar insumos");
     await validateUnidad(supabase, companyId, data.unidad);
+    if (data.categoriaId) {
+      const { data: categoria, error: categoriaError } = await supabase
+        .from("insumo_categorias")
+        .select("id")
+        .eq("id", data.categoriaId)
+        .eq("company_id", companyId)
+        .maybeSingle();
+      if (categoriaError) throw new Error(categoriaError.message);
+      if (!categoria) throw new Error("La categoría no pertenece a tu empresa");
+    }
     const patch: {
       nombre: string;
       unidad: typeof data.unidad;
       categoria_id: string | null;
-      codigo?: string;
       disponible_renta?: boolean;
     } = {
       nombre: data.nombre,
       unidad: data.unidad,
       categoria_id: data.categoriaId,
     };
-    if (data.codigo) patch.codigo = data.codigo;
     if (typeof data.disponibleRenta === "boolean") patch.disponible_renta = data.disponibleRenta;
-    const { error } = await supabase.from("insumos").update(patch).eq("id", data.id);
+    const { error } = await supabase
+      .from("insumos")
+      .update(patch)
+      .eq("id", data.id)
+      .eq("company_id", companyId);
     if (error) {
-      if (error.message.includes("insumos_codigo_unique")) {
-        throw new Error("Ese código ya existe en otro insumo");
-      }
       throw new Error(error.message);
     }
     return { ok: true };

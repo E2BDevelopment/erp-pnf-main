@@ -177,9 +177,7 @@ export function CatalogoInsumosModule() {
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Insumos</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Gestiona los insumos disponibles para tus obras
-          </p>
+
         </div>
         <div className="flex w-full flex-wrap gap-2 sm:w-auto">
           {director && (
@@ -443,6 +441,15 @@ export function CatalogoInsumosModule() {
                       <TableCell className="text-right space-x-2 whitespace-nowrap">
                         {director ? (
                           <>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => setEditInsumo(i)}
+                              title="Editar antes de autorizar"
+                              aria-label="Editar insumo pendiente"
+                            >
+                              <Pencil className="size-4" />
+                            </Button>
                             <Button
                               size="sm"
                               onClick={() => {
@@ -1127,12 +1134,9 @@ function EditarInsumoDialog({
 }) {
   const qc = useQueryClient();
   const [nombre, setNombre] = useState(insumo.nombre);
-  const [codigo, setCodigo] = useState<string>(insumo.codigo ?? "");
   const [unidad, setUnidad] = useState<Unidad>(insumo.unidad);
   const [categoriaId, setCategoriaId] = useState<string>(insumo.categoria_id ?? "none");
   const [disponibleRenta, setDisponibleRenta] = useState<boolean>(!!insumo.disponible_renta);
-
-  const codigoValido = !codigo || /^[A-Z0-9]{2,5}-\d{3,6}$/.test(codigo);
 
   const mut = useMutation({
     mutationFn: useServerFn(editarInsumo),
@@ -1157,17 +1161,10 @@ function EditarInsumoDialog({
               <Label htmlFor="editar-insumo-dialog-codigo">Código</Label>
               <Input
                 id="editar-insumo-dialog-codigo"
-                value={codigo}
-                onChange={(e) => setCodigo(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ""))}
-                placeholder="CEM-0001"
-                maxLength={12}
+                value={insumo.codigo ?? ""}
+                readOnly
                 className="font-mono uppercase"
               />
-              {!codigoValido && (
-                <p className="text-[11px] text-destructive mt-1">
-                  Formato: PREFIJO-NÚMERO (ej. CEM-0001)
-                </p>
-              )}
             </div>
             <div>
               <Label htmlFor="editar-insumo-dialog-nombre">Nombre</Label>
@@ -1230,8 +1227,7 @@ function EditarInsumoDialog({
           </label>
 
           <p className="text-xs text-muted-foreground">
-            El código se asigna automáticamente al crear el insumo. Solo se edita si necesitas
-            corregirlo manualmente.
+            El código se asigna automáticamente según la categoría y no se puede editar.
           </p>
         </div>
         <DialogFooter>
@@ -1239,7 +1235,7 @@ function EditarInsumoDialog({
             Cancelar
           </Button>
           <Button
-            disabled={!nombre.trim() || !codigoValido || mut.isPending}
+            disabled={!nombre.trim() || mut.isPending}
             onClick={() =>
               mut.mutate({
                 data: {
@@ -1247,7 +1243,6 @@ function EditarInsumoDialog({
                   nombre: nombre.trim(),
                   unidad,
                   categoriaId: categoriaId === "none" ? null : categoriaId,
-                  codigo: codigo || undefined,
                   disponibleRenta,
                 },
               })

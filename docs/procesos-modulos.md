@@ -190,7 +190,9 @@ El catálogo permite listar/buscar, consultar ficha, crear, editar, autorizar y 
 
 ### 6.4 Insumos
 
-Permite buscar y filtrar el catálogo por estatus, consultar métricas, categorías, unidades e historial de precios, además de importar insumos desde archivo. Las solicitudes de alta pueden proponer también una categoría y/o unidad nuevas; estas quedan pendientes de autorización del Director. El Director administra categorías y unidades y revisa solicitudes pendientes. Los insumos conservan estatus autorizado, pendiente o rechazado: los rechazados permanecen en el catálogo y no se pueden enviar en una requisición; el borrador debe quitar el insumo rechazado antes de enviarse. La autorización valida que la unidad y categoría asociadas estén autorizadas. Las requisiciones muestran el estatus del insumo para orientar la captura.
+Permite buscar y filtrar el catálogo por estatus, consultar métricas, categorías, unidades e historial de precios, además de importar insumos desde archivo. En la lista de insumos autorizados se muestra también el folio de la requisición de origen, cuando el insumo está vinculado a una requisición; si no existe una relación disponible, la columna queda vacía. Cuando hay varias requisiciones asociadas al mismo insumo, se presenta el folio de la más antigua según la fecha de creación de la requisición. El último precio y proveedor se consultan por separado desde el historial de precios.
+
+Las solicitudes de alta pueden proponer también una categoría y/o unidad nuevas; estas quedan pendientes de autorización del Director. El Director administra categorías y unidades y revisa solicitudes pendientes. Los insumos conservan estatus autorizado, pendiente o rechazado: los rechazados permanecen en el catálogo y no se pueden enviar en una requisición; el borrador debe quitar el insumo rechazado antes de enviarse. La autorización valida que la unidad y categoría asociadas estén autorizadas. Las requisiciones muestran el estatus del insumo para orientar la captura.
 
 ### 6.5 Unidades de negocio
 
