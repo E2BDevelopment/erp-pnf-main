@@ -4,12 +4,24 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
 
-const auditQuerySchema = z.object({
-  password: z.string().min(1).max(256),
-  page: z.number().int().min(0).max(10000).default(0),
-  operation: z.enum(["INSERT", "UPDATE", "DELETE", "all"]).default("all"),
-  table: z.string().trim().max(80).default(""),
-});
+const auditQuerySchema = z
+  .object({
+    password: z.string().min(1).max(256),
+    page: z.number().int().min(0).max(10000).default(0),
+    operation: z.enum(["INSERT", "UPDATE", "DELETE", "all"]).default("all"),
+    table: z.string().trim().max(80).default(""),
+    from: z.string().date().optional(),
+    to: z.string().date().optional(),
+  })
+  .refine((data) => !data.from || !data.to || data.from <= data.to, {
+    path: ["to"],
+    message: "La fecha final debe ser igual o posterior a la fecha inicial.",
+  });
+
+function nextDate(date: string) {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
+}
 
 export const getAuditLog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -62,6 +74,8 @@ export const getAuditLog = createServerFn({ method: "POST" })
       .range(data.page * pageSize, data.page * pageSize + pageSize - 1);
     if (data.operation !== "all") query = query.eq("operation", data.operation);
     if (data.table) query = query.ilike("table_name", `%${data.table}%`);
+    if (data.from) query = query.gte("occurred_at", `${data.from}T00:00:00-06:00`);
+    if (data.to) query = query.lt("occurred_at", `${nextDate(data.to)}T00:00:00-06:00`);
 
     const { data: items, error: auditError, count } = await query;
     if (auditError) throw new Error(auditError.message);

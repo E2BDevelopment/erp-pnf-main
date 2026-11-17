@@ -73,6 +73,8 @@ export default function AuditoriaPage() {
   const [page, setPage] = useState(0);
   const [operation, setOperation] = useState<Operation>("all");
   const [table, setTable] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const actorNames = useMemo(
     () =>
@@ -92,7 +94,16 @@ export default function AuditoriaPage() {
     setLoading(true);
     setError("");
     try {
-      const data = await fetchAuditLog({ data: { password, page: nextPage, operation, table } });
+      const data = await fetchAuditLog({
+        data: {
+          password,
+          page: nextPage,
+          operation,
+          table,
+          from: fromDate || undefined,
+          to: toDate || undefined,
+        },
+      });
       setResult(data);
       setPage(nextPage);
       setUnlocked(true);
@@ -125,7 +136,6 @@ export default function AuditoriaPage() {
         <div className="rounded-xl border bg-card p-6 sm:p-8">
           <ShieldCheck className="mb-4 h-7 w-7 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-xl font-semibold">Acceso restringido</h1>
-
         </div>
       </section>
     );
@@ -177,7 +187,6 @@ export default function AuditoriaPage() {
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Bitácora de auditoría
           </h1>
-
         </div>
         <Button type="button" variant="outline" onClick={lock}>
           <LockKeyhole className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -186,10 +195,10 @@ export default function AuditoriaPage() {
       </header>
 
       <form
-        className="flex flex-col gap-3 border-b py-4 sm:flex-row sm:items-end"
+        className="grid gap-3 border-b py-4 sm:grid-cols-2 lg:grid-cols-5 lg:items-end"
         onSubmit={(event) => loadPage(0, event)}
       >
-        <div className="w-full sm:max-w-xs">
+        <div>
           <label
             htmlFor="audit-table"
             className="mb-1.5 block text-xs font-medium text-muted-foreground"
@@ -203,7 +212,7 @@ export default function AuditoriaPage() {
             placeholder="Buscar por tabla"
           />
         </div>
-        <div className="w-full sm:w-52">
+        <div>
           <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Acción</label>
           <Select value={operation} onValueChange={(value) => setOperation(value as Operation)}>
             <SelectTrigger aria-label="Filtrar por acción">
@@ -217,7 +226,37 @@ export default function AuditoriaPage() {
             </SelectContent>
           </Select>
         </div>
-        <Button type="submit" variant="outline" disabled={loading}>
+        <div>
+          <label
+            htmlFor="audit-from-date"
+            className="mb-1.5 block text-xs font-medium text-muted-foreground"
+          >
+            Desde
+          </label>
+          <Input
+            id="audit-from-date"
+            type="date"
+            value={fromDate}
+            max={toDate || undefined}
+            onChange={(event) => setFromDate(event.target.value)}
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="audit-to-date"
+            className="mb-1.5 block text-xs font-medium text-muted-foreground"
+          >
+            Hasta
+          </label>
+          <Input
+            id="audit-to-date"
+            type="date"
+            value={toDate}
+            min={fromDate || undefined}
+            onChange={(event) => setToDate(event.target.value)}
+          />
+        </div>
+        <Button type="submit" variant="outline" disabled={loading} className="lg:col-span-1">
           <FileSearch className="mr-2 h-4 w-4" aria-hidden="true" />
           {loading ? "Buscando…" : "Aplicar filtros"}
         </Button>
