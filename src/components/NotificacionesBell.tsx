@@ -26,9 +26,24 @@ export function NotificacionesBell() {
   const navigate = useNavigate();
   const userId = useAuthStore((s) => s.userId);
   const [open, setOpen] = useState(false);
+  const [browserPermission, setBrowserPermission] = useState<
+    NotificationPermission | "unsupported"
+  >("default");
   const fetchList = useServerFn(listMisNotificaciones);
   const markOneFn = useServerFn(marcarNotificacionLeida);
   const markAllFn = useServerFn(marcarTodasLeidas);
+
+  useEffect(() => {
+    setBrowserPermission("Notification" in window ? Notification.permission : "unsupported");
+  }, []);
+
+  const enableBrowserNotifications = async () => {
+    if (!("Notification" in window)) return;
+    const permission = await Notification.requestPermission();
+    setBrowserPermission(permission);
+    if (permission === "granted") toast.success("Avisos de Chrome activados");
+    else toast.info("No se concedió permiso para mostrar avisos");
+  };
 
   const q = useQuery({
     queryKey: ["notificaciones"],
@@ -51,9 +66,52 @@ export function NotificacionesBell() {
         },
         ({ new: notification }) => {
           qc.invalidateQueries({ queryKey: ["notificaciones"] });
-          toast(safeNotificationText(notification.titulo, "Nueva notificación"), {
-            description: safeNotificationText(notification.mensaje, "Tienes un aviso nuevo."),
-          });
+          const titulo = safeNotificationText(notification.titulo, "Nueva notificación");
+          const mensaje = safeNotificationText(notification.mensaje, "Tienes un aviso nuevo.");
+          toast(titulo, { description: mensaje });
+
+          if (localStorage.getItem("pnf-notification-sound") !== "off") {
+            try {
+              const audio = new AudioContext();
+              const oscillator = audio.createOscillator();
+              const gain = audio.createGain();
+              oscillator.frequency.value = 880;
+              gain.gain.setValueAtTime(0.12, audio.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.18);
+              oscillator.connect(gain);
+              gain.connect(audio.destination);
+              oscillator.start();
+              oscillator.stop(audio.currentTime + 0.18);
+              oscillator.onended = () => void audio.close();
+            } catch {
+              // El navegador puede bloquear audio hasta que la persona interactúe.
+            }
+          }
+
+          if (
+            (document.hidden || !document.hasFocus()) &&
+            "Notification" in window &&
+            Notification.permission === "granted"
+          ) {
+            const browserNotification = new Notification(titulo, {
+              body: mensaje,
+              icon: "/favicon.ico",
+              tag: notification.id,
+            });
+            browserNotification.onclick = () => {
+              window.focus();
+              browserNotification.close();
+              void markOneFn({ data: { id: notification.id } }).then(() =>
+                qc.invalidateQueries({ queryKey: ["notificaciones"] }),
+              );
+              if (!notification.link) return;
+
+              const target = new URL(notification.link, window.location.origin);
+              if (target.origin === window.location.origin) {
+                navigate(`${target.pathname}${target.search}${target.hash}`);
+              }
+            };
+          }
         },
       )
       .subscribe();
@@ -61,7 +119,7 @@ export function NotificacionesBell() {
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [qc, userId]);
+  }, [markOneFn, navigate, qc, userId]);
 
   const items = (q.data as any)?.items ?? [];
   const noLeidas = (q.data as any)?.noLeidas ?? 0;
@@ -122,18 +180,30 @@ export function NotificacionesBell() {
       <PopoverContent align="end" className="w-80 p-0">
         <div className="flex items-center justify-between border-b px-3 py-2">
           <p className="text-sm font-semibold">Notificaciones</p>
-          {noLeidas > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 gap-1 text-xs"
-              onClick={() => markAll.mutate()}
-              disabled={markAll.isPending}
-            >
-              <CheckCheck className="size-3" aria-hidden />
-              Marcar todas
-            </Button>
-          )}
+          <div className="flex items-center gap-1">
+            {browserPermission === "default" && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => void enableBrowserNotifications()}
+              >
+                Activar avisos de Chrome
+              </Button>
+            )}
+            {noLeidas > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-1 text-xs"
+                onClick={() => markAll.mutate()}
+                disabled={markAll.isPending}
+              >
+                <CheckCheck className="size-3" aria-hidden />
+                Marcar todas
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="max-h-80 overflow-y-auto">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/lib/toast";
+import { Button } from "@/components/ui/button";
 import {
   CATALOGO_NOTIFICACIONES,
   MODULOS_NOTIF_ORDEN,
@@ -35,12 +36,27 @@ const ROLE_LABEL: Record<NotifRole, string> = {
 };
 
 export function NotificacionesTab() {
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [browserPermission, setBrowserPermission] = useState<NotificationPermission | "unsupported">("default");
   const [modulosAbiertos, setModulosAbiertos] = useState<Set<string>>(
     () => new Set(MODULOS_NOTIF_ORDEN),
   );
   const qc = useQueryClient();
   const listFn = useServerFn(listNotificacionPreferencias);
   const setFn = useServerFn(setNotificacionPreferencia);
+
+  useEffect(() => {
+    setSoundEnabled(localStorage.getItem("pnf-notification-sound") !== "off");
+    setBrowserPermission("Notification" in window ? Notification.permission : "unsupported");
+  }, []);
+
+  const enableBrowserNotifications = async () => {
+    if (!("Notification" in window)) return;
+    const permission = await Notification.requestPermission();
+    setBrowserPermission(permission);
+    if (permission === "granted") toast.success("Notificaciones del navegador activadas");
+    else toast.info("No se concedió permiso para mostrar notificaciones");
+  };
 
   const q = useQuery({
     queryKey: ["notificacion_preferencias"],
@@ -86,6 +102,27 @@ export function NotificacionesTab() {
 
   return (
     <div className="space-y-4">
+      <section className="space-y-3 rounded-md border p-4">
+        <h3 className="font-semibold">Avisos en este dispositivo</h3>
+        <label className="flex items-center gap-2 text-sm">
+          <Checkbox
+            checked={soundEnabled}
+            onCheckedChange={(checked) => {
+              const enabled = checked === true;
+              setSoundEnabled(enabled);
+              localStorage.setItem("pnf-notification-sound", enabled ? "on" : "off");
+            }}
+          />
+          Reproducir sonido al recibir una notificación
+        </label>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="button" variant="outline" size="sm" onClick={() => void enableBrowserNotifications()} disabled={browserPermission === "unsupported" || browserPermission === "granted"}>
+            {browserPermission === "granted" ? "Notificaciones del navegador activadas" : "Activar notificaciones del navegador"}
+          </Button>
+          {browserPermission === "denied" && <span className="text-xs text-muted-foreground">El permiso está bloqueado; cámbialo desde la configuración del navegador.</span>}
+        </div>
+      </section>
+
       <Alert>
         <Info className="size-4" />
         <AlertDescription>
