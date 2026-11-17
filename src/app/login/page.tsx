@@ -2,8 +2,8 @@
 
 import { Link, useNavigate } from "@/lib/navigation";
 import Image from "next/image";
-import { ChevronLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ChevronLeft, Eye, EyeOff } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthStore } from "@/stores/auth";
 import { Button } from "@/components/ui/button";
@@ -23,9 +23,11 @@ function LoginPage() {
   const setLoading = useAuthStore((s) => s.setLoading);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberEmail, setRememberEmail] = useState(false);
   const [keepSession, setKeepSession] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const submitLocked = useRef(false);
 
   // Cargar email recordado al montar
   useEffect(() => {
@@ -47,34 +49,44 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitLocked.current) return;
+    submitLocked.current = true;
     setSubmitting(true);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setSubmitting(false);
-    if (error) {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        submitLocked.current = false;
+        setSubmitting(false);
+        setLoading(false);
+        toast.error(error.message);
+        return;
+      }
+
+      // Guardar preferencia de "Recuerda mi cuenta"
+      if (rememberEmail) {
+        localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+      } else {
+        localStorage.removeItem(REMEMBER_EMAIL_KEY);
+      }
+
+      // Guardar preferencia de "Mantén mi sesión abierta"
+      localStorage.setItem(KEEP_SESSION_KEY, String(keepSession));
+
+      // Si el usuario NO quiere mantener la sesión abierta, cerrar sesión al cerrar pestaña/navegador
+      if (!keepSession) {
+        const handler = () => {
+          void supabase.auth.signOut();
+        };
+        window.addEventListener("beforeunload", handler);
+      }
+      // navigation happens via AuthSync useEffect
+    } catch (error) {
+      submitLocked.current = false;
+      setSubmitting(false);
       setLoading(false);
-      toast.error(error.message);
-      return;
+      toast.error(error instanceof Error ? error.message : "No se pudo iniciar sesión.");
     }
-
-    // Guardar preferencia de "Recuerda mi cuenta"
-    if (rememberEmail) {
-      localStorage.setItem(REMEMBER_EMAIL_KEY, email);
-    } else {
-      localStorage.removeItem(REMEMBER_EMAIL_KEY);
-    }
-
-    // Guardar preferencia de "Mantén mi sesión abierta"
-    localStorage.setItem(KEEP_SESSION_KEY, String(keepSession));
-
-    // Si el usuario NO quiere mantener la sesión abierta, cerrar sesión al cerrar pestaña/navegador
-    if (!keepSession) {
-      const handler = () => {
-        void supabase.auth.signOut();
-      };
-      window.addEventListener("beforeunload", handler);
-    }
-    // navigation happens via AuthSync useEffect
   };
 
   return (
@@ -115,14 +127,26 @@ function LoginPage() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="password">Contraseña</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    aria-pressed={showPassword}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
+                </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
