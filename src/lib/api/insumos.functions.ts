@@ -1,4 +1,4 @@
-import { createServerFn } from "@/lib/server-fn";
+import { createServerFn, type ServerFnContext } from "@/lib/server-fn";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -524,22 +524,70 @@ export const getHistorialPrecios = createServerFn({ method: "POST" })
     return rows ?? [];
   });
 
+const filasImportacionSchema = z
+  .array(
+    z.object({
+      nombre: z.string().trim().min(1).max(200),
+      unidad: unidadSchema,
+      categoria: z.string().trim().min(1).max(100),
+      row: z.number().int().positive(),
+    }),
+  )
+  .min(1)
+  .max(500);
+
+async function erroresDuplicadosImportacion(
+  supabase: ServerFnContext["supabase"],
+  companyId: string,
+  filas: z.infer<typeof filasImportacionSchema>,
+) {
+  const existingNames = new Set<string>();
+  // Supabase limita los resultados por consulta: revisar también catálogos grandes.
+  const pageSize = 1000;
+  for (let offset = 0; ; offset += pageSize) {
+    const { data, error } = await supabase
+      .from("insumos")
+      .select("nombre")
+      .eq("company_id", companyId)
+      .order("id")
+      .range(offset, offset + pageSize - 1);
+    if (error) throw new Error(error.message);
+    for (const insumo of data ?? []) {
+      existingNames.add(insumo.nombre.trim().toLowerCase());
+    }
+    if ((data ?? []).length < pageSize) break;
+  }
+
+  const errores: Array<(typeof filas)[number] & { error: string }> = [];
+  const seenInFile = new Map<string, number>();
+  for (const fila of filas) {
+    const key = fila.nombre.trim().toLowerCase();
+    if (existingNames.has(key)) {
+      errores.push({ ...fila, error: "Ya existe en el catálogo de insumos de tu empresa" });
+    } else if (seenInFile.has(key)) {
+      errores.push({ ...fila, error: `Duplicado en el archivo (fila ${seenInFile.get(key)})` });
+    } else {
+      seenInFile.set(key, fila.row);
+    }
+  }
+  return errores;
+}
+
+export const validarImportacionInsumos = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ filas: filasImportacionSchema }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { companyId, isDirector } = await getUserCompanyAndDirector(context.supabase, context.userId);
+    if (!isDirector) throw new Error("Solo el Director puede importar insumos");
+    return { errores: await erroresDuplicadosImportacion(context.supabase, companyId, data.filas) };
+  });
+
 export const importarInsumos = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z
       .object({
-        filas: z
-          .array(
-            z.object({
-              nombre: z.string().trim().min(1).max(200),
-              unidad: unidadSchema,
-              categoria: z.string().trim().min(1).max(100),
-              row: z.number().int().positive(),
-            }),
-          )
-          .min(1)
-          .max(500),
+        filas: filasImportacionSchema,
         unidadesNuevas: z
           .array(
             z.object({
@@ -572,6 +620,10 @@ export const importarInsumos = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { companyId, isDirector } = await getUserCompanyAndDirector(supabase, userId);
     if (!isDirector) throw new Error("Solo el Director puede importar insumos");
+
+    // Comprobar de nuevo al confirmar, antes de crear unidades o categorías.
+    const errores = await erroresDuplicadosImportacion(supabase, companyId, data.filas);
+    if (errores.length > 0) return { ok: false as const, errores };
 
     // Crear unidades nuevas (si las hay) antes de validar
     if (data.unidadesNuevas.length > 0) {
@@ -608,51 +660,6 @@ export const importarInsumos = createServerFn({ method: "POST" })
       throw new Error(
         `Las siguientes unidades no existen en el catálogo: ${unidadesFaltantes.join(", ")}. Créalas primero desde el catálogo de Unidades.`,
       );
-    }
-
-    // Cargar insumos existentes de la compañía para detectar duplicados
-    const { data: existingInsumos, error: exErr } = await supabase
-      .from("insumos")
-      .select("nombre")
-      .eq("company_id", companyId);
-    if (exErr) throw new Error(exErr.message);
-    const existingNames = new Set(
-      (existingInsumos ?? []).map((i: any) => String(i.nombre).trim().toLowerCase()),
-    );
-
-    // Validar duplicados contra BD y duplicados internos
-    const errores: {
-      row: number;
-      nombre: string;
-      unidad: string;
-      categoria: string;
-      error: string;
-    }[] = [];
-    const seenInFile = new Map<string, number>();
-    for (const f of data.filas) {
-      const key = f.nombre.trim().toLowerCase();
-      if (existingNames.has(key)) {
-        errores.push({
-          row: f.row,
-          nombre: f.nombre,
-          unidad: f.unidad,
-          categoria: f.categoria,
-          error: "Ya existe en la base de datos",
-        });
-      } else if (seenInFile.has(key)) {
-        errores.push({
-          row: f.row,
-          nombre: f.nombre,
-          unidad: f.unidad,
-          categoria: f.categoria,
-          error: `Duplicado en el archivo (fila ${seenInFile.get(key)})`,
-        });
-      } else {
-        seenInFile.set(key, f.row);
-      }
-    }
-    if (errores.length > 0) {
-      return { ok: false as const, errores };
     }
 
     // Cargar categorías existentes

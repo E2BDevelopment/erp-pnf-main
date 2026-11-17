@@ -19,6 +19,7 @@ export const crearCategoria = clientFn<typeof Impl.crearCategoria>("api/insumos.
 export const editarCategoria = clientFn<typeof Impl.editarCategoria>("api/insumos.functions.editarCategoria");
 export const eliminarCategoria = clientFn<typeof Impl.eliminarCategoria>("api/insumos.functions.eliminarCategoria");
 export const getHistorialPrecios = clientFn<typeof Impl.getHistorialPrecios>("api/insumos.functions.getHistorialPrecios");
+export const validarImportacionInsumos = clientFn<typeof Impl.validarImportacionInsumos>("api/insumos.functions.validarImportacionInsumos");
 export const importarInsumos = clientFn<typeof Impl.importarInsumos>("api/insumos.functions.importarInsumos");
 export const listUnidades = clientFn<typeof Impl.listUnidades>("api/insumos.functions.listUnidades");
 export const crearUnidad = clientFn<typeof Impl.crearUnidad>("api/insumos.functions.crearUnidad");

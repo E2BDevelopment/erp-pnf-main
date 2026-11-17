@@ -32,7 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { importarInsumos, listUnidades, listCategorias } from "@/lib/api-client/insumos.functions";
+import { importarInsumos, validarImportacionInsumos, listUnidades, listCategorias } from "@/lib/api-client/insumos.functions";
 
 type FilaError = { row: number; nombre: string; unidad: string; categoria: string; error: string };
 type FilaValida = { row: number; nombre: string; unidad: string; categoria: string };
@@ -64,6 +64,7 @@ export function ImportarInsumosDialog({
 }) {
   const qc = useQueryClient();
   const importarFn = useServerFn(importarInsumos);
+  const validarFn = useServerFn(validarImportacionInsumos);
   const unitsFn = useServerFn(listUnidades);
   const catsFn = useServerFn(listCategorias);
   const unidadesQ = useQuery({ queryKey: ["insumo-unidades"], queryFn: () => unitsFn() });
@@ -77,6 +78,8 @@ export function ImportarInsumosDialog({
     [categoriasQ.data],
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const validacionRef = useRef(0);
+  const procesandoRef = useRef(false);
 
   const [step, setStep] = useState<"upload" | "errors" | "faltantes" | "preview">("upload");
   const [errores, setErrores] = useState<FilaError[]>([]);
@@ -86,6 +89,9 @@ export function ImportarInsumosDialog({
   const [parsing, setParsing] = useState(false);
 
   function reset() {
+    validacionRef.current++;
+    procesandoRef.current = false;
+    setParsing(false);
     setStep("upload");
     setErrores([]);
     setValidas([]);
@@ -124,10 +130,13 @@ export function ImportarInsumosDialog({
   }
 
   async function handleFile(file: File) {
+    if (procesandoRef.current) return;
     if (file.size > 2 * 1024 * 1024) {
       toast.error("El archivo es demasiado grande (máx 2MB)");
       return;
     }
+    const validacion = ++validacionRef.current;
+    procesandoRef.current = true;
     setParsing(true);
     try {
       const XLSX = await import("xlsx");
@@ -174,35 +183,37 @@ export function ImportarInsumosDialog({
           .trim()
           .toUpperCase();
         const categoria = String(r[colCategoria] ?? "").trim();
-        const excelRow = i + 1;
+        const numeroFila = i - headerIdx;
 
         if (!nombre && !unidadRaw && !categoria) continue;
 
         const errMsgs: string[] = [];
         if (!nombre) errMsgs.push("Nombre vacío");
+        else if (nombre.length > 200) errMsgs.push("Nombre demasiado largo (máximo 200 caracteres)");
         if (!unidadRaw) errMsgs.push("Unidad vacía");
         else if (!UNIDAD_REGEX.test(unidadRaw)) {
           errMsgs.push(`Unidad con formato inválido (${unidadRaw}): solo letras/números, máx 10`);
         }
         if (!categoria) errMsgs.push("Categoría vacía");
+        else if (categoria.length > 100) errMsgs.push("Categoría demasiado larga (máximo 100 caracteres)");
 
         const key = nombre.toLowerCase();
         if (nombre && seen.has(key)) {
           errMsgs.push(`Duplicado en el archivo (fila ${seen.get(key)})`);
         } else if (nombre) {
-          seen.set(key, excelRow);
+          seen.set(key, numeroFila);
         }
 
         if (errMsgs.length > 0) {
           errs.push({
-            row: excelRow,
+            row: numeroFila,
             nombre,
             unidad: unidadRaw,
             categoria,
             error: errMsgs.join("; "),
           });
         } else {
-          vals.push({ row: excelRow, nombre, unidad: unidadRaw, categoria });
+          vals.push({ row: numeroFila, nombre, unidad: unidadRaw, categoria });
         }
       }
 
@@ -211,8 +222,20 @@ export function ImportarInsumosDialog({
         return;
       }
 
+      if (vals.length + errs.length > 500) {
+        toast.error("El archivo debe contener como máximo 500 insumos");
+        return;
+      }
+
+      if (vals.length > 0) {
+        const resultado = await validarFn({ data: { filas: vals } });
+        if (validacion !== validacionRef.current) return;
+        errs.push(...resultado.errores);
+      }
+      if (validacion !== validacionRef.current) return;
+
       if (errs.length > 0) {
-        setErrores(errs);
+        setErrores(errs.sort((a, b) => a.row - b.row));
         setStep("errors");
         return;
       }
@@ -249,10 +272,15 @@ export function ImportarInsumosDialog({
         setStep("preview");
       }
     } catch (e: any) {
-      toast.error(`Error leyendo el archivo: ${e.message ?? e}`);
+      if (validacion === validacionRef.current) {
+        toast.error(`No se pudo leer o validar el archivo: ${e.message ?? e}. Vuelve a subirlo.`);
+      }
     } finally {
-      setParsing(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (validacion === validacionRef.current) {
+        procesandoRef.current = false;
+        setParsing(false);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
     }
   }
 
@@ -344,7 +372,8 @@ export function ImportarInsumosDialog({
                     Encabezados requeridos: <code className="text-xs">nombre</code>,{" "}
                     <code className="text-xs">unidad</code>,{" "}
                     <code className="text-xs">categoría</code>. Si una unidad o categoría no existe,
-                    te preguntaremos para crearla al momento.
+                    te preguntaremos para crearla al momento. Al subir el archivo también revisaremos
+                    qué insumos ya existen en el catálogo de tu empresa.
                   </p>
                 </div>
                 <Button variant="outline" size="sm" onClick={descargarPlantilla}>
@@ -371,13 +400,14 @@ export function ImportarInsumosDialog({
                 ref={fileInputRef}
                 type="file"
                 accept=".xlsx,.xls"
+                disabled={parsing}
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   if (f) handleFile(f);
                 }}
               />
-              {parsing && <p className="text-xs text-muted-foreground">Procesando...</p>}
+              {parsing && <p role="status" className="text-xs text-muted-foreground">Leyendo archivo y comprobando insumos existentes...</p>}
             </label>
           </div>
         )}
@@ -391,8 +421,8 @@ export function ImportarInsumosDialog({
                 — corrige el archivo y vuelve a subirlo
               </p>
             </Card>
-            <div className="overflow-auto border rounded-md">
-              <Table>
+            <div className="overflow-auto border rounded-md max-h-[50vh]">
+              <Table className="min-w-2xl">
                 <TableHeader className="sticky top-0 bg-background">
                   <TableRow>
                     <TableHead className="w-16">Fila</TableHead>

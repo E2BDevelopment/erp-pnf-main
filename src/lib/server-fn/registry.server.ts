@@ -180,6 +180,7 @@ export const registry: Record<string, { __execute: (input?: { data?: unknown }) 
   "api/insumos.functions.editarCategoria": m_api_insumos_functions.editarCategoria,
   "api/insumos.functions.eliminarCategoria": m_api_insumos_functions.eliminarCategoria,
   "api/insumos.functions.getHistorialPrecios": m_api_insumos_functions.getHistorialPrecios,
+  "api/insumos.functions.validarImportacionInsumos": m_api_insumos_functions.validarImportacionInsumos,
   "api/insumos.functions.importarInsumos": m_api_insumos_functions.importarInsumos,
   "api/insumos.functions.listUnidades": m_api_insumos_functions.listUnidades,
   "api/insumos.functions.crearUnidad": m_api_insumos_functions.crearUnidad,
