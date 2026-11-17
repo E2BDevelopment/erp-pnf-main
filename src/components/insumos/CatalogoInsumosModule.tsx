@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@/lib/server-fn/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/lib/toast";
@@ -75,6 +75,8 @@ import {
   revisarCategoria,
 } from "@/lib/api-client/insumos.functions";
 import { ImportarInsumosDialog } from "./ImportarInsumosDialog";
+import { PendientesBadge } from "@/components/PendientesBadge";
+import { supabase } from "@/integrations/supabase/client";
 
 type Unidad = string;
 
@@ -139,6 +141,24 @@ export function CatalogoInsumosModule() {
   const metricasQ = useQuery({ queryKey: ["insumos-metricas"], queryFn: () => metFn() });
 
   const pendientesCount = metricasQ.data?.pendientes ?? 0;
+  const categoriasPendientes = (categoriasQ.data ?? []).filter(
+    (categoria) => categoria.estatus === "pendiente",
+  ).length;
+
+  useEffect(() => {
+    if (!director) return;
+
+    const channel = supabase
+      .channel("insumo-categorias-pendientes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "insumo_categorias" }, () =>
+        qc.invalidateQueries({ queryKey: ["insumo-categorias"] }),
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [director, qc]);
 
   const autorizarMut = useMutation({
     mutationFn: useServerFn(autorizarInsumo),
@@ -148,7 +168,7 @@ export function CatalogoInsumosModule() {
       qc.invalidateQueries({ queryKey: ["insumos-metricas"] });
     },
     onError: (e: any) => {
-      const unidadError = e.message.match(/Unidad \"([^\"]+)\" no existe/i);
+      const unidadError = e.message.match(/Unidad "([^"]+)" no existe/i);
       if (unidadError) {
         setCatalogoPendiente({ tipo: "unidad", nombre: unidadError[1] });
         setOpenUnidades(true);
@@ -177,7 +197,6 @@ export function CatalogoInsumosModule() {
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Insumos</h2>
-
         </div>
         <div className="flex w-full flex-wrap gap-2 sm:w-auto">
           {director && (
@@ -186,8 +205,14 @@ export function CatalogoInsumosModule() {
               variant="outline"
               className="h-8"
               onClick={() => setOpenCategorias(true)}
+              aria-label={
+                categoriasPendientes > 0
+                  ? `Categorías, ${categoriasPendientes} solicitudes pendientes`
+                  : "Categorías"
+              }
             >
               <FolderTree className="size-3.5 mr-1" /> Categorías
+              <PendientesBadge count={categoriasPendientes} className="ml-1" />
             </Button>
           )}
           {director && (
@@ -675,11 +700,6 @@ function SolicitarDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{isDirector ? "Nuevo insumo" : "Solicitar insumo"}</DialogTitle>
-          <DialogDescription>
-            {isDirector
-              ? "El insumo se creará autorizado en el catálogo."
-              : "El Director revisará tu solicitud."}
-          </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
           <div>
@@ -926,10 +946,6 @@ function CategoriasDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Categorías de insumos</DialogTitle>
-          <DialogDescription>
-            El prefijo (3 caracteres) se usa para generar el código de los insumos, ej.{" "}
-            <span className="font-mono">CEM-0001</span>.
-          </DialogDescription>
         </DialogHeader>
         {aviso && (
           <Alert>
@@ -1387,7 +1403,7 @@ function UnidadesDialog({
             <AlertDescription>
               {unidadPendiente
                 ? "Este insumo no se puede autorizar hasta que esta unidad de medida esté autorizada."
-                : "Esta unidad aún no está en el catálogo. Regístrala primero para poder autorizar el insumo."} {" "}
+                : "Esta unidad aún no está en el catálogo. Regístrala primero para poder autorizar el insumo."}{" "}
               Al terminar, vuelve a Pendientes y autoriza el insumo.
             </AlertDescription>
           </Alert>

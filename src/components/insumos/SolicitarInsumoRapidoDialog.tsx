@@ -94,11 +94,6 @@ export function SolicitarInsumoRapidoDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{isDirector ? "Nuevo insumo" : "Solicitar insumo"}</DialogTitle>
-          <DialogDescription>
-            {isDirector
-              ? "El insumo se creará autorizado y podrás agregarlo al momento."
-              : "El Director revisará tu solicitud. Podrás agregar el insumo una vez autorizado."}
-          </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
           <div>
