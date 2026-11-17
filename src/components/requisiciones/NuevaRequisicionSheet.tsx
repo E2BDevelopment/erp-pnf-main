@@ -165,6 +165,7 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
   useEffect(() => {
     if (!open) return;
     setMobileStep(0);
+    setOpenFechaIdx(null);
     setAttemptedDetails(false);
     setCurrentBorradorId(borradorId ?? null);
     if (!borradorId) {
@@ -422,6 +423,40 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                 {bloques.length} {bloques.length === 1 ? "insumo" : "insumos"}
               </span>
             </div>
+            {bloques.length > 0 && (
+              <div className="flex justify-end border-b px-4 py-2">
+                <Popover
+                  open={openFechaIdx === -1}
+                  onOpenChange={(value) => setOpenFechaIdx(value ? -1 : null)}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-11 w-full md:h-9 md:w-auto"
+                    >
+                      <CalendarIcon className="size-4" /> Misma fecha para todos
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="end">
+                    <Calendar
+                      mode="single"
+                      onSelect={(fecha) => {
+                        if (!fecha) return;
+                        setBloques((items) =>
+                          items.map((item) => ({ ...item, fecha_requerida: fecha })),
+                        );
+                        setOpenFechaIdx(null);
+                      }}
+                      autoFocus
+                      startMonth={startOfDay(new Date())}
+                      disabled={{ before: startOfDay(new Date()) }}
+                      className="pointer-events-auto p-3"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            )}
             <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
               {bloques.length === 0 && (
                 <div className="flex min-h-40 flex-col items-center justify-center text-center text-sm text-muted-foreground">
@@ -446,7 +481,10 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                         Boolean,
                       );
                       return (
-                        <div key={b.insumo_id}>
+                        <div
+                          key={b.insumo_id}
+                          className={faltantes.length === 0 ? "bg-emerald-50" : "bg-rose-50"}
+                        >
                           <div className="flex min-h-11 items-center gap-2 px-2">
                             <button
                               type="button"
@@ -459,7 +497,13 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                               ) : (
                                 <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                               )}
-                              <span className="truncate text-sm font-medium" title={nombre}>
+                              <span
+                                className={cn(
+                                  "truncate text-sm font-medium",
+                                  faltantes.length === 0 ? "text-emerald-800" : "text-rose-800",
+                                )}
+                                title={nombre}
+                              >
                                 {nombre}
                               </span>
                               {insumoSel?.estatus === "pendiente" && (
@@ -493,13 +537,18 @@ export function NuevaRequisicionSheet({ obraId, open, onOpenChange, borradorId }
                               <Trash2 className="size-4" />
                             </Button>
                           </div>
-                          {attemptedDetails && faltantes.length > 0 && !expanded && (
-                            <p role="alert" className="px-3 pb-3 text-sm text-destructive">
-                              Falta {faltantes.join(" y ")}.
-                            </p>
-                          )}
+                          <p
+                            className={cn(
+                              "px-3 pb-2 text-xs font-medium",
+                              faltantes.length === 0 ? "text-emerald-800" : "text-rose-800",
+                            )}
+                          >
+                            {faltantes.length === 0
+                              ? "Datos completos"
+                              : `Falta ${faltantes.join(" y ")}`}
+                          </p>
                           {expanded && (
-                            <div className="grid grid-cols-1 gap-2 border-t bg-muted/20 p-3 sm:grid-cols-[1fr_1.4fr]">
+                            <div className="grid grid-cols-1 gap-2 border-t bg-background p-3 sm:grid-cols-[1fr_1.4fr]">
                               <div className="space-y-0.5">
                                 <Label htmlFor={`cantidad-${i}`} className="text-xs md:text-[11px]">
                                   Cantidad (obligatoria)
